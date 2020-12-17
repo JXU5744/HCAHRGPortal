@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model HCAaudit.Service.Portal.AuditUI.Models.SubCategory
+
+<form asp-controller="SubCategory" asp-action="Index" method="post" role="form">
+    <main class="container neu-margin--top-20">
+        <fieldset>
+            <div class="neu-padding--30">
+
+                <div class="neu-input col-3">
+                    <label for="state" class="neu-input__label required">Category:</label>
+                    <select class="neu-select" asp-for="CatgID"
+                            asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
+                    </select>
+                    <span class="material-icons neu-input__select-icon">arrow_drop_down</span>
+                    <span asp-validation-for="CatgID" class="neu-button--danger"></span>
+                </div>
+
+                <div class="neu-input col-3">
+
+                    <label for="state" class="neu-input__label required">SubCategory:</label>
+                    <input class="neu-input__field"
+                           type="text"
+                           aria-disabled="false"
+                           asp-for="SubCatgDescription"
+                           required />
+                    <span asp-validation-for="SubCatgDescription" class="neu-button--danger"></span>
+                </div>
+
+            </div>
+            <div>
+                <button asp-controller="subcategory" asp-action="Insert" class="neu-button--primary neu-button neu-button--raised neu-button--large neu-margin--top-30">
+                    Add Category
+                </button>
+            </div>
+        </fieldset>
+
+    </main>
+    @*code remove*@
+</form>
+@section Scripts
+    {
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+                   $("#btnsavequestion").click(function () {
+
+                       var subCategoryID = $('#CatgID').val() + "^" + $('#SubCatgDescription').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/SubCategory/Insert",
+                    data: { "subcatgid": subCategoryID },
+                    success: function (response) {
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+
+            });
+        });
+    </script>
+}
+
+

@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model HCAaudit.Service.Portal.AuditUI.Models.CategoryMast
+
+<form asp-controller="Home" asp-action="Details" method="post" role="form">
+    <main class="container neu-margin--top-20">
+        <fieldset>
+            <div id="ShowQuestions" class="row neu-margin--bottom-20 ">
+                @if (Model._categoryList.Count != 0)
+                {
+                    <div class="neu-text col-6 gridHeader" style="background-color: black; color: white; padding: 2px;">
+                        <b>Category Name</b>
+                    </div>
+                    <div class="neu-text col-1 gridHeader" style="text-align: center; background-color: black; color: white; padding: 2px;">
+                        <b>Edit</b>
+                    </div>
+                    <div class="neu-text col-3 gridHeader" style="text-align: center; background-color: black; color: white; padding: 2px;">
+                        <b>Delete</b>
+                    </div>
+                    @for (var counter = 0; counter < Model._categoryList.Count; counter++)
+                    {
+                        @if (Model._categoryList[counter] != null)
+                        {
+                            <div class="neu-text col-6">
+                                @Model._categoryList[counter].CatgDescription
+                            </div>
+                            <div class="neu-button col-1">
+                                @Html.ActionLink("Edit", "Edit", new { CatgID = @Model._categoryList[counter].CatgID })
+                            </div>
+                            <div class="neu-button col-3">
+                                @Html.ActionLink("Delete", "Delete", new { CatgID = @Model._categoryList[counter].CatgID })
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </fieldset>
+    </main>
+</form>
+   
+
+

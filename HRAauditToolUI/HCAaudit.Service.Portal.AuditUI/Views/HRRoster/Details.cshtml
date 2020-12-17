@@ -1,0 +1,60 @@
+﻿
+@model HCAaudit.Service.Portal.AuditUI.Models.clstbHROCRosterList
+
+<main class="container neu-margin--top-20">
+    <fieldset>
+        <div class="row neu-margin--bottom-20 ">
+            <div class="neu-text col-2" style="background-color: green; color: white; padding: 2px;">
+                <b>Employee Full Name</b>
+            </div>
+            <div class="neu-text col-2" style="background-color: green; color: white; padding: 2px;">
+                <b>Employee 3-4 ID</b>
+            </div>
+            @*<div class="neu-text col-2" style="background-color: black; color: white; padding: 2px;">
+                <b>Employee Num</b>
+            </div>*@
+            <div class="neu-text col-2" style="background-color: green; color: white; padding: 2px;">
+                <b>Job Cd Desc</b>
+            </div>
+            <div class="neu-text col-2" style="background-color: green; color: white; padding: 2px;">
+                <b>Position Desc</b>
+            </div>
+            <div class="neu-text col-2" style="background-color: green; color: white; padding: 2px;">
+                <b>Employee Status Desc</b>
+            </div>
+            <div class="neu-text col-2" style="text-align: center;background-color: green; color: white; padding: 2px;">
+                <b>Status</b>
+            </div>
+            @for (var counter = 0; counter < Model.HROCRosterList.Count; counter++)
+            {
+                <!-- Score -->
+                @if (Model.HROCRosterList[counter] != null)
+                {
+                    <div class="neu-text col-2">
+                        @Model.HROCRosterList[counter].EmployeeFullName
+                    </div>
+                    <div class="neu-text col-2">
+                        @Model.HROCRosterList[counter].EmployeethreefourID
+                    </div>
+                    @*<div class="neu-text col-2">
+                        @Model.HROCRosterList[counter].EmployeeNumber
+                    </div>*@
+                    <div class="neu-text col-2">
+                        @Model.HROCRosterList[counter].JobCDDesc
+                    </div>
+                    <div class="neu-text col-2">
+                        @Model.HROCRosterList[counter].PositionDesc
+                    </div>
+                    <div class="neu-text col-2">
+                        @Model.HROCRosterList[counter].EmployeeStatusDesc
+                    </div>
+                    <div class="neu-button col-2">
+                        @Html.ActionLink("Change Status", "StatusUpdate", new { id = @Model.HROCRosterList[counter].EmployeethreefourID })
+                    </div>
+                }
+            }
+            }
+        </div>
+    </fieldset>
+</main>
+
