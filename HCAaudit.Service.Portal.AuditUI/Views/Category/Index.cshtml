@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model HCAaudit.Service.Portal.AuditUI.Models.Category
+
+<form asp-controller="Home" asp-action="Index" method="post" role="form">
+    <main class="container neu-margin--top-20">
+        <fieldset>
+            <div class="neu-padding--30">
+
+                <div>
+                    <label for="state" class="neu-input__label required">Category:</label>
+                    <input class="neu-input__field"
+                           type="text"
+                           aria-disabled="false"
+                           asp-for="CatgDescription"
+                           required />
+                    <span asp-validation-for="CatgDescription" class="neu-button--danger"></span>
+                </div>
+                <div>
+                    <button asp-controller="category" asp-action="Insert" formmethod="post"  class="neu-button--primary neu-button neu-button--raised neu-button--large neu-margin--top-30">
+                        Add Category
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </main>
+</form>
+
+

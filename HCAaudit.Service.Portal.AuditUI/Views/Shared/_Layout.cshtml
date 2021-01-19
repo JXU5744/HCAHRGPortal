@@ -1,0 +1,64 @@
+﻿@inject HCAaudit.Service.Portal.AuditUI.Services.IAuthService auth
+@using HCAaudit.Service.Portal.AuditUI.Models;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="~/css/neutron.css" />
+    @*<link rel="stylesheet" type="text/css" href="~/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="~/assets/fonts/material-icons/material-icons.css" />*@
+</head>
+
+<body>
+    <nav class="neu-topnav" role="navigation">
+        <div class="neu-topnav__compact">
+            <a asp-controller="home" asp-action="index" class="neu-margin--right-10"><i class="material-icons">home</i></a>
+            <p class="neu-text--product">HR Audit Tool</p>
+            <!-- User Controls -->
+            <div class="neu-user-controls neu-margin--left-auto">
+                <div>
+                    @*<p>@auth.LoggedInUserInfo().Result.LoggedInFullName</p>*@
+                    <p></p>
+                </div>
+                <div class="neu-avatar neu-avatar--init neu-margin--left-10"
+                     tabindex="0">
+                    @*<small aria-label="user initials here" class="neu-avatar--init__text">@auth.LoggedInUserInfo().Result.Initials</small>*@
+                    <small aria-label="user initials here" class="neu-avatar--init__text"></small>
+                </div>
+            </div>
+        </div>
+
+    </nav>
+    <div class="neu-topnav">
+        <div style="z-index: 1;" class="neu-topnav__large">
+            <a asp-controller="category" asp-action="details" class="neu-margin--right-20">Category</a>
+            <a asp-controller="subcategory" asp-action="details" class="neu-margin--right-20">Sub Category</a>
+            <a asp-controller="HRRoster" asp-action="details" class="neu-margin--right-20">HR Professional</a>
+            <a asp-controller="Questions" asp-action="index">Question Configuration</a>
+        </div>
+    </div>
+
+
+
+    @RenderBody()
+    @*<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
+        <script type="text/javascript" src="~/js/moment.min.js"></script>
+        <link href="~/css/gridstyle.css" rel="stylesheet" />
+        <script src="~/js/neutron.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <link href="~/css/jquery-ui.css" rel="stylesheet" />*@
+
+
+
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>*@
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
