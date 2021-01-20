@@ -19,14 +19,14 @@ using System.Collections;
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
     //[Authorize]
-    public class SearchController : Controller
+    public class AuditController : Controller
     {
-        private readonly ILogger<SearchController> _logger;
+        private readonly ILogger<AuditController> _logger;
         private readonly IConfiguration config;
         private IAuthService _authService;
         List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
-        public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
+        public AuditController(ILogger<AuditController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
@@ -94,7 +94,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 //Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    customerData = customerData.Where(m => m.TicketNumber.ToLower() == searchValue.ToLower());
+                    customerData = customerData.Where(m => m.TicketNumber == searchValue);
                 }
 
                 //total number of rows counts   
@@ -120,8 +120,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public IActionResult Index(BindSearchGrid objBindSearchGrid)
         {
-
-
             return RedirectToAction("Details", objBindSearchGrid);
         }
         [HttpGet]
@@ -161,6 +159,42 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             var data = (from subCat in _auditToolContext.categories select subCat).ToList();
             return data;
+        }
+
+        CategoryMast GetDetails()
+        {
+            var data = (from cat in _auditToolContext.categories select cat).ToList();
+            CategoryMast objCategoryMast = new CategoryMast();
+            objCategoryMast._categoryList = new List<Category>();
+            foreach (var item in data)
+            {
+                Category objCategory = new Category();
+                objCategory.CatgID = item.CatgID; objCategory.CatgDescription = item.CatgDescription;
+                objCategoryMast._categoryList.Add(objCategory);
+            }
+            return objCategoryMast;
+        }
+
+        [HttpPost]
+        public ActionResult Insert(string subcatgname)
+        {
+            CategoryMast objCategoryMast = new CategoryMast();
+            objCategoryMast = GetDetails();
+            int max;
+            if (objCategoryMast._categoryList.Count == 0)
+            {
+                max = 0;
+            }
+            else
+            {
+                max = objCategoryMast._categoryList.OrderByDescending(x => x.CatgID).First().CatgID;
+            }
+            Categorys objCategorys = new Categorys(); objCategorys.CatgDescription = subcatgname;
+            objCategorys.CatgID = max + 1;
+            _auditToolContext.categories.Add(objCategorys);
+            _auditToolContext.SaveChanges();
+
+            return RedirectToAction("Details");
         }
     }
 }

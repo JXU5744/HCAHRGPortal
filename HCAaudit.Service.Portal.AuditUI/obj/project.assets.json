@@ -9098,11 +9098,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\RHI5800\\Documents\\HRAauditToolUI\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
+      "projectUniqueName": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
       "projectName": "HCAaudit.Service.Portal.AuditUI",
-      "projectPath": "C:\\Users\\RHI5800\\Documents\\HRAauditToolUI\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
+      "projectPath": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
       "packagesPath": "C:\\Users\\RHI5800\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\RHI5800\\Documents\\HRAauditToolUI\\HCAaudit.Service.Portal.AuditUI\\obj\\",
+      "outputPath": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\RHI5800\\AppData\\Roaming\\NuGet\\NuGet.Config",

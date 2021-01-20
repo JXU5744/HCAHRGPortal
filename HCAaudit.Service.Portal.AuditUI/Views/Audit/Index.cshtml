@@ -1,4 +1,9 @@
-﻿<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
@@ -53,226 +58,231 @@
                 background-color: #eee;
             }
 
-    /* form {
-        display: inline-block;
-        width: 700px;
-    }*/
+    textarea {
+        overflow-y: scroll;
+        height: 100px;
+        resize: none; /* Remove this if you want the user to resize the textarea */
+    }
 </style>
-<div class="jumbotron-fluid">
-    <form class="form-inline" action="Audit/Index">
-        <div class="row">
-            <div class="col-12">
-                <h3 align="center">Search Details</h3>
-            </div>
+<div class="card">
+    <div class="row">
+        <div class="col">
+            <label for="format-pdf" class="input-group">Enter Agent's 3-4 ID:</label>
+            <input id="txtcategory" class="form-control" type="text" readonly />
         </div>
-        <br />
-        <div class="row">
-            <div class="col-4">
-                <label class="text-success">Environment*</label>
-                <label>&nbsp;&nbsp;</label>
-                <input type="radio" name="group2" checked="checked"
-                       value="PDF"
-                       tabindex="0"
-                       required class="radio-success" />
-                <label class="text-success">Production</label>
-                <label>&nbsp;</label>
-                <input type="radio" name="group2"
-                       value="XML"
-                       tabindex="0"
-                       required />
-                <label class="text-primary">Training</label>
-            </div>
-            <div class="col-4">
-                <div class="cols" tabindex="-1">
-                    <label class="text-primary">Select Audit /Dispute*</label>
-                    <label>&nbsp;&nbsp;</label>
-                    <input type="radio" name="group1" checked="checked"
-                           value="PDF"
-                           tabindex="0"
-                           required class="radio-success" />
-                    <label class="text-primary">Audit</label>&nbsp;
-                    <label>&nbsp;</label>
-                    <input type="radio" name="group1"
-                           value="XML"
-                           tabindex="0"
-                           required class="radio-success" />
-                    <label class="text-danger">Dispute</label>
-                </div>
-            </div>
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                    <label for="format-pdf" style="text-align:left;width:50%;">Service Group / Department*</label>
-                    <select name="teams" id="CatgID" class="form-control" title="select"
-                            asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-                    </select>
-                </div>
-            </div>
+        <div class="col">
+            <label for="format-pdf" class="input-group" ">Agent Information Name:</label>
+            <input id="txtcategory" class="form-control" type="text" readonly />
         </div>
-        <br />
-        <div class="row">
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                    <label for="format-pdf" style="text-align:left;width:25%;">Sub Category</label>
-                    <select name="teams" id="SubCatID" class="form-control">
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                    <label for="format-pdf" style="text-align:left;width:38%;">Assigned To</label>
-                    <select name="teams" id="ListOfMembers" multiple="multiple" class="form-control"
-                            asp-items="@(new SelectList(@ViewBag.ListOfMembers, "memberID", "membername"))">
-                    </select>
-                </div>
-            </div>
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                    <label for="format-pdf" style="text-align:left;width:50%;">Ticket Status</label>
-                    <select name="teams" id="StatusList" multiple="multiple" class="form-control"
-                            asp-items="@(new SelectList(@ViewBag.StatusList, "StatusID", "Statusname"))">
-                        >
-                    </select>
-                </div>
-            </div>
+        <div class="col">
+            <label for="format-pdf" class="input-group" ">Date of Auditor:</label>
+            <input id="txtcategory" class="form-control" type="text" readonly />
         </div>
-        <br />
-        <div class="row">
-            <div class="col-4">
-                <div aria-checked="false" style="text-align:left;width:100%;">
-                    <label style="text-align:left;width:25%;">Start Date</label>
-                    <input class="form-control" id="startdate" type="text" data-provide="datepicker">
-                </div>
-            </div>
-            <div class="col-4">
-                <div aria-checked="false" style="text-align:left;width:100%;">
-                    <label style="text-align:left;width:38%;">To Date</label>
-                    <input class="form-control" id="enddate" type="text" data-provide="datepicker">
-                </div>
-            </div>
-            @*<div class="col-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label for="format-pdf" style="text-align:left;width:50%;">Ticket Numbers</label>
-                        <select name="teams" id="ListOfTicket" multiple="multiple" class="form-control"
-                                asp-items="@(new SelectList(@ViewBag.ListOfTicket, "TicketID", "Ticket"))">
-                        </select>
-                    </div>
-                </div>*@
+        <div class="col">
+            <label for="format-pdf" class="input-group" ">Supervisor:</label>
+            <input id="txtcategory" class="form-control" type="text" readonly />
         </div>
-        <br />
-        <div class="row" style="text-align:center;width:100%;">
-            <div class="col-12">
-                <button asp-controller="Search" asp-action="Details" class="btn btn-primary">
-                    Search
-                </button>
-                <button asp-controller="Search" asp-action="Index" class="btn btn-danger">
-                    Clear
-                </button>
-            </div>
+        <div class="col">
+            <label for="format-pdf" class="input-group">MTD Audits:</label>
+            <input id="txtcategory" class="form-control" type="text" readonly />
         </div>
-    </form>
+        <div class="col">
+            <label for="format-pdf" class="input-group">Auditor:</label>
+            <input id="txtAuditor" class="form-control" type="text" readonly />
+        </div>
+    </div>
+    <div class="row"><hr /></div>
+    <div class="row">
+        <div class="col">
+            <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+        </div>
+        <div class="col">
+            <input type="radio" class="radio-success" name="optradio" />
+            <label class="text-success">Compliance</label>
+            <input type="radio" class="radio-danger" name="optradio" />
+            <label class="text-danger">Non Compliance</label>
+            <input type="radio" class="radio-primary" name="optradio" checked />
+            <label class="text-primary">Reset</label>
+            <input type="radio" class="radio-warning" name="optradio" />
+            <label class="text-warning">Not Applicable</label>
+        </div>
+        <div class="col">
+            <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+        </div>
+        <div class="col">
+            <input type="radio" class="radio-success" name="optradio" />
+            <label class="text-success">Compliance</label>
+            <input type="radio" class="radio-danger" name="optradio" />
+            <label class="text-danger">Non Compliance</label>
+            <input type="radio" class="radio-primary" name="optradio" checked />
+            <label class="text-primary">Reset</label>
+            <input type="radio" class="radio-warning" name="optradio" />
+            <label class="text-warning">Not Applicable</label>
+        </div>
+    </div>
 </div>
-
-@*<form class="row" asp-controller="Search" asp-action="Details" method="get" role="form" style="width:100%;">*@
-
-@*<div class="rows" tabindex="-1" aria-checked="false" style="text-align:left;">
-        <div class="col-sm-8" style="width:100%;">
-            <label for="format-pdf" style="text-align:left;width:50%;">Environment</label>
-            <input type="radio" name="group2" checked="checked"
-                   value="PDF"
-                   tabindex="0"
-                   required />
-            <label for="format-pdf" style="text-align: center;">Production</label>
-            <input type="radio" name="group2"
-                   value="XML"
-                   tabindex="0"
-                   required />
-            <label for="format-xml">Training</label>
+<div class="row"><hr /></div>
+<div class="row">
+    <div class="col">
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+    <div class="col">
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+</div> <div class="row"><hr /></div>
+<div class="row">
+    <div class="col">
+        <label for="format-pdf" class="input-group"></label><label for="format-pdf" class="input-group"></label>
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+    <div class="col">
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+</div> <div class="row"><hr /></div>
+<div class="row">
+    <div class="col">
+        <label for="format-pdf" class="input-group"></label><label for="format-pdf" class="input-group"></label>
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+    <div class="col">
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+</div> <div class="row"><hr /></div>
+<div class="row">
+    <div class="col">
+        <label for="format-pdf" class="input-group"></label><label for="format-pdf" class="input-group"></label>
+        <label for="format-pdf" class="input-group">Did WFA Rep facilitate all necessary research before taking action?</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+    <div class="col">
+        <label for="format-pdf" class="input-group">Question PlaceHolder</label>
+    </div>
+    <div class="col">
+        <input type="radio" class="radio-success" name="optradio" />
+        <label class="text-success">Compliance</label>
+        <input type="radio" class="radio-danger" name="optradio" />
+        <label class="text-danger">Non Compliance</label>
+        <input type="radio" class="radio-primary" name="optradio" checked />
+        <label class="text-primary">Reset</label>
+        <input type="radio" class="radio-warning" name="optradio" />
+        <label class="text-warning">Not Applicable</label>
+    </div>
+</div> <div class="row"><hr /></div>
+<div class="well">
+    <div class="row">
+        <div class="col">
+            <label for="format-pdf" class="input-group">Total Score (Actual):</label>
+            <input id="txtScoreActual" class="form-control" type="text" value="0" readonly />
         </div>
-        <div class="cols" tabindex="-1" aria-checked="false" style="text-align:left;">
-            <label for="format-pdf" style="text-align:left;width:50%;">Select Audit /Dispute</label>
-            <input type="radio" name="group1" checked="checked"
-                   value="PDF"
-                   tabindex="0"
-                   required />
-            <label for="format-pdf" style="text-align:center;">Audit</label>&nbsp;
-            <label>&nbsp;</label>
-            <input type="radio" name="group1"
-                   value="XML"
-                   tabindex="0"
-                   required />
-            <label for="format-xml">Dispute</label>
+        <div class="col"></div>
+        <div class="col">
+            <label for="format-pdf" class="input-group">Total Score (Possible):</label>
+            <input id="txtScorePossible" class="form-control" type="text" value="0" readonly />
         </div>
-    </div>*@
-@*<div tabindex="-1" aria-checked="false" style="text-align:left;">
-        <label for="format-pdf" style="text-align:left;width:50%;">Service Group / Department*</label>
-        <select name="teams" id="CatgID" multiple="multiple" class="form-control" title="select"
-                asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-        </select>
-    </div>
-    <br />
-    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-        <label for="format-pdf" style="text-align:left;width:50%;">Sub Category</label>
-        <select name="teams" id="SubCatID" multiple="multiple" class="form-control"
-                asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-        </select>
-    </div>
-    <br />
-
-    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-        <label for="format-pdf" style="text-align:left;width:50%;">Assigned To</label>
-        <select name="teams" id="ListOfMembers" multiple="multiple" class="form-control"
-                asp-items="@(new SelectList(@ViewBag.ListOfMembers, "memberID", "membername"))">
-        </select>
-    </div>
-    <br />
-
-    <div aria-checked="false" style="text-align:left;width:100%;">
-        <label for="format-pdf" style="text-align:left;width:50%;">Start Date</label>
-        <input type="text" data-provide="datepicker">
-    </div>
-    <br />
-
-    <div aria-checked="false" style="text-align:left;width:100%;">
-        <label for="format-pdf" style="text-align:left;width:50%;">To Date</label>
-        <input type="text" data-provide="datepicker">
-    </div>
-    <br />
-
-    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-        <label for="format-pdf" style="text-align:left;width:50%;">Ticket Status</label>
-        <select name="teams" id="StatusList" multiple="multiple" class="form-control"
-                asp-items="@(new SelectList(@ViewBag.StatusList, "StatusID", "Statusname"))">
-            >
-        </select>
-    </div>*@
-@*<br />
-
-    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-        <label for="format-pdf" style="text-align:left;width:50%;">Ticket Numbers</label>
-        <select name="teams" id="ListOfTicket" multiple="multiple" class="form-control"
-                asp-items="@(new SelectList(@ViewBag.ListOfTicket, "TicketID", "Ticket"))">
-        </select>
-    </div>*@
-<br />
-@*<div class="input-group" style="width:100%;">
-        <div tabindex="-1" aria-checked="false" style="text-align:center;width:100%;">
-            <button asp-controller="Search" asp-action="Details" class="btn btn-primary">
-                Search
-            </button>
-            &nbsp;
-            <button asp-controller="Search" asp-action="Index" class="btn btn-danger">
-                Clear
-            </button>
+        <div class="col"></div>
+        <div class="col">
+            <label for="format-pdf" class="input-group">Total Score (Percent):</label>
+            <input id="txtScorePercent" class="form-control" type="text" value="0.00%" readonly />
         </div>
-    </div>*@
-@*</form>*@
-@*</div>*@
-
-
-
-
-
-
+    </div>
+</div>
+<div class="form-group">
+    <label for="auditnotes" class="text-primary">Audit Notes:</label>
+    <textarea class="form-control" rows="4" id="auditnotes"></textarea>
+</div>
+<div class="row">
+    <div class="col">
+        <button id="btnAnswerNo" class="btn btn-primary">
+            Return to Toolbox (Will NOT Submit Audit)
+        </button>
+    </div>
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col">
+        <button id="btnAnswerYes" class="btn btn-success">
+            Submit Audit
+        </button>
+    </div>
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col"></div>
+    <div class="col">
+        <button id="btnAnswerReset" class="btn btn-danger">
+            Exit
+        </button>
+    </div>
+</div>
+<div class="row"><hr /></div>
+</div>
 @section Scripts
     {
     <!-- Script for the date range picker -->
@@ -283,14 +293,7 @@
     <!-- Script for the date range picker -->
     <script type="text/javascript">
         $(document).ready(function () {
-            var dateStart = new Date();
-            dateStart.setDate(dateStart.getDate() - 30);
-            $("#startdate").val($.datepicker.formatDate("dd-mm-yy", dateStart));
-
-            var dateEnd = new Date();
-            dateEnd.setDate(dateEnd.getDate() - 1);
-            $("#enddate").val($.datepicker.formatDate("dd-mm-yy", dateEnd));
-
+            $('.datepicker').datepicker();
             $("#CatgID").change(function () {
                 var categoryID = $('#CatgID').val();
                 $.ajax({
@@ -319,20 +322,37 @@
         });
 
         $(function () {
-            $('input[name="startdate"]').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10),
-                defaultdate: new Date() + 1
-            });
-
-            $('input[name="denddate"]').daterangepicker({
+            $('input[name="dtstartdate"]').daterangepicker({
                 singleDatePicker: true,
                 showDropdowns: true,
                 minYear: 1901,
                 maxYear: parseInt(moment().format('YYYY'), 10)
             });
+            $('input[name="dtenddate"]').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                minYear: 1901,
+                maxYear: parseInt(moment().format('YYYY'), 10)
+            });
+        });
+        $("#btnaddCategory").click(function () {
+
+            var subCategoryName = $('#txtcategory').val(); // + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val();
+            $.ajax({
+                type: "POST",
+                url: "/category/Insert",
+                data: { "subcatgname": subCategoryName },
+                success: function (response) {
+                    $("#popupcontent").dialog('close');
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
         });
     </script>
 }
@@ -374,7 +394,7 @@
     }
 
     form {
-        min-width: 100%;
+        max-width: 500px;
         margin: auto;
     }
 
@@ -495,6 +515,7 @@
         color: #fff;
     }
 </style>
+
 @*<form asp-controller="Home" asp-action="Index" method="post" role="form">
         <main class="container neu-margin--top-20">
             <fieldset>

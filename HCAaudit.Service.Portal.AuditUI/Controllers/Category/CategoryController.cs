@@ -147,7 +147,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 //Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    customerData = customerData.Where(m => m.CatgDescription.StartsWith(searchValue));
+                    customerData = customerData.Where(m => m.CatgDescription.ToLower().StartsWith(searchValue.ToLower()));
                 }
 
                 //total number of rows counts   

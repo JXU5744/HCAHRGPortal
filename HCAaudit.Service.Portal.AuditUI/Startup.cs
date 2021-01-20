@@ -182,7 +182,7 @@ namespace HCAaudit.Service.Portal.AuditUI
             {
                 endpoint.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=login}/{action=Index}/{id?}");
+                    pattern: "{controller=Search}/{action=Index}/{id?}");
             });
         }
 

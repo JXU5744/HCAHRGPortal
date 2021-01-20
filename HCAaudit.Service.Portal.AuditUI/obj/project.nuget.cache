@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EB75Ip2GWMGZuypwM3IotDzZdq6ZjPx4Mg3JJp7j6tXZ6YdRZD54CIDp1EkG2oGIgAZ2lzY/jDs+l5z5xnoDwA==",
+  "dgSpecHash": "FzLZ67V1NbFBX9eRCMOGF+7IaBx/MGA/I4a5+3FdYrRz9ItqxIyyfP89U9P5mJe050nTf1VTYcSloovBnbEhtw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\RHI5800\\Documents\\HRAauditToolUI\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
+  "projectFilePath": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\RHI5800\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\RHI5800\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\3.1.8\\microsoft.aspnetcore.authentication.openidconnect.3.1.8.nupkg.sha512",
