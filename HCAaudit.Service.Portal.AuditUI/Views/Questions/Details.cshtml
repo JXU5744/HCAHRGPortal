@@ -46,6 +46,7 @@
         <div class="col-sm-7">
             <input id="txtQuestion" class="form-control form-control-sm"
                    type="text" />
+            <span id="errormsg" style="color:red">Please choose Question</span>
         </div>
         <div class="col-sm-3"></div>
     </div>
@@ -139,9 +140,12 @@
         $("#popupcontent").dialog('open');
     });
 
+    $("#errormsg").hide();
+
     $("#btnaddQuestion").click(function () {
 
         var questionName = $('#txtQuestion').val();
+        if (questionName == "") { $("#errormsg").show(); return false;}
         $.ajax({
             type: "POST",
             url: "/Questions/Insert",

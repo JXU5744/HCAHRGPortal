@@ -47,6 +47,7 @@
         <div class="col-sm-6">
             <input id="txtcategory" class="form-control form-control-sm"
                    type="text" />
+            <span id="errormsg" style="color:red">Please enter Category</span>
         </div>
         <div class="col-sm-4"></div>
     </div>
@@ -115,36 +116,49 @@
         });
     });
 
-    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 160, width: 650 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
     $("#btnopenPopUp").click(function () {
         $("#popupcontent").dialog('open');
     });
 
+    $('#txtcategory').on('keypress', function (event) {
+        $('#errormsg').hide();
+        var regex = new RegExp("^[a-zA-Z]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#errormsg').hide();
     $("#btnaddCategory").click(function () {
 
-        var CategoryName = $('#txtcategory').val(); // + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val();
-        $.ajax({
-            type: "GET",
-            url: "/category/Insert",
-            data: { "CategoryName": CategoryName },
-            success: function (response) {
-                if (response == "1") {
-                    alert("Record already exists!");
+        var CategoryName = $('#txtcategory').val(); 
+        if (CategoryName == "") { $('#errormsg').show(); }
+        else {
+            $.ajax({
+                type: "GET",
+                url: "/category/Insert",
+                data: { "CategoryName": CategoryName },
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Record already exists!");
+                    }
+                    else {
+                        $("#popupcontent").dialog('close');
+                        $('#txtcategory').val("");
+                        location.reload();
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
                 }
-                else {
-                    $("#popupcontent").dialog('close');
-                    $('#txtcategory').val("");
-                    location.reload();
-                }
-            },
-            failure: function (response) {
-                alert(response.responseText);
-            },
-            error: function (response) {
-                alert(response.responseText);
-            }
-        });
+            });
+        }
 
     });
 

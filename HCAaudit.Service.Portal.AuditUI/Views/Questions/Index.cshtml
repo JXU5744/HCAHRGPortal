@@ -71,7 +71,7 @@
         <div class="col-sm-2"> <label class="input-group">Question Volume:</label></div>
         <div class="col-sm-3">
             <input id="txtquestionvolumn" class="form-control form-control-sm"
-                   type="text" /><span id="errmsg"></span>
+                   type="text" /><span id="errormsg" style="color:red"></span>
         </div>
         <div class="col-sm-7"></div>
     </div>
@@ -81,6 +81,7 @@
         <div class="col-sm-9">
             <input id="txtquestion" class="form-control form-control-sm"
                    type="text" />
+            <span id="errormsgquestion" style="color:red">Select Appropiate Question</span>
         </div>
         <div class="col-sm-1"></div>
     </div>
@@ -104,21 +105,29 @@
                     autoOpen: false
                 });
 
-                $("#btnopenPopUp").click(function () {
-                    var subCategoryID = $("#SubCatID option:selected").text();
-                    var categoryID = $("#CatgID option:selected").text();
-                    $('#txtcategory').val(categoryID);
-                    $('#txtsubcategory').val(subCategoryID);
-                    $("#popupcontent").dialog({
-                        position: 'bottom'
-                    });
+                //$("#btnopenPopUp").click(function () {
+                //    var subCategoryID = $("#SubCatID option:selected").text();
+                //    var categoryID = $("#CatgID option:selected").text();
+                //    $('#txtcategory').val(categoryID);
+                //    $('#txtsubcategory').val(subCategoryID);
+                //    $("#popupcontent").dialog({
+                //        position: 'bottom'
+                //    });
 
-                    $("#popupcontent").dialog('open');
-                });
+                //    $("#popupcontent").dialog('open');
+                //});
             });
 
             $("#btnopenPopUp").click(function () {
                 var subCategoryID = $('#SubCatID').val();
+                var categoryID = $("#CatgID option:selected").text();
+                $('#txtcategory').val(categoryID);
+                $('#txtsubcategory').val(subCategoryID);
+                $("#popupcontent").dialog({
+                    position: 'bottom'
+                });
+
+                $("#popupcontent").dialog('open');
                 $.ajax({
                     type: "POST",
                     url: "/Questions/GetIndexCommaSeperated",
@@ -145,16 +154,21 @@
             });
 
             $("#btnopenPopUp").hide();
+            $('#errormsg').hide();
+            $('#errormsgquestion').hide();
 
             $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 400, width: 950 });
 
             $("#btnaddQuestion").click(function () {
-                if ($('#txtquestion').val() == "") {
-                    alert("Please enter Question Name field"); return false;
-                }
+
                 if ($("#txtquestionvolumn").val() == "") {
-                    alert("Please enter Question Volume field"); return false;
+                    $('#errormsg').text("Enter Volume(%)"); $('#errormsg').show(); return false;
                 }
+
+                if ($('#txtquestion').val() == "") {
+                    $('#errormsgquestion').show(); return false;
+                }
+               
                 var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val();
                 $.ajax({
                     type: "POST",
@@ -208,9 +222,9 @@
                 //if the letter is not digit then display error and don't type anything
                 if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
                     //display error message
-                    $("#errmsg").html("Digits Only").show().fadeOut("slow");
+                    $('#errormsg').html("Digits Only").show().fadeOut("slow");
                     return false;
-                }
+                } else { $("#errormsg").hide(); }
             });
 
             $("#SubCatID").change(function () {
