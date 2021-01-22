@@ -21,12 +21,12 @@
         <table id="example" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>TicketNumber</th>
-                    <th>CreatedDate</th>
+                    <th>Ticket Number</th>
+                    <th>Created Date</th>
                     <th>Status</th>
                     <th>Subject</th>
-                    <th>ServiceGroup</th>
-                    <th>AssignedTo</th>
+                    <th>Service Group</th>
+                    <th>Assigned To</th>
                 </tr>
             </thead>
         </table>
@@ -51,7 +51,7 @@
             }],
             "columns": [
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/search/Navigate/' + full.TicketNumber + '">' + full.TicketNumber + '</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="https://www.google.com" target="_blank">' + full.TicketNumber + '</a>'; }
                 },
                 { "data": "CreatedDate", "name": "CreatedDate", "autoWidth": true },
                 { "data": "Subject", "name": "Subject", "autoWidth": true },
