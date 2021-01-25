@@ -9093,19 +9093,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\RHI5800\\.nuget\\packages\\": {}
+    "C:\\Users\\QYE5582\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
+      "projectUniqueName": "C:\\HCA Project\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
       "projectName": "HCAaudit.Service.Portal.AuditUI",
-      "projectPath": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
-      "packagesPath": "C:\\Users\\RHI5800\\.nuget\\packages\\",
-      "outputPath": "C:\\HCAProject\\HRAudit\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\obj\\",
+      "projectPath": "C:\\HCA Project\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\HCAaudit.Service.Portal.AuditUI.csproj",
+      "packagesPath": "C:\\Users\\QYE5582\\.nuget\\packages\\",
+      "outputPath": "C:\\HCA Project\\HCAHRGPortal\\HCAaudit.Service.Portal.AuditUI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\RHI5800\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\QYE5582\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -9192,6 +9192,16 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[3.1.10, 3.1.10]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[3.1.10, 3.1.10]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
