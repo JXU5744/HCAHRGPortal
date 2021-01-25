@@ -33,6 +33,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             config = configuration;
         }
 
+        public JsonResult GetCommaSeperated()
+        {
+            return Json(_auditToolContext.hrocAuditors.Select(a => a.Agent34ID));
+        }
+
         [HttpGet]
         public IActionResult Details()
         {

@@ -65,104 +65,116 @@
                 <h3 align="center">Search Tickets For Audit/Dispute</h3>
             </div>
         </div>
-        <br />
         <div class="row">
-            <div class="col-4">
-                <label style="padding-left:25px" class="text-success">Environment</label>
-                <label>&nbsp;&nbsp;</label>
-                <input type="radio" name="group2" checked="checked"
-                       value="PDF"
-                       tabindex="0"
-                       required class="radio-success" />
-                <label class="text-success">Production</label>
-                <label>&nbsp;</label>
-                <input type="radio" name="group2"
-                       value="XML"
-                       tabindex="0"
-                       required />
-                <label class="text-primary">Training</label>
+            <div class="col-2" style="padding-left:50px">
+                <span id="errormsgforcategory" style="color:red"></span>
+                <span id="errormsgforsubcategory" style="color:red"></span>
+                <span id="errormsgforstatus" style="color:red"></span>
             </div>
-            <div class="col-4">
-                <div class="cols" tabindex="-1">
-                    <label  class="text-primary">Select Audit /Dispute</label>
+                <div class="col-10">
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-4">
+                    <label style="padding-left:25px" class="text-success">Environment</label>
                     <label>&nbsp;&nbsp;</label>
-                    <input type="radio" name="group1" checked="checked"
+                    <input type="radio" name="group2" checked="checked"
                            value="PDF"
                            tabindex="0"
                            required class="radio-success" />
-                    <label class="text-primary">Audit</label>&nbsp;
+                    <label class="text-success">Production</label>
                     <label>&nbsp;</label>
-                    <input type="radio" name="group1"
+                    <input type="radio" name="group2"
                            value="XML"
                            tabindex="0"
-                           required class="radio-success" />
-                    <label class="text-danger">Dispute</label>
+                           required />
+                    <label class="text-primary">Training</label>
+                </div>
+                <div class="col-4">
+                    <div class="cols" tabindex="-1">
+                        <label class="text-primary">Select Audit /Dispute</label>
+                        <label>&nbsp;&nbsp;</label>
+                        <input type="radio" name="group1" checked="checked"
+                               value="PDF"
+                               tabindex="0"
+                               required class="radio-success" />
+                        <label class="text-primary">Audit</label>&nbsp;
+                        <label>&nbsp;</label>
+                        <input type="radio" name="group1"
+                               value="XML"
+                               tabindex="0"
+                               required class="radio-success" />
+                        <label class="text-danger">Dispute</label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                        <label for="format-pdf" style="text-align:left;width:30%;">Service Delivery Group</label>
+                        <select name="teams" id="CatgID" class="form-control" style="width:50%" title="select"
+                                asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
+                        </select>
+
+                    </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                    <label for="format-pdf" style="text-align:left;width:30%;">Service Delivery Group</label>
-                    <select name="teams" id="CatgID" class="form-control" style="width:50%" title="select"
-                            asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-                    </select>
+            <br />
+            <div class="row">
+                <div class="col-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                        <label for="format-pdf" style="text-align:left;width:25%;padding-left:25px">Sub Category</label>
+                        <select name="teams" id="SubCatID" class="form-control">
+                            <option value="0">Select SubCategory</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                        <label for="format-pdf" style="text-align:center;width:25%;">Assigned To</label>
+                        <input type="text" id="txtassignedto">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                        <label for="format-pdf" style="text-align:left;width:30%;">Ticket Status</label>
+                        <select name="teams" id="StatusList" style="width:50%" class="form-control">
+                            <option value="0">Select Status</option>
+                            <option value="1">Active</option>
+                            <option value="2">Inactive</option>
+                            <option value="3">outdated</option>
+                        </select>
+
+                    </div>
                 </div>
             </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                    <label for="format-pdf" style="text-align:left;width:25%;padding-left:25px">Sub Category</label>
-                    <select name="teams" id="SubCatID" class="form-control">
-                        <option value="0">Select SubCategory</option> 
-                    </select>
+            <br />
+            <div class="row">
+                <div class="col-4">
+                    <div aria-checked="false" style="text-align:left;width:100%;">
+                        <label style="text-align:left;width:25%;padding-left:25px">Start Date</label>
+                        <input class="form-control" id="startdate" type="text" data-provide="datepicker">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div aria-checked="false" style="text-align:left;width:100%;">
+                        <label style="text-align:center;width:25%;">To Date</label>
+                        <input class="form-control" id="enddate" type="text" data-provide="datepicker">
+                    </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                    <label for="format-pdf" style="text-align:center;width:25%;">Assigned To</label>
-                    <input type="text" id="txtassignedto">
+            <br />
+            <div class="row" style="text-align:center;width:100%;">
+                <div class="col-12">
+                    <button asp-controller="Search" id="btnsearch" asp-action="Details" class="btn btn-primary">
+                        Search
+                    </button>
+                    <button asp-controller="Search" id="btncancel" asp-action="Index" class="btn btn-danger">
+                        Clear
+                    </button>
                 </div>
             </div>
-            <div class="col-4">
-                <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                    <label for="format-pdf" style="text-align:left;width:30%;">Ticket Status</label>
-                    <select name="teams" id="StatusList" style="width:50%" class="form-control">
-                        <option value="0">Select Status</option>
-                        <option value="1">Active</option>
-                        <option value="2">Inactive</option>
-                        <option value="3">outdated</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-4">
-                <div aria-checked="false" style="text-align:left;width:100%;">
-                    <label style="text-align:left;width:25%;padding-left:25px">Start Date</label>
-                    <input class="form-control" id="startdate" type="text" data-provide="datepicker">
-                </div>
-            </div>
-            <div class="col-4">
-                <div aria-checked="false" style="text-align:left;width:100%;">
-                    <label style="text-align:center;width:25%;">To Date</label>
-                    <input class="form-control" id="enddate" type="text" data-provide="datepicker">
-                </div>
-            </div>
-        </div>
-        <br />
-        <div class="row" style="text-align:center;width:100%;">
-            <div class="col-12">
-                <button asp-controller="Search" id="btnsearch" asp-action="Details" class="btn btn-primary">
-                    Search
-                </button>
-                <button asp-controller="Search" id="btncancel" asp-action="Index" class="btn btn-danger">
-                    Clear
-                </button>
-            </div>
-        </div>
-    </form>
+</form>
 </div>
 
 <div id="popupcontent" title="Mandate Fields" hidden="hidden" class="container">
@@ -222,24 +234,24 @@
             });
 
             $("#btnsearch").click(function () {
-                $("#popupcontent").dialog({
-                    position: 'bottom'
-                });
+                $("#errormsgforcategory").text("");
+                $("#errormsgforsubcategory").text("");
+                $("#errormsgforstatus").text("");
                 var categoryID = $("#CatgID").val();
                 var subcategoryID = $("#SubCatID").val();
                 var statusid = $("#StatusList").val();
 
                 if (categoryID == "0") {
-                    $("#errormsg").append("Select Category<br/>");
+                    $("#errormsgforcategory").append("Select Category<br/>");
                 }
                 if (subcategoryID == "0") {
-                    $("#errormsg").append("Select SubCategory<br/>");
+                    $("#errormsgforsubcategory").append("Select SubCategory<br/>");
                 }
                 if (statusid == "0") {
-                    $("#errormsg").append("Select Status<br/>");
+                    $("#errormsgforstatus").append("Select Status<br/>");
                 }
-                if ($("#errormsg").text() != "") {
-                   // $("#popupcontent").dialog('open'); return false;
+                if ($("#errormsgforcategory").text() != "" || $("#errormsgforsubcategory").text() != "" || $("#errormsgforstatus").text() != "") {
+                    return false;   
                 }
             });
 
