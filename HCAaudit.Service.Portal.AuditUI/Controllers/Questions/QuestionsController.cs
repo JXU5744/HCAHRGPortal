@@ -226,6 +226,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                 }
 
+                //Search  
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    customerData = customerData.Where(m => m.QuestionName.ToLower().StartsWith(searchValue.ToLower()));
+                }
                 //total number of rows counts   
                 recordsTotal = customerData.Count();
                 //Paging   

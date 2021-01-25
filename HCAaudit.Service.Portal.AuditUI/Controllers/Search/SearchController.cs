@@ -33,6 +33,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             config = configuration;
         }
 
+        public JsonResult GetCommaSeperated()
+        {
+            return Json(_auditToolContext.hrocAuditors.Select(a => a.Agent34ID));
+        }
+
         [HttpGet]
         public IActionResult Details()
         {
@@ -129,7 +134,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             var categoryList = GetCategoryDetails();
             _logger.LogInformation($"No of records: {categoryList.Count()}");
-            //categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
+            categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
             ViewBag.ListOfCategory = categoryList;
 
             var ticketList = Tickets.GetTickets();

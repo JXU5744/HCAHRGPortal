@@ -22,7 +22,7 @@
         <div class="col-sm-3"></div>
         <div class="col-sm-3"></div>
         <div class="col-sm-3"></div>
-        <div class="col-sm-3"><button type="button" id="btnopenPopUp" class="btn btn-primary">Add Category</button> </div>
+        <div class="col-sm-3"><button type="button" id="btnopenPopUp" class="btn btn-primary">Add Service Delivery Group</button> </div>
     </div>
 
     <br />
@@ -31,7 +31,7 @@
             <thead>
                 <tr>
                     <th>CatgID</th>
-                    <th>Category Name</th>
+                    <th>Service Delivery Group</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -40,25 +40,24 @@
     </div>
 </div>
 
-<div id="popupcontent" title="Add Category" hidden="hidden" class="container">
+<div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Category:</label></div>
+        <div class="col-sm-5"> <label for="format-pdf" class="input-group">Service Delivery Group:</label></div>
         <div class="col-sm-6">
             <input id="txtcategory" class="form-control form-control-sm"
                    type="text" />
+            <span id="errormsg" style="color:red">Please enter Service Delivery Group</span>
         </div>
-        <div class="col-sm-4"></div>
+        <div class="col-sm-1"></div>
     </div>
     <br />  
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-4"></div>
         <div class="col-sm-6">
-            <button id="btncancelpopup" class="btn btn-danger">Cancel</button>&nbsp;
-            <button id="btnaddCategory" class="btn btn-primary">
-                Save Category
-            </button>
+            <button id="btnaddCategory" class="btn btn-primary">Save</button>&nbsp;
+            <button id="btncancelpopup" class="btn btn-danger">Cancel</button>
         </div>
     </div>
 
@@ -115,36 +114,49 @@
         });
     });
 
-    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 160, width: 650 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
     $("#btnopenPopUp").click(function () {
         $("#popupcontent").dialog('open');
     });
 
+    $('#txtcategory').on('keypress', function (event) {
+        $('#errormsg').hide();
+        var regex = new RegExp("^[a-zA-Z]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#errormsg').hide();
     $("#btnaddCategory").click(function () {
 
-        var CategoryName = $('#txtcategory').val(); // + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val();
-        $.ajax({
-            type: "GET",
-            url: "/category/Insert",
-            data: { "CategoryName": CategoryName },
-            success: function (response) {
-                if (response == "1") {
-                    alert("Record already exists!");
+        var CategoryName = $('#txtcategory').val(); 
+        if (CategoryName == "") { $('#errormsg').show(); }
+        else {
+            $.ajax({
+                type: "GET",
+                url: "/category/Insert",
+                data: { "CategoryName": CategoryName },
+                success: function (response) {
+                    if (response == "1") {
+                        alert("Record already exists!");
+                    }
+                    else {
+                        $("#popupcontent").dialog('close');
+                        $('#txtcategory').val("");
+                        location.reload();
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
                 }
-                else {
-                    $("#popupcontent").dialog('close');
-                    $('#txtcategory').val("");
-                    location.reload();
-                }
-            },
-            failure: function (response) {
-                alert(response.responseText);
-            },
-            error: function (response) {
-                alert(response.responseText);
-            }
-        });
+            });
+        }
 
     });
 

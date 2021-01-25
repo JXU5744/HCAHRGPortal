@@ -22,11 +22,10 @@
                 <tr>
                     <th>Employee 3-4 ID</th>
                     <th>Employee Full Name</th>
-                    <!--<th>Employee Num</th>-->
-                    <th>Job Cd Desc</th>
+                    <th>Job Code Desc</th>
                     <th>Position Desc</th>
                     <th>Employee Status Desc</th>
-                    <th>StatusUpdate</th>
+                    <th>Change Status</th>
                 </tr>
             </thead>
         </table>
@@ -57,7 +56,7 @@
                 { "data": "PositionDesc", "name": "PositionDesc", "autowidth": true },
                 { "data": "EmployeeStatusDesc", "name": "EmployeeStatusDesc", "autowidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/hrroster/statusupdate/' + full.EmployeethreefourID + '">change status</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/hrroster/statusupdate/' + full.EmployeethreefourID + '">Update Status</a>'; }
                 },
             ]
         });
