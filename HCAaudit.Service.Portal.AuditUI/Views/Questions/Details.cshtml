@@ -64,6 +64,30 @@
 
 </div>
 
+<div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Question:</label></div>
+        <div class="col-sm-7">
+            <input id="txtQuestionedit" class="form-control form-control-sm"
+                   type="text" />
+            <span id="errormsgedit" style="color:red">Please Enter Question</span>
+        </div>
+        <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-3">
+
+        </div>
+        <div class="col-sm-5">
+            <button id="btnupdateQuestion" class="btn btn-primary">Update</button>&nbsp;
+            <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+
+</div>
 
 <script>
 
@@ -87,7 +111,7 @@
                 { "data": "QuestionID", "name": "QuestionID", "autoWidth": true },
                 { "data": "QuestionName", "name": "QuestionName", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionID + '">Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="#" onclick=OpenEditpopup(' + full.QuestionID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
@@ -105,6 +129,10 @@
             autoOpen: false
         });
 
+        $("#popupcontentedit").dialog({
+            autoOpen: false
+        });
+
         $("#btnopenPopUp").click(function () {
             $("#popupcontent").dialog({
                 position: 'bottom'
@@ -114,8 +142,14 @@
 
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 420, width: 1000 });
 
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 420, width: 1000 });
+
     $("#btncancelpopup").click(function () {
         $("#popupcontent").dialog('close');
+    });
+
+    $("#btncancelpopupedit").click(function () {
+        $("#popupcontentedit").dialog('close');
     });
 
     $("#btnopenPopUp").click(function () {
@@ -140,10 +174,97 @@
         $("#popupcontent").dialog('open');
     });
 
+    $("#txtQuestionedit").keyup(function () {
+        if (!this.value) {
+
+            $.ajax({
+                type: "POST",
+                url: "/Questions/GetCommaSeperated",
+                data: null,
+                success: function (response) {
+                    $("#txtQuestionedit").autocomplete({
+                        source: response
+                    });
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+            $("#errormsgedit").show();
+        }
+        else {
+            $("#errormsgedit").hide();
+        }
+    });
+
     $("#errormsg").hide();
 
     $('#txtQuestion').on('keypress', function (event) {
         $('#errormsg').hide();
+    });
+
+    $('#txtQuestionedit').on('keypress', function (event) {
+        $('#errormsgedit').hide();
+    });
+
+    $('#errormsgedit').hide();
+
+    $("#popupcontentedit").dialog({
+        position: 'bottom'
+    });
+
+    function OpenEditpopup(CatgID) {
+
+        $("#popupcontentedit").dialog('open');
+        $("#hdnid").val(""); $("#hdnid").val(CatgID);
+        $.ajax({
+            type: "POST",
+            url: "/questions/GetQuestionByid",
+            data: { "id": CatgID },
+            success: function (response) {
+                if (response != null && response != "") {
+                    $("#txtQuestionedit").val(response.QuestionName);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
+
+    $("#btnupdateQuestion").click(function () {
+        if ($('#txtQuestionedit').val() == "") {
+            $('#errormsgedit').show();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/questions/Edit",
+            data: { "id": $('#hdnid').val() + "$" + $('#txtQuestionedit').val() },
+            success: function (response) {
+                if (response == "1") {
+                    alert("Record already exists!");
+                }
+                else {
+                    $("#popupcontentedit").dialog('close');
+                    $('#txtQuestionedit').val("");
+                    location.reload();
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
     });
 
     $("#btnaddQuestion").click(function () {

@@ -9,7 +9,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         public DbSet<Categorys> categories { get; set; }
         public DbSet<SubCategory> subCategories { get; set; }
-        public DbSet<tbQuestionMaster> questionMasters { get; set; }
+        public DbSet<QuestionMaster> questionMasters { get; set; }
         public DbSet<clstbHROCRoster> hrocMaster { get; set; }
 
         public DbSet<tblQuestionBank> questionBank { get; set; }

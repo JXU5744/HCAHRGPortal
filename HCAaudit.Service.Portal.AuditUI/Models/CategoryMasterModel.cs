@@ -184,21 +184,22 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         //public List<QuestionMaster> _questionList { get; set; }
     }
 
-    public class QuestionMaster
-    {
+    //public class QuestionMaster
+    //{
         
-       // public string QuestionId { get; set; }
-       // public int SubCatgID { get; set; }
-       // public int CatgID { get; set; }
+    //   // public string QuestionId { get; set; }
+    //   // public int SubCatgID { get; set; }
+    //   // public int CatgID { get; set; }
         
-        public List<tbQuestionMaster> _questionMasterList { get; set; }
-    }
+    //    public List<tbQuestionMaster> _questionMasterList { get; set; }
+    //}
 
-    [Table("tbQuestionMaster")]
-    public class tbQuestionMaster 
+    [Table("QuestionMaster")]
+    public class QuestionMaster
     {
         [Key]
         public int QuestionId { get; set; }
+        public int SeqNumber { get; set; }
         public int SubCatgID { get; set; }
         public string QuestionText { get; set; }
         public int QuestionScore { get; set; }

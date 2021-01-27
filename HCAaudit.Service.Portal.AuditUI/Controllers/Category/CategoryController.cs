@@ -32,18 +32,42 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             config = configuration;
       //      _authService = authService;
         }
-       
-        [HttpGet]
-        public ViewResult Edit(int id)
+
+        [HttpPost]
+        public ActionResult GetCategoryByid(string id)
+        {
+            object response = "";
+            if (string.IsNullOrEmpty(id))
+            {
+                return Json(response);
+            }
+            return Json(GetSingleCategoryByid(id));
+        }
+        Categorys GetSingleCategoryByid(string id)
         {
             var data = (from cat in _auditToolContext.categories select cat).ToList();
-            Categorys objCategorys = data.Find(category => category.CatgID == id);
-            Category objCategory = new Category();
-            objCategory.CatgID = objCategorys.CatgID;
-            objCategory.CatgDescription = objCategorys.CatgDescription;
-            return View("Edit", objCategory);
+            Categorys objCategorys = data.Find(category => category.CatgID == Convert.ToInt32(id));
+            return objCategorys;
         }
-
+        [HttpPost]
+        public ActionResult Edit(string id)
+        {
+            object resp = "";
+            if (!string.IsNullOrEmpty(id))
+            {
+                string[] param = id.Split('$');
+                if (param.Count() > 0)
+                {
+                    Categorys objCategorys = new Categorys();
+                    objCategorys.CatgID = Convert.ToInt32(param[0]);
+                    objCategorys.CatgDescription = param[1];
+                    _auditToolContext.categories.Update(objCategorys);
+                    _auditToolContext.SaveChanges();
+                    return Json(objCategorys);
+                }
+            }
+            return Json(resp);
+        }
         [HttpGet]
         public ActionResult Insert(string CategoryName)
         {
