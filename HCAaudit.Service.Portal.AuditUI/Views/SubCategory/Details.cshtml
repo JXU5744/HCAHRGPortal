@@ -56,13 +56,31 @@
         </div>
         <div class="col-sm-1"></div>
     </div>
-    <br/>
+    <br />
     <div class="row">
         <div class="col-sm-4"></div>
         <div class="col-sm-2"></div>
         <div class="col-sm-6">
             <button id="btnaddSubCategory" class="btn btn-primary"> Save</button>&nbsp;
             <button id="btncancelpopup" class="btn btn-danger">Cancel</button>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-12">"Are you sure you want to delete ...?"</div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
+        <div class="col-sm-2"></div>
+        <div class="col-sm-6">
+            <button id="btnSubCatdelete" class="btn btn-primary"> Yes</button>&nbsp;
+            <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
 
         </div>
     </div>
@@ -109,6 +127,12 @@
             autoOpen: false
         });
 
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontent").dialog({
+                position: 'bottom'
+            });
+        });
+
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
         });
@@ -120,7 +144,7 @@
                 url: "/SubCategory/GetCategory",
                 data: null,
                 success: function (response) {
-                    $('#ddlcategory').html(''); 
+                    $('#ddlcategory').html('');
                     var options = '';
                     options += '<option value="0">Select Service Delivery Group</option>';
                     for (var i = 0; i < response.length; i++) {
@@ -136,9 +160,7 @@
                 }
             });
 
-            $("#popupcontent").dialog({
-                position: 'bottom'
-            });
+           
 
             $("#popupcontent").dialog('open');
         });
@@ -165,10 +187,10 @@
 
     $("#btnaddSubCategory").click(function () {
         var catgID = $('#ddlcategory').val();
-        var subCategoryName = $('#txtsubcategory').val(); 
+        var subCategoryName = $('#txtsubcategory').val();
         if (catgID == "0") { $('#errormsgcategory').show(); return false;}
         if (subCategoryName == "") { $('#errormsgsubcategory').show(); return false;}
-        
+
             $.ajax({
                 type: "POST",
                 url: "/subcategory/Insert",
@@ -190,28 +212,46 @@
                     alert(response.responseText);
                 }
             });
-        
+
     });
 
-    function DeleteData(subCatgID) {
-    if (confirm("Are you sure you want to delete ...?")) {
-        Delete(subCatgID);
-    } else {
-        return false;
+
+    $("#popupcontentdelete").dialog({
+        autoOpen: false
+    });
+
+
+    $("#btnsubCatdelete").click(function () {
+        $("#popupcontentdelete").dialog({
+            position: 'bottom'
+        });
+    });
+
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
+
+    $("#btncancelpopupdelete").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
+
+    function DeleteData(CatgID) {
+        $("#popupcontentdelete").dialog('open');
+        $("#hdndeletecatid").val(CatgID);
     }
-}
-
-    function Delete(SubCatgID) {
-    var url = '@Url.Content("~/")' + "subcategory/Delete";
-
-        $.post(url, { ID: SubCatgID }, function(data) {
-        if (data) {
-            oTable = $('#example').DataTable();
-            oTable.draw();
-        } else {
-            alert("Something Went Wrong!");
-        }
+    $("#btncancelpopupdelete").click(function () {
+        $("#popupcontentdelete").dialog('close');
     });
-}
+
+    $("#btnSubCatdelete").click(function () {
+        var url = '@Url.Content("~/")' + "subcategory/Delete";
+        $("#popupcontentdelete").dialog('close');
+        $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    });
 
 </script>

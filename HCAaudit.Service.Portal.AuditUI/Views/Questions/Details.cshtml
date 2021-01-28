@@ -89,6 +89,25 @@
 
 </div>
 
+<div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-12">"Are you sure you want to delete ...?"</div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
+        <div class="col-sm-3">
+
+        </div>
+        <div class="col-sm-5">
+            <button id="btndeleteQuestion" class="btn btn-primary">Yes</button>&nbsp;
+            <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
+        </div>
+    </div>
+
+</div>
+
 <script>
 
     $(document).ready(function() {
@@ -294,25 +313,45 @@
 
     });
 
-    function DeleteData(QuestionID) {
-    if (confirm("Are you sure you want to delete ...?")) {
-        Delete(QuestionID);
-    } else {
-        return false;
-    }
-}
-
-    function Delete(QuestionID) {
-    var url = '@Url.Content("~/")' + "Questions/Delete";
-
-        $.post(url, { ID: QuestionID }, function(data) {
-        if (data) {
-            oTable = $('#example').DataTable();
-            oTable.draw();
-        } else {
-            alert("Something Went Wrong!");
-        }
+    $("#popupcontentdelete").dialog({
+        autoOpen: false
     });
-}
+
+
+    $("#btndeleteQuestion").click(function () {
+        $("#popupcontentdelete").dialog({
+            position: 'bottom'
+        });
+    });
+
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
+
+    $("#btncancelpopup").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
+
+
+    function DeleteData(CatgID) {
+        $("#popupcontentdelete").dialog('open');
+        $("#hdndeletecatid").val(CatgID);
+    }
+
+    $("#btncancelpopupdelete").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
+
+    $("#btndeleteQuestion").click(function () {
+        $("#popupcontentdelete").dialog('close');
+        var url = '@Url.Content("~/")' + "Questions/Delete";
+
+        $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    });
 
 </script>
