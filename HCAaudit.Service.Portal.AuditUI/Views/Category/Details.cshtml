@@ -87,6 +87,25 @@
 
 </div>
 
+<div id="popupcontentdelete" title="Delete confirmation" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            "Are you sure you want to delete ...?"
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2"><input id="hdndeletecatid" type="hidden"/></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btndeleteCategory" class="btn btn-primary">Yes</button>&nbsp;
+            <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
+        </div>
+    </div>
+
+</div>
+
 
 <script>
 
@@ -132,6 +151,14 @@
             autoOpen: false
         });
 
+        $("#popupcontentdelete").dialog({
+            autoOpen: false
+        });
+
+        $("#btncancelpopupdelete").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
         });
@@ -155,6 +182,8 @@
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
+
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
 
     $("#btnopenPopUp").click(function () {
         $("#popupcontent").dialog('open');
@@ -184,7 +213,7 @@
 
     $("#btnaddCategory").click(function () {
 
-        var CategoryName = $('#txtcategory').val(); 
+        var CategoryName = $('#txtcategory').val();
         if (CategoryName == "") { $('#errormsg').show(); }
         else {
             $.ajax({
@@ -214,7 +243,7 @@
 
     $("#btneditCategory").click(function () {
         if ($('#txtcategoryedit').val() == "") {
-            $('#errormsgedit').show(); 
+            $('#errormsgedit').show();
             return false;
         }
         $.ajax({
@@ -269,26 +298,25 @@
     }
 
 
-function DeleteData(CatgID) {
-    if (confirm("Are you sure you want to delete ...?")) {
-        Delete(CatgID);
-    } else {
-        return false;
-    }
+    function DeleteData(CatgID) {
+        $("#popupcontentdelete").dialog('open');
+        $("#hdndeletecatid").val(CatgID);
 }
-
-
-function Delete(CatgID) {
-    var url = '@Url.Content("~/")' + "Category/Delete";
-
-    $.post(url, { ID: CatgID }, function(data) {
-        if (data) {
-            oTable = $('#example').DataTable();
-            oTable.draw();
-        } else {
-            alert("Something Went Wrong!");
-        }
+    $("#btncancelpopupdelete").click(function () {
+        $("#popupcontentdelete").dialog('close');
     });
-}
+
+    $("#btndeleteCategory").click(function () {
+        var url = '@Url.Content("~/")' + "Category/Delete";
+        $("#popupcontentdelete").dialog('close');
+        $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    });
 
 </script>

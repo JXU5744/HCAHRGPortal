@@ -106,275 +106,311 @@
     </div>
 </div>
 
+<div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
+    <div class="row">
+        <div class="col-sm-12">"Are you sure you want to delete ...?"</div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3"><input id="hdndeletecatid" type="hidden" /></div>
+        <div class="col-sm-5"></div>
+        <div class="col-sm-1">
+            <button id="btndeleteQuestion" class="btn btn-primary">Yes</button>&nbsp;
 
+        </div>
+        <div class="col-sm-3">
+            <button id="btncancelpopup" class="btn btn-danger">No</button>
+        </div>
+    </div>
+</div>
 
 <script>
-        $(document).ready(function () {
-            $(function () {
-                $("#popupcontent").dialog({
-                    autoOpen: false
-                });
-
-               
+    $(document).ready(function () {
+        $(function () {
+            $("#popupcontent").dialog({
+                autoOpen: false
             });
 
-            $("#btnopenPopUp").click(function () {
-                var subCategoryID = $("#SubCatID").val(); $("#txtquestion").val("");
-                var subCategoryname = $("#SubCatID option:selected").text();
-                var categoryname = $("#CatgID option:selected").text();
-                $('#txtcategory').val(categoryname);
-                $('#txtsubcategory').val(subCategoryname);
-                $("#popupcontent").dialog({
-                    position: 'bottom'
-                });
-
-                $("#popupcontent").dialog('open');
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Questions/GetIndexCommaSeperated",
-                    data: { "subCategoryID": subCategoryID},
-                    success: function (response) {
-                        $("#txtquestion").autocomplete({
-                            source: response
-                        });
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-
-                $("#popupcontent").dialog('open');
-            });
-
-
-            $("#btncancelpopup").click(function () {
-                $("#popupcontent").dialog('close');
-            });
-
-            $("#btnopenPopUp").hide();
-            $('#errormsg').hide();
-            $('#errormsgquestion').hide();
-
-            $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 400, width: 950 });
-
-            $("#btnaddQuestion").click(function () {
-
-                if ($("#txtquestionvolumn").val() == "") {
-                    $('#errormsg').text("Enter Volume"); $('#errormsg').show(); return false;
-                }
-
-                if ($('#txtquestion').val() == "") {
-                    $('#errormsgquestion').show(); return false;
-                }
-
-                var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val() + "^" + $("#txtquestionseq").val();
-                $.ajax({
-                    type: "POST",
-                    url: "/Questions/SaveQuestionForMaster",
-                    data: { "subcatgid": subCategoryID },
-                    success: function (response) {
-                        if (response == "2") {
-                            alert("Not a valid Question");
-                        }
-                        else {
-                            $("#popupcontent").dialog('close');
-                            //location.reload();
-                            $(function () {
-                                var subCategoryID = $('#SubCatID').val();
-                                $.ajax({
-                                    type: "Get",
-                                    url: "/Questions/BindGrid",
-                                    data: { "subCategoryID": subCategoryID },
-                                    contentType: "application/json; charset=utf-8",
-                                    dataType: "json",
-                                    success: OnSuccess,
-                                    failure: function (response) {
-                                        alert(response.d);
-                                    },
-                                    error: function (response) {
-                                        alert(response.d);
-                                    }
-                                });
-                            });
-                            function OnSuccess(response) {
-                                var records = response.length;
-                                if (records <= 9) {
-                                    $("#btnopenPopUp").show();
-                                    $("#txtquestionseq").val(++records);
-                                } else {
-                                    $("#btnopenPopUp").hide();
-                                }
-
-                                $("#tblquestions").DataTable(
-                                    {
-                                        destroy: true,
-                                        bLengthChange: false,
-                                        lengthMenu: [[5, 10, -1], [5, 10, "All"]],
-                                        bFilter: false,
-                                        bSort: false,
-                                        bPaginate: false,
-                                        data: response,
-                                        columns: [{ 'data': 'QuestionScore' },
-                                        { 'data': 'QuestionText' },
-                                        {
-                                            "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionID + '">Edit</a>'; }
-                                        },
-                                        {
-                                            data: null,
-                                            render: function (data, type, row) {
-                                                return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionID + "'); >Delete</a>";
-                                            }
-                                        },]
-                                    });
-                            };
-                        }
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-
-            });
-
-            $("#CatgID").change(function () {
-                var categoryID = $('#CatgID').val();
-                $.ajax({
-                    type: "POST",
-                    url: "/Questions/BindSubCategory",
-                    data: { "categoryID": categoryID },
-                    success: function (response) {
-                        $('#SubCatID').html(''); //$("#ShowQuestions").hide();
-                        var options = '';
-                        options += '<option value="Select">Select SubCategory</option>';
-                        for (var i = 0; i < response.length; i++) {
-                            options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
-                        }
-                        $('#SubCatID').append(options);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    }
-                });
-
-            });
-
-            $("#txtquestionvolumn").keypress(function (e) {
-                //if the letter is not digit then display error and don't type anything
-                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-                    //display error message
-                    $('#errormsg').html("Digits Only").show().fadeOut("slow");
-                    return false;
-                } else { $("#errormsg").hide(); }
-            });
-
-            $("#txtquestionseq").keypress(function (e) {
-                var data = $("#txtquestionseq").val();
-                alert(data.length);
-                //if the letter is not digit then display error and don't type anything
-                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-                    $('#errormsgqseq').html("Digits Only").show().fadeOut("slow");
-                    return false;
-                }
-                else if (data.length > 0 && (e.which > 48 || e.which < 57)) {
-                    $("#errormsgqseq").html("Seq can'nt exide 10").show().fadeOut("slow");
-                }
-                else {
-                    $("#errormsgqseq").hide();
-                }
-            });
-
-            $("#chkblanksubcat").change(function () {
-                if (this.checked) {
-                    $("#SubCatID").prop("disabled", true);
-                } else {
-                    $("#SubCatID").prop("disabled", false);
-                }
-            });
-            
-            $("#SubCatID").change(function () {
-                $(function () {
-                    //$("$chkblanksubcat").attr('disabled', true);
-                    var subCategoryID = $('#SubCatID').val();
-                    $.ajax({
-                        type: "Get",
-                        url: "/Questions/BindGrid",
-                        data: { "subCategoryID": subCategoryID },
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: OnSuccess,
-                        failure: function (response) {
-                            alert(response.d);
-                        },
-                        error: function (response) {
-                            alert(response.d);
-                        }
-                    });
-                });
-                function OnSuccess(response) {
-                    var records = response.length;
-                    if ( records <= 9) {
-                        $("#btnopenPopUp").show();
-                        $("#txtquestionseq").val(++records);
-                    } else {
-                        $("#btnopenPopUp").hide();
-                    }
-
-                    $("#tblquestions").DataTable(
-                        {
-                            destroy: true,
-                            bLengthChange: false,
-                            lengthMenu: [[5, 10, -1], [5, 10, "All"]],
-                            bFilter: false,
-                            bSort: false,
-                            bPaginate: false,
-                            data: response,
-                            columns: [{ 'data': 'QuestionScore'  },
-                                { 'data': 'QuestionText' },
-                                {
-                                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionID + '">Edit</a>'; }
-                                },
-                                {
-                                    data: null,
-                                    render: function (data, type, row) {
-                                        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionID + "'); >Delete</a>";
-                                    }
-                                },]
-                        });
-                };
-
-            });
-
-                function DeleteData(QuestionID) {
-    if (confirm("Are you sure you want to delete ...?")) {
-        Delete(QuestionID);
-    } else {
-        return false;
-    }
-}
-
-    function Delete(QuestionID) {
-    var url = '@Url.Content("~/")' + "Questions/Delete";
-
-        $.post(url, { ID: QuestionID }, function(data) {
-        if (data) {
-            oTable = $('#example').DataTable();
-            oTable.draw();
-        } else {
-            alert("Something Went Wrong!");
-        }
-    });
-}
 
         });
+
+        $("#btnopenPopUp").click(function () {
+            var subCategoryID = $("#SubCatID").val(); $("#txtquestion").val("");
+            var subCategoryname = $("#SubCatID option:selected").text();
+            var categoryname = $("#CatgID option:selected").text();
+            $('#txtcategory').val(categoryname);
+            $('#txtsubcategory').val(subCategoryname);
+            $("#popupcontent").dialog({
+                position: 'bottom'
+            });
+
+            $("#popupcontent").dialog('open');
+
+            $.ajax({
+                type: "POST",
+                url: "/Questions/GetIndexCommaSeperated",
+                data: { "subCategoryID": subCategoryID },
+                success: function (response) {
+                    $("#txtquestion").autocomplete({
+                        source: response
+                    });
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+            $("#popupcontent").dialog('open');
+        });
+
+
+        $("#btncancelpopup").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+
+        $("#btnopenPopUp").hide();
+        $('#errormsg').hide();
+        $('#errormsgquestion').hide();
+
+        $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 400, width: 950 });
+
+        $("#btnaddQuestion").click(function () {
+
+            if ($("#txtquestionvolumn").val() == "") {
+                $('#errormsg').text("Enter Volume"); $('#errormsg').show(); return false;
+            }
+
+            if ($('#txtquestion').val() == "") {
+                $('#errormsgquestion').show(); return false;
+            }
+
+            var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val() + "^" + $("#txtquestionseq").val();
+            $.ajax({
+                type: "POST",
+                url: "/Questions/SaveQuestionForMaster",
+                data: { "subcatgid": subCategoryID },
+                success: function (response) {
+                    if (response == "2") {
+                        alert("Not a valid Question");
+                    }
+                    else {
+                        $("#popupcontent").dialog('close');
+                        //location.reload();
+                        $(function () {
+                            var subCategoryID = $('#SubCatID').val();
+                            $.ajax({
+                                type: "Get",
+                                url: "/Questions/BindGrid",
+                                data: { "subCategoryID": subCategoryID },
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: OnSuccess,
+                                failure: function (response) {
+                                    alert(response.d);
+                                },
+                                error: function (response) {
+                                    alert(response.d);
+                                }
+                            });
+                        });
+                        function OnSuccess(response) {
+                            var records = response.length;
+                            if (records <= 9) {
+                                $("#btnopenPopUp").show();
+                                $("#txtquestionseq").val(++records);
+                            } else {
+                                $("#btnopenPopUp").hide();
+                            }
+
+                            $("#tblquestions").DataTable(
+                                {
+                                    destroy: true,
+                                    bLengthChange: false,
+                                    lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                                    bFilter: false,
+                                    bSort: false,
+                                    bPaginate: false,
+                                    data: response,
+                                    columns: [{ 'data': 'QuestionScore' },
+                                    { 'data': 'QuestionText' },
+                                    {
+                                        "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionID + '">Edit</a>'; }
+                                    },
+                                    {
+                                        data: null,
+                                        render: function (data, type, row) {
+                                            return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionID + "'); >Delete</a>";
+                                        }
+                                    },]
+                                });
+                        };
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+        });
+
+        $("#CatgID").change(function () {
+            var categoryID = $('#CatgID').val();
+            $.ajax({
+                type: "POST",
+                url: "/Questions/BindSubCategory",
+                data: { "categoryID": categoryID },
+                success: function (response) {
+                    $('#SubCatID').html(''); //$("#ShowQuestions").hide();
+                    var options = '';
+                    options += '<option value="Select">Select SubCategory</option>';
+                    for (var i = 0; i < response.length; i++) {
+                        options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
+                    }
+                    $('#SubCatID').append(options);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+
+        });
+
+        $("#txtquestionvolumn").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                //display error message
+                $('#errormsg').html("Digits Only").show().fadeOut("slow");
+                return false;
+            } else { $("#errormsg").hide(); }
+        });
+
+        $("#txtquestionseq").keypress(function (e) {
+            var data = $("#txtquestionseq").val();
+            alert(data.length);
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                $('#errormsgqseq').html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+            else if (data.length > 0 && (e.which > 48 || e.which < 57)) {
+                $("#errormsgqseq").html("Seq can'nt exide 10").show().fadeOut("slow");
+            }
+            else {
+                $("#errormsgqseq").hide();
+            }
+        });
+
+        $("#chkblanksubcat").change(function () {
+            if (this.checked) {
+                $("#SubCatID").prop("disabled", true);
+            } else {
+                $("#SubCatID").prop("disabled", false);
+            }
+        });
+
+        $("#SubCatID").change(function () {
+            $(function () {
+                //$("$chkblanksubcat").attr('disabled', true);
+                var subCategoryID = $('#SubCatID').val();
+                $.ajax({
+                    type: "Get",
+                    url: "/Questions/BindGrid",
+                    data: { "subCategoryID": subCategoryID },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: OnSuccess,
+                    failure: function (response) {
+                        alert(response.d);
+                    },
+                    error: function (response) {
+                        alert(response.d);
+                    }
+                });
+            });
+            function OnSuccess(response) {
+                var records = response.length;
+                if (records <= 9) {
+                    $("#btnopenPopUp").show();
+                    $("#txtquestionseq").val(++records);
+                } else {
+                    $("#btnopenPopUp").hide();
+                }
+
+                $("#tblquestions").DataTable(
+                    {
+                        destroy: true,
+                        bLengthChange: false,
+                        lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                        bFilter: false,
+                        bSort: false,
+                        bPaginate: false,
+                        data: response,
+                        columns: [{ 'data': 'QuestionScore' },
+                        { 'data': 'QuestionText' },
+                        {
+                            "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionID + '">Edit</a>'; }
+                        },
+                        {
+                            data: null,
+                            render: function (data, type, row) {
+                                return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionID + "'); >Delete</a>";
+                            }
+                        },]
+                    });
+            };
+            function DeleteData(CatgID) {
+                alert(CatgID);
+                $("#popupcontentdelete").dialog('open');
+                $("#hdndeletecatid").val(CatgID);
+            }
+        });
+
+        
+
+        $("#popupcontentdelete").dialog({
+            autoOpen: false
+        });
+
+
+        $("#btndeleteQuestion").click(function () {
+            $("#popupcontentdelete").dialog({
+                position: 'bottom'
+            });
+        });
+
+        $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
+
+        $("#btncancelpopup").click(function () {
+            $("#popupcontentdelete").dialog('close');
+        });
+
+      
+        $("#btncancelpopup").click(function () {
+            $("#popupcontentdelete").dialog('close');
+        });
+
+        $("#btndeleteCategory").click(function () {
+            var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
+            $("#popupcontentdelete").dialog('close');
+            $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+                if (data) {
+                    oTable = $('#example').DataTable();
+                    oTable.draw();
+                } else {
+                    alert("Something Went Wrong!");
+                }
+            });
+        });
+
+    });
 </script>
 
