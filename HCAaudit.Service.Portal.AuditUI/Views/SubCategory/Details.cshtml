@@ -109,10 +109,17 @@
             autoOpen: false
         });
 
+        
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontent").dialog({
+                position: 'bottom'
+            });
+        });
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
         });
-
+    });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
         $("#btnopenPopUp").click(function () {
 
             $.ajax({
@@ -127,6 +134,7 @@
                         options += '<option value="' + response[i].CatgID + '">' + response[i].CatgDescription + '</option>';
                     }
                     $('#ddlcategory').append(options);
+                    $("#popupcontent").dialog('open');
                 },
                 failure: function (response) {
                     alert(response.responseText);
@@ -136,15 +144,10 @@
                 }
             });
 
-            $("#popupcontent").dialog({
-                position: 'bottom'
-            });
-
-            $("#popupcontent").dialog('open');
         });
-    });
-
+   
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
+    
 
     $('#txtsubcategory').on('keypress', function (event) {
         $('#errormsgsubcategory').hide();
