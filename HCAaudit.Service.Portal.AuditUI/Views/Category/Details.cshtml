@@ -43,7 +43,7 @@
 <div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-5"> <label for="format-pdf" class="input-group">Service Delivery Group:</label></div>
+        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Service Delivery Group:</label></div>
         <div class="col-sm-6">
             <input id="txtcategory" class="form-control form-control-sm"
                    type="text" />
@@ -62,6 +62,50 @@
     </div>
 
 </div>
+
+<div id="popupcontentedit" title="Edit Category" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Service Delivery Group::</label></div>
+        <div class="col-sm-6">
+            <input id="txtcategoryedit" class="form-control form-control-sm"
+                   type="text" />
+            <span id="errormsgedit" style="color:red">Please enter Service Delivery Group</span>
+        </div>
+        <div class="col-sm-4">
+        <input id="hdnid" type="hidden" /></div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btneditCategory" class="btn btn-primary">Update</button>&nbsp;
+            <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="popupcontentdelete" title="Delete confirmation" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            "Are you sure you want to delete ...?"
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2"><input id="hdndeletecatid" type="hidden"/></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btndeleteCategory" class="btn btn-primary">Yes</button>&nbsp;
+            <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
+        </div>
+    </div>
+
+</div>
+
 
 <script>
 
@@ -85,7 +129,7 @@
                 { "data": "CatgID", "name": "CatgID", "autoWidth": true },
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 {
-                    "render": function(data, type, full, meta) { return '<a class="btn btn-info" href="/Category/Edit/' + full.CatgID + '">Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="#" onclick=OpenEditpopup(' + full.CatgID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
@@ -103,8 +147,24 @@
             autoOpen: false
         });
 
+        $("#popupcontentedit").dialog({
+            autoOpen: false
+        });
+
+        $("#popupcontentdelete").dialog({
+            autoOpen: false
+        });
+
+        $("#btncancelpopupdelete").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
+        });
+
+        $("#btncancelpopupedit").click(function () {
+            $("#popupcontentedit").dialog('close');
         });
 
         $("#btnopenPopUp").click(function () {
@@ -112,9 +172,19 @@
                 position: 'bottom'
             });
         });
+
+        $("#btndeleteCategory").click(function () {
+            $("#popupcontentdelete").dialog({
+                position: 'bottom'
+            });
+        });
     });
 
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
 
     $("#btnopenPopUp").click(function () {
         $("#popupcontent").dialog('open');
@@ -130,9 +200,21 @@
         }
     });
     $('#errormsg').hide();
+
+    $('#txtcategoryedit').on('keypress', function (event) {
+        $('#errormsgedit').hide();
+        var regex = new RegExp("^[a-zA-Z]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#errormsgedit').hide();
+
     $("#btnaddCategory").click(function () {
 
-        var CategoryName = $('#txtcategory').val(); 
+        var CategoryName = $('#txtcategory').val();
         if (CategoryName == "") { $('#errormsg').show(); }
         else {
             $.ajax({
@@ -160,26 +242,81 @@
 
     });
 
-function DeleteData(CatgID) {
-    if (confirm("Are you sure you want to delete ...?")) {
-        Delete(CatgID);
-    } else {
-        return false;
-    }
-}
-
-
-function Delete(CatgID) {
-    var url = '@Url.Content("~/")' + "Category/Delete";
-
-    $.post(url, { ID: CatgID }, function(data) {
-        if (data) {
-            oTable = $('#example').DataTable();
-            oTable.draw();
-        } else {
-            alert("Something Went Wrong!");
+    $("#btneditCategory").click(function () {
+        if ($('#txtcategoryedit').val() == "") {
+            $('#errormsgedit').show();
+            return false;
         }
+        $.ajax({
+            type: "POST",
+            url: "/category/Edit",
+            data: { "id": $('#hdnid').val() + "$" + $('#txtcategoryedit').val() },
+            success: function (response) {
+                if (response == "1") {
+                    alert("Record already exists!");
+                }
+                else {
+                    $("#popupcontentedit").dialog('close');
+                    $('#txtcategoryedit').val("");
+                    location.reload();
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
     });
+
+    $("#popupcontentedit").dialog({
+        position: 'bottom'
+    });
+
+    function OpenEditpopup(CatgID) {
+
+        $("#popupcontentedit").dialog('open');
+        $("#hdnid").val(""); $("#hdnid").val(CatgID);
+        $.ajax({
+            type: "POST",
+            url: "/category/GetCategoryByid",
+            data: { "id": CatgID },
+            success: function (response) {
+                if (response != null && response != "") {
+                    $("#txtcategoryedit").val(response.CatgDescription);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
+
+
+    function DeleteData(CatgID) {
+        $("#popupcontentdelete").dialog('open');
+        $("#hdndeletecatid").val(CatgID);
 }
+    $("#btncancelpopupdelete").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
+
+    $("#btndeleteCategory").click(function () {
+        var url = '@Url.Content("~/")' + "Category/Delete";
+        $("#popupcontentdelete").dialog('close');
+        $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    });
 
 </script>
