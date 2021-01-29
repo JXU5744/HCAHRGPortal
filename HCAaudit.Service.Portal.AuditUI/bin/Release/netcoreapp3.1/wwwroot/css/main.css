@@ -1,0 +1,125 @@
+html,
+body {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  height: 100vh; }
+
+.neu-list__item {
+  min-height: 110px; }
+
+.pt-name {
+  font-family: "HCA-Mark", "Arial", sans-serif !important; }
+
+.pt-info {
+  color: #58595b; }
+
+.pt-arrow {
+  visibility: hidden; }
+
+.pt-score--success::before {
+  font-family: "Material Icons";
+  content: "\e5ca";
+  vertical-align: bottom;
+  font-size: 1.5em; }
+
+.pt-score--fail::before {
+  font-family: "Material Icons";
+  content: "\e5cd";
+  vertical-align: bottom;
+  font-size: 1.5em; }
+
+.neu-list__item--active .pt-name {
+  font-family: "HCA-Mark-Bold", "Arial", sans-serif !important; }
+.neu-list__item--active .pt-info {
+  color: #1f2532; }
+.neu-list__item--active .pt-arrow {
+  visibility: visible; }
+
+.pt-send-msg::before {
+  font-family: "Material Icons";
+  content: "\e001";
+  vertical-align: bottom; }
+
+.req-radio {
+  height: 140px;
+  width: 160px;
+  padding: 0;
+  display: flex;
+  color: #58595b; }
+  .req-radio--content {
+    border: 2px solid transparent;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    align-items: center;
+    border-radius: 5px;
+    transition: none; }
+    .req-radio--content i {
+      font-size: 2em; }
+  .req-radio:hover .req-radio--content {
+    transition: 0.3s ease-in-out;
+    border: 2px solid #00558c; }
+  .req-radio:focus .req-radio--content {
+    transition: 0.3s ease-in-out;
+    border: 2px solid #00558c; }
+  .req-radio--input:checked ~ .req-radio--content {
+    color: #00558c;
+    border: 2px solid #00558c;
+    background-color: #e5f2f9; }
+    .req-radio--input:checked ~ .req-radio--content h6 {
+      font-family: "HCA-Mark-Medium", "Arial", sans-serif !important;
+      color: #1f2532; }
+  .req-radio--input {
+    height: 1.125rem;
+    width: 2.5rem;
+    top: 10px;
+    left: 0;
+    position: absolute; }
+
+.neu-input__label.required:after {
+  content: " *";
+  color: #ce2130; }
+
+.neu-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: default; }
+  .neu-tooltip i {
+    font-size: 1.1em; }
+  .neu-tooltip .neu-tooltip--text {
+    visibility: hidden;
+    font-family: "HCA-Mark-Medium", "Arial", sans-serif !important;
+    font-size: 0.75em;
+    white-space: nowrap;
+    background-color: rgba(31, 37, 50, 0.9);
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    opacity: 0; }
+  .neu-tooltip:hover .neu-tooltip--text {
+    visibility: visible;
+    opacity: 1; }
+
+.pt-height {
+  height: calc(100% - 120px); }
+
+.neu--height-100 {
+  height: 100%; }
+
+.neu-overflow--auto {
+  overflow: auto; }
+
+/*# sourceMappingURL=main.css.map */
