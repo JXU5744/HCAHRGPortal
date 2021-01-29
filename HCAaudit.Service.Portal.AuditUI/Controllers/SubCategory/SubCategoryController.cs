@@ -45,6 +45,44 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
+        public ActionResult GetCategoryByid(string id)
+        {
+            object response = "";
+            if (string.IsNullOrEmpty(id))
+            {
+                return Json(response);
+            }
+            return Json(GetSingleCategoryByid(id));
+        }
+        SubCategory GetSingleCategoryByid(string id)
+        {
+            var data = (from cat in _auditToolContext.subCategories select cat).ToList();
+            SubCategory objCategorys = data.Find(category => category.SubCatgID == Convert.ToInt32(id));
+            return objCategorys;
+        }
+        [HttpPost]
+        public ActionResult Edit(string id)
+        {
+            object resp = "";
+            if (!string.IsNullOrEmpty(id))
+            {
+                string[] param = id.Split('$');
+                if (param.Count() > 0)
+                {
+                    SubCategory objCategorys = GetSingleCategoryByid(param[0]);
+                    if (objCategorys != null)
+                    {
+                        objCategorys.SubCatgDescription = param[1];
+                        _auditToolContext.subCategories.Update(objCategorys);
+                        _auditToolContext.SaveChanges();
+                    }
+                    return Json(objCategorys);
+                }
+            }
+            return Json(resp);
+        }
+
+        [HttpPost]
         public ActionResult Insert(string catgID, string subCategoryName)
         {
             var collection = GetDetails(); object responce = "";
@@ -177,33 +215,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         ).ToList();
 
             return query;
-        }
-
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            //fillInSession();
-
-            //CategoryMast objCategory = masterCategory.Find(category => category.CatgID == CatgID);
-            //masterCategory.Remove(objCategory);
-            return View("Edit");
-        }
-        private void fillInSession()
-        {
-            if (masterCategory == null)
-            {
-                //pqTestContext db = new pqTestContext();
-                //add in session["Products"];
-                masterCategory = new List<CategoryMast>();
-                var categoryList = CategoryList.GetCategory();//db.Database.SqlQuery<Product>("Select productid, ProductName, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued from products").ToList();
-                foreach (Category objCategory in categoryList)
-                {
-                    CategoryMast objCategoryMast = new CategoryMast();
-                    objCategoryMast.CatgID = objCategory.CatgID;
-                    objCategoryMast.CatgDescription = objCategory.CatgDescription;
-                    masterCategory.Add(objCategoryMast);
-                }
-            }
         }
 
         [HttpPost]
