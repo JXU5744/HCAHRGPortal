@@ -222,7 +222,7 @@
                 data: { "CategoryName": CategoryName },
                 success: function (response) {
                     if (response == "1") {
-                        alert("Record already exists!");
+                        $("#errormsg").val("Record already exists!");
                     }
                     else {
                         $("#popupcontent").dialog('close');
