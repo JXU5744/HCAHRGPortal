@@ -152,25 +152,31 @@
             autoOpen: false
         });
 
+        $("#btncancelpopup").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+
+        $("#btncancelpopupedit").click(function () {
+            $("#popupcontentedit").dialog('close');
+        });
+
         $("#btnopenPopUp").click(function () {
             $("#popupcontent").dialog({
                 position: 'bottom'
             });
         });
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontentedit").dialog({
+                position: 'bottom'
+            });
+        });
     });
 
-    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 420, width: 1000 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 420, width: 1000 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
 
-    $("#btncancelpopup").click(function () {
-        $("#popupcontent").dialog('close');
-    });
-
-    $("#btncancelpopupedit").click(function () {
-        $("#popupcontentedit").dialog('close');
-    });
-
+   
     $("#btnopenPopUp").click(function () {
 
         $.ajax({
@@ -192,7 +198,7 @@
 
         $("#popupcontent").dialog('open');
     });
-
+   
     $("#txtQuestionedit").keyup(function () {
         if (!this.value) {
 
@@ -231,13 +237,11 @@
 
     $('#errormsgedit').hide();
 
-    $("#popupcontentedit").dialog({
-        position: 'bottom'
-    });
+   
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
     function OpenEditpopup(CatgID) {
-
-        $("#popupcontentedit").dialog('open');
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
             type: "POST",
@@ -247,6 +251,7 @@
                 if (response != null && response != "") {
                     $("#txtQuestionedit").val(response.QuestionName);
                 }
+                $("#popupcontentedit").dialog('open');
             },
             failure: function (response) {
                 // alert(response.responseText);

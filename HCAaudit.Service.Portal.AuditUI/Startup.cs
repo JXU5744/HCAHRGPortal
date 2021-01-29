@@ -145,7 +145,7 @@ namespace HCAaudit.Service.Portal.AuditUI
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IAuthService, AuthService>();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.AddSingleton(Configuration);
         }

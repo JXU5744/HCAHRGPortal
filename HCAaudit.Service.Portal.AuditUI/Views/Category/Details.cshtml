@@ -172,9 +172,8 @@
                 position: 'bottom'
             });
         });
-
-        $("#btndeleteCategory").click(function () {
-            $("#popupcontentdelete").dialog({
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontentedit").dialog({
                 position: 'bottom'
             });
         });
@@ -182,7 +181,7 @@
 
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
 
     $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
 
@@ -271,13 +270,13 @@
 
     });
 
-    $("#popupcontentedit").dialog({
-        position: 'bottom'
-    });
+    
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
     function OpenEditpopup(CatgID) {
 
-        $("#popupcontentedit").dialog('open');
+       
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
             type: "POST",
@@ -286,6 +285,7 @@
             success: function (response) {
                 if (response != null && response != "") {
                     $("#txtcategoryedit").val(response.CatgDescription);
+                    $("#popupcontentedit").dialog('open');
                 }
             },
             failure: function (response) {
