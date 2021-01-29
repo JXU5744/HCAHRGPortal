@@ -68,6 +68,31 @@
     </div>
 </div>
 
+<div id="popupcontentedit" title="Edit SubCategory" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Sub Category::</label></div>
+        <div class="col-sm-6">
+            <input id="txtsubcategoryedit" class="form-control form-control-sm"
+                   type="text" />
+            <span id="errormsgedit" style="color:red">Please enter SubCategory</span>
+        </div>
+        <div class="col-sm-4">
+            <input id="hdnid" type="hidden" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btneditCategory" class="btn btn-primary">Update</button>&nbsp;
+            <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+
+</div>
+
 
 <div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
 
@@ -109,7 +134,7 @@
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 { "data": "SubCatgDescription", "name": "SubCatgDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/SubCategory/Edit/' + full.SubCatgID + '">Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="#" onclick=OpenEditpopup(' + full.SubCatgID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
@@ -160,7 +185,7 @@
                 }
             });
 
-           
+
 
             $("#popupcontent").dialog('open');
         });
@@ -254,4 +279,80 @@
         });
     });
 
+    $('#errormsgedit').hide();
+
+    $("#popupcontentedit").dialog({
+        autoOpen: false
+    });
+
+    $("#btncancelpopupedit").click(function () {
+        $("#popupcontentedit").dialog('close');
+    });
+
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+
+    $('#txtsubcategoryedit').on('keypress', function (event) {
+        $('#errormsgedit').hide();
+        //var regex = new RegExp("^[a-zA-Z]+$");
+        //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        //if (!regex.test(key)) {
+        //    event.preventDefault();
+        //    return false;
+        //}
+    });
+
+    $("#btneditCategory").click(function () {
+        if ($('#txtsubcategoryedit').val() == "") {
+            $('#errormsgedit').show();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/SubCategory/Edit",
+            data: { "id": $('#hdnid').val() + "$" + $('#txtsubcategoryedit').val() },
+            success: function (response) {
+                if (response == "1") {
+                    $("#errormsgcategory").val("Record already exists!");
+                }
+                else {
+                    $("#popupcontentedit").dialog('close');
+                    $('#txtsubcategoryedit').val("");
+                    location.reload();
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
+    });
+
+    $("#popupcontentedit").dialog({
+        position: 'bottom'
+    });
+
+    function OpenEditpopup(SubCatgID) {
+
+        $("#popupcontentedit").dialog('open');
+        $("#hdnid").val(""); $("#hdnid").val(SubCatgID);
+        $.ajax({
+            type: "POST",
+            url: "/SubCategory/GetCategoryByid",
+            data: { "id": SubCatgID },
+            success: function (response) {
+                if (response != null && response != "") {
+                    $("#txtsubcategoryedit").val(response.SubCatgDescription);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
 </script>
