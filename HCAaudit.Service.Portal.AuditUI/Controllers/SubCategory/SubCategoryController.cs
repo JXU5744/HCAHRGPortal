@@ -60,26 +60,36 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             SubCategory objCategorys = data.Find(category => category.SubCatgID == Convert.ToInt32(id));
             return objCategorys;
         }
+
         [HttpPost]
         public ActionResult Edit(string id)
         {
-            object resp = "";
+            object responce = "";
             if (!string.IsNullOrEmpty(id))
             {
                 string[] param = id.Split('$');
                 if (param.Count() > 0)
                 {
-                    SubCategory objCategorys = GetSingleCategoryByid(param[0]);
-                    if (objCategorys != null)
+
+                    var collection = GetDetails(); 
+                    foreach (var item in collection)
                     {
-                        objCategorys.SubCatgDescription = param[1];
-                        _auditToolContext.subCategories.Update(objCategorys);
-                        _auditToolContext.SaveChanges();
+                        if (item.SubCatgDescription == param[1].Trim())
+                        { responce = "1"; break; }
                     }
-                    return Json(objCategorys);
+                    if (string.IsNullOrEmpty(responce.ToString()))
+                    {
+                        SubCategory objCategorys = GetSingleCategoryByid(param[0]);
+                        if (objCategorys != null)
+                        {
+                            objCategorys.SubCatgDescription = param[1];
+                            _auditToolContext.subCategories.Update(objCategorys);
+                            _auditToolContext.SaveChanges();
+                        }
+                    }
                 }
             }
-            return Json(resp);
+            return Json(responce);
         }
 
         [HttpPost]
