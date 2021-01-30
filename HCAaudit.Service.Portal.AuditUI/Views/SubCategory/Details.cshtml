@@ -46,13 +46,13 @@
             <label for="format-pdf" class="input-group">Service Delivery Group:</label>
             <select name="teams" id="ddlcategory" class="form-control">
             </select>
-            <span id="errormsgcategory" style="color:red">Select Service Delivery Group</span>
+            <span id="errormsgcategory" style="color:red"></span>
         </div>
         <div class="col-sm-6">
             <label for="format-pdf" style="text-align:left;">Subcategory</label>
             <input id="txtsubcategory" class="form-control form-control-sm"
                    type="text" />
-            <span id="errormsgsubcategory" style="color:red">Enter Subcategory</span>
+            <span id="errormsgsubcategory" style="color:red"></span>
         </div>
         <div class="col-sm-1"></div>
     </div>
@@ -71,11 +71,12 @@
 <div id="popupcontentedit" title="Edit SubCategory" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Sub Category::</label></div>
-        <div class="col-sm-6">
+        <div class="col-sm-1"> </div>
+        <div class="col-sm-7">
+            <label for="format-pdf" class="input-group">Sub Category:</label>
             <input id="txtsubcategoryedit" class="form-control form-control-sm"
                    type="text" />
-            <span id="errormsgedit" style="color:red">Please enter SubCategory</span>
+            <span id="errormsgedit" style="color:red"></span>
         </div>
         <div class="col-sm-4">
             <input id="hdnid" type="hidden" />
@@ -162,9 +163,10 @@
             $("#popupcontent").dialog('close');
         });
     });
-    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 260, width: 650 });
         $("#btnopenPopUp").click(function () {
-
+            $('#errormsgsubcategory').hide();
+            $('#errormsgcategory').hide();
             $.ajax({
                 type: "POST",
                 url: "/SubCategory/GetCategory",
@@ -215,8 +217,8 @@
     $("#btnaddSubCategory").click(function () {
         var catgID = $('#ddlcategory').val();
         var subCategoryName = $('#txtsubcategory').val();
-        if (catgID == "0") { $('#errormsgcategory').show(); return false;}
-        if (subCategoryName == "") { $('#errormsgsubcategory').show(); return false;}
+        if (catgID == "0") { $('#errormsgcategory').show(); $('#errormsgcategory').text('Select Service Delivery Group'); return false;}
+        if (subCategoryName == "") { $('#errormsgsubcategory').show(); $('#errormsgsubcategory').text('Enter Subcategory'); return false;}
 
             $.ajax({
                 type: "POST",
@@ -224,7 +226,8 @@
                 data: { "catgID": catgID, "subCategoryName": subCategoryName },
                 success: function (response) {
                     if (response == "1") {
-                        alert("Record already exists!");
+                        $("#errormsgsubcategory").text("Record already exists!");
+                        $('#errormsgsubcategory').show();
                     }
                     else {
                         $("#popupcontent").dialog('close');
@@ -306,6 +309,7 @@
     $("#btneditCategory").click(function () {
         if ($('#txtsubcategoryedit').val() == "") {
             $('#errormsgedit').show();
+            $('#errormsgedit').text("Please enter SubCategory");
             return false;
         }
         $.ajax({
@@ -314,7 +318,8 @@
             data: { "id": $('#hdnid').val() + "$" + $('#txtsubcategoryedit').val() },
             success: function (response) {
                 if (response == "1") {
-                    $("#errormsgcategory").val("Record already exists!");
+                    $("#errormsgedit").text("Record already exists!");
+                    $('#errormsgedit').show();
                 }
                 else {
                     $("#popupcontentedit").dialog('close');
@@ -337,7 +342,7 @@
     });
 
     function OpenEditpopup(SubCatgID) {
-
+        $('#errormsgedit').hide();
         $("#popupcontentedit").dialog('open');
         $("#hdnid").val(""); $("#hdnid").val(SubCatgID);
         $.ajax({

@@ -43,11 +43,12 @@
 <div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Service Delivery Group:</label></div>
-        <div class="col-sm-6">
-            <input id="txtcategory" class="form-control form-control-sm"
+        <div class="col-sm-1"> </div>
+        <div class="col-sm-7">
+            <label for="format-pdf" class="input-group">Service Delivery Group:</label>
+            <input id="txtcategory" maxlength="10" class="form-control form-control-sm"
                    type="text" />
-            <span id="errormsg" style="color:red">Please enter Service Delivery Group</span>
+            <span id="errormsg" style="color:red"></span>
         </div>
         <div class="col-sm-1"></div>
     </div>
@@ -66,11 +67,12 @@
 <div id="popupcontentedit" title="Edit Category" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Service Delivery Group::</label></div>
+        <div class="col-sm-2"> </div>
         <div class="col-sm-6">
+            <label for="format-pdf" class="input-group">Service Delivery Group:</label>
             <input id="txtcategoryedit" class="form-control form-control-sm"
                    type="text" />
-            <span id="errormsgedit" style="color:red">Please enter Service Delivery Group</span>
+            <span id="errormsgedit" style="color:red"></span>
         </div>
         <div class="col-sm-4">
         <input id="hdnid" type="hidden" /></div>
@@ -186,6 +188,7 @@
     $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
 
     $("#btnopenPopUp").click(function () {
+        $('#txtcategory').val(""); $('#errormsgedit').hide();
         $("#popupcontent").dialog('open');
     });
 
@@ -214,7 +217,7 @@
     $("#btnaddCategory").click(function () {
 
         var CategoryName = $('#txtcategory').val();
-        if (CategoryName == "") { $('#errormsg').show(); }
+        if (CategoryName == "") { $('#errormsg').show(); $("#errormsg").text("Please enter Service Delivery Group"); }
         else {
             $.ajax({
                 type: "GET",
@@ -222,7 +225,8 @@
                 data: { "CategoryName": CategoryName },
                 success: function (response) {
                     if (response == "1") {
-                        $("#errormsg").val("Record already exists!");
+                        $("#errormsg").text("Record already exists!");
+                        $('#errormsg').show();
                     }
                     else {
                         $("#popupcontent").dialog('close');
@@ -243,7 +247,7 @@
 
     $("#btneditCategory").click(function () {
         if ($('#txtcategoryedit').val() == "") {
-            $('#errormsgedit').show();
+            $('#errormsgedit').show(); $('#errormsgedit').text("Please enter Service Delivery Group");
             return false;
         }
         $.ajax({
@@ -252,7 +256,8 @@
             data: { "id": $('#hdnid').val() + "$" + $('#txtcategoryedit').val() },
             success: function (response) {
                 if (response == "1") {
-                    alert("Record already exists!");
+                    $("#errormsgedit").text("Record already exists!");
+                    $("#errormsgedit").show();
                 }
                 else {
                     $("#popupcontentedit").dialog('close');
@@ -276,7 +281,7 @@
     $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
     function OpenEditpopup(CatgID) {
 
-       
+        $('#errormsgedit').hide();        
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
             type: "POST",
@@ -299,9 +304,35 @@
 
 
     function DeleteData(CatgID) {
-        $("#popupcontentdelete").dialog('open');
-        $("#hdndeletecatid").val(CatgID);
-}
+        $.ajax({
+            type: "POST",
+            url: "/category/HasDeleteAccess",
+            data: { "id": CatgID },
+            success: function (response) {
+                //alert(response);
+                if (response) {
+                    //alert('Entered if');
+                    $("#popupcontentdelete").dialog('open');
+                    $("#hdndeletecatid").val(CatgID);
+                }
+                else {
+                    //alert('Entered else');
+                    return trueOrFalse(false);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
+
+    function trueOrFalse(bool) {
+        return bool;
+    }
+
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
     });

@@ -58,16 +58,25 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 string[] param = id.Split('$');
                 if (param.Count() > 0)
                 {
-                    Categorys objCategorys = new Categorys();
-                    objCategorys.CatgID = Convert.ToInt32(param[0]);
-                    objCategorys.CatgDescription = param[1];
-                    _auditToolContext.categories.Update(objCategorys);
-                    _auditToolContext.SaveChanges();
-                    return Json(objCategorys);
+                    var collection = GetDetails(); 
+                    foreach (var item in collection)
+                    {
+                        if (item.CatgDescription == param[1].Trim())
+                        { resp = "1"; break; }
+                    }
+                    if (string.IsNullOrEmpty(resp.ToString()))
+                    {
+                        Categorys objCategorys = new Categorys();
+                        objCategorys = GetSingleCategoryByid(param[0]);
+                        objCategorys.CatgDescription = param[1];
+                        _auditToolContext.categories.Update(objCategorys);
+                        _auditToolContext.SaveChanges();
+                    }
                 }
             }
             return Json(resp);
         }
+
         [HttpGet]
         public ActionResult Insert(string CategoryName)
         {
@@ -100,6 +109,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             var data = _auditToolContext.categories.ToList();
             return data;
+        }
+        [HttpPost]
+        public ActionResult HasDeleteAccess(int id)
+        {
+            object response;
+            var data = (from cat in _auditToolContext.subCategories select cat).ToList();
+            SubCategory obj = data.Find(a => a.CatgID ==  id);
+            response = obj == null ? true: false;
+            return Json(response);
         }
 
         [HttpGet]
