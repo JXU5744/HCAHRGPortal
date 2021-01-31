@@ -50,21 +50,29 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult Edit(string id)
         {
-            object resp = "";
+            
+            object responce = "";
             if (!string.IsNullOrEmpty(id))
             {
                 string[] param = id.Split('$');
                 if (param.Count() > 0)
                 {
-                    tblQuestionBank objtblQuestionBank = new tblQuestionBank();
-                    objtblQuestionBank.QuestionID = Convert.ToInt32(param[0]);
-                    objtblQuestionBank.QuestionName = param[1];
-                    _auditToolContext.questionBank.Update(objtblQuestionBank);
-                    _auditToolContext.SaveChanges();
-                    return Json(objtblQuestionBank);
+                    var data = GetDetails().Where(a => a.QuestionName.ToLower() == param[1].ToLower()).SingleOrDefault(); 
+
+                    if (data != null)
+                    { responce = "1"; }
+                    if (string.IsNullOrEmpty(responce.ToString()))
+                    {
+                        tblQuestionBank objtblQuestionBank = new tblQuestionBank();
+                        objtblQuestionBank.QuestionID = Convert.ToInt32(param[0]);
+                        objtblQuestionBank.QuestionName = param[1];
+                        _auditToolContext.questionBank.Update(objtblQuestionBank);
+                        _auditToolContext.SaveChanges();
+                        return Json(objtblQuestionBank);
+                    }
                 }
             }
-            return Json(resp);
+            return Json(responce);
         }
 
 
@@ -311,17 +319,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult Insert(string questionname)
         {
-            var collection = GetDetails(); object responce = "";
-            foreach (var item in collection)
-            {
-                if (item.QuestionName == questionname.Trim())
-                { responce = "1"; break; }
-            }
+            var data = GetDetails().Where(a => a.QuestionName.ToLower() == questionname.ToLower()).SingleOrDefault(); object responce = "";
+            
+                if (data != null)
+                { responce = "1"; }
+            
             if (string.IsNullOrEmpty(responce.ToString()))
             {
                 tblQuestionBank objtblQuestionBank = new tblQuestionBank();
                 objtblQuestionBank.QuestionName = questionname;
-                objtblQuestionBank.status = 0;
+                objtblQuestionBank.status = 1;
                 _auditToolContext.questionBank.Add(objtblQuestionBank);
                 _auditToolContext.SaveChanges();
                 return RedirectToAction("Details");

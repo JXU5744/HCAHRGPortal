@@ -46,7 +46,7 @@
         <div class="col-sm-7">
             <input id="txtQuestion" class="form-control form-control-sm"
                    type="text" />
-            <span id="errormsg" style="color:red">Please Enter Question</span>
+            <span id="errormsg" style="color:red"></span>
         </div>
         <div class="col-sm-3"></div>
     </div>
@@ -64,6 +64,9 @@
 
 </div>
 
+
+
+
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
 
     <div class="row">
@@ -71,7 +74,7 @@
         <div class="col-sm-7">
             <input id="txtQuestionedit" class="form-control form-control-sm"
                    type="text" />
-            <span id="errormsgedit" style="color:red">Please Enter Question</span>
+            <span id="errormsgedit" style="color:red"></span>
         </div>
         <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
     </div>
@@ -92,7 +95,7 @@
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-12">"Are you sure you want to delete ...?"</div>
+        <div class="col-sm-12">Do you want to Delete this Question?</div>
     </div>
     <br />
     <div class="row">
@@ -218,7 +221,7 @@
                     alert(response.responseText);
                 }
             });
-            $("#errormsgedit").show();
+            $("#errormsgedit").show(); $("#errormsgedit").text("Please Enter Question");
         }
         else {
             $("#errormsgedit").hide();
@@ -241,6 +244,8 @@
     $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
     $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
+
+
     function OpenEditpopup(CatgID) {
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
@@ -273,7 +278,7 @@
             data: { "id": $('#hdnid').val() + "$" + $('#txtQuestionedit').val() },
             success: function (response) {
                 if (response == "1") {
-                    alert("Record already exists!");
+                    $("#errormsgedit").show(); $("#errormsgedit").text("Record already exists!");
                 }
                 else {
                     $("#popupcontentedit").dialog('close');
@@ -294,14 +299,14 @@
     $("#btnaddQuestion").click(function () {
 
         var questionName = $('#txtQuestion').val();
-        if (questionName == "") { $("#errormsg").show(); return false;}
+        if (questionName == "") { $("#errormsg").show(); $("#errormsg").text("Please Enter Question"); return false;}
         $.ajax({
             type: "POST",
             url: "/Questions/Insert",
             data: { "questionname": questionName },
             success: function (response) {
                 if (response == "1") {
-                    alert("Record already exists!");
+                    $("#errormsg").show(); $("#errormsg").text("Record already exists!");
                 }
                 else {
                     $("#popupcontent").dialog('close');

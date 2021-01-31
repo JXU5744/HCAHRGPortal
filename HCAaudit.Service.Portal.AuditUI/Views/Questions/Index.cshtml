@@ -30,8 +30,6 @@
             </select>
         </div>
         <div class="col-sm-4">
-            <input type="checkbox" id="chkblanksubcat" value="blanksubcatg">
-            <label for="blanksubcatg">Blank Subcategory</label>
         </div>
             <div class="col-sm-1"><button type="button" id="btnopenPopUp" class="btn btn-primary">Map Question</button> </div>
      </div>
@@ -54,11 +52,11 @@
 <div id="popupcontent" title="Map Question" hidden="hidden" class="container">
     <div class="row">
         <div class="col-sm-3"> <label class="input-group">Service Delivery Group:</label></div>
-        <div class="col-sm-5">
+        <div class="col-sm-2">
             <input id="txtcategory" class="form-control form-control-sm"
                    type="text" disabled="disabled" />
         </div>
-        <div class="col-sm-4"></div>
+        <div class="col-sm-7"></div>
     </div>
     <br />
     <div class="row">
@@ -71,16 +69,17 @@
     </div>
     <br />
     <div class="row">
-        <div class="col-sm-3"><label class="input-group">Question Score(%):</label></div>
+        @*<div class="col-sm-3"><label class="input-group">Question Score(%):</label></div>
         <div class="col-sm-3">
             <input id="txtquestionvolumn" maxlength="2" class="form-control form-control-sm"
                    type="text" /><span id="errormsg" style="color:red"></span>
-        </div>
-        <div class="col-sm-2"><label class="input-group">Question Seq:</label></div>
-        <div class="col-sm-3">
-            <input id="txtquestionseq" maxlength="2" class="form-control form-control-sm"
+        </div>*@
+        <div class="col-sm-3"><label class="input-group">Question Seq:</label></div>
+        <div class="col-sm-1">
+            <input id="txtquestionseq" disabled="disabled" maxlength="2" class="form-control form-control-sm"
                    type="text" /><span id="errormsgqseq" style="color:red"></span>
         </div>
+        <div class="col-sm-8"></div>
     </div>
     <br />
     <div class="row">
@@ -105,6 +104,11 @@
         </div>
     </div>
 </div>
+
+
+
+
+
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
 
     <div class="row">
@@ -129,6 +133,7 @@
     </div>
 
 </div>
+
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
     <div class="row">
         <div class="col-sm-12">"Are you sure you want to delete ...?"</div>
@@ -150,6 +155,11 @@
 <script>
     $(document).ready(function () {
         $(function () {
+            
+            $("#CatgID").prop("selectedIndex", 1);
+            $('#CatgID').trigger('change');
+            
+
             $("#popupcontent").dialog({
                 autoOpen: false
             });
@@ -183,7 +193,7 @@
             var categoryname = $("#CatgID option:selected").text();
             $('#txtcategory').val(categoryname);
             $('#txtsubcategory').val(subCategoryname);
-            
+            $('#errormsgquestion').hide();
            
 
             $.ajax({
@@ -237,7 +247,7 @@
                 data: { "subcatgid": subCategoryID },
                 success: function (response) {
                     if (response == "2") {
-                        alert("Not a valid Question");
+                        $('#errormsgquestion').show(); $('#errormsgquestion').text("Not a valid Question");
                     }
                     else {
                         $("#popupcontent").dialog('close');
@@ -316,6 +326,8 @@
                         options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
                     }
                     $('#SubCatID').append(options);
+                    $("#SubCatID").prop("selectedIndex", 1);
+                    $('#SubCatID').trigger('change');
                 },
                 failure: function (response) {
                     alert(response.responseText);
