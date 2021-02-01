@@ -97,7 +97,6 @@
         <div class="col-sm-5"></div>
         <div class="col-sm-1">
             <button id="btnaddQuestion" class="btn btn-primary">Save</button>&nbsp;
-
         </div>
         <div class="col-sm-3">
             <button id="btncancelpopup" class="btn btn-danger">Cancel</button>
@@ -105,16 +104,12 @@
     </div>
 </div>
 
-
-
-
-
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
 
     <div class="row">
         <div class="col-sm-2"> <label for="format-pdf" class="input-group">Question:</label></div>
         <div class="col-sm-7">
-            <input id="txtQuestionedit" class="form-control form-control-sm"
+            <input id="txtQuestionedit" disabled="disabled" class="form-control form-control-sm"
                    type="text" />
             <span id="errormsgedit" style="color:red">Please Enter Question</span>
         </div>
@@ -122,10 +117,18 @@
     </div>
     <br />
     <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-3">
-
+        <div class="col-sm-2"> <label for="format-pdf" class="input-group">Question Sequence:</label></div>
+        <div class="col-sm-7">
+            <select name="teams" id="ddlQuestionsqedit" class="form-control">
+            </select>
+            <span id="errormsgsqedit" style="color:red">Please choose the Sequence</span>
         </div>
+        <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-3"></div>
         <div class="col-sm-5">
             <button id="btnupdateQuestion" class="btn btn-primary">Update</button>&nbsp;
             <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
@@ -155,10 +158,10 @@
 <script>
     $(document).ready(function () {
         $(function () {
-            
+
             $("#CatgID").prop("selectedIndex", 1);
             $('#CatgID').trigger('change');
-            
+
 
             $("#popupcontent").dialog({
                 autoOpen: false
@@ -194,7 +197,7 @@
             $('#txtcategory').val(categoryname);
             $('#txtsubcategory').val(subCategoryname);
             $('#errormsgquestion').hide();
-           
+
 
             $.ajax({
                 type: "POST",
@@ -230,6 +233,7 @@
         $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
         $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 400, width: 950 });
+
         $("#btnaddQuestion").click(function () {
 
             if ($("#txtquestionvolumn").val() == "") {
@@ -429,7 +433,7 @@
             }
         });
 
-        
+
 
         $("#popupcontentdelete").dialog({
             autoOpen: false
@@ -448,10 +452,10 @@
             $("#popupcontentdelete").dialog('close');
         });
 
-      
-        $("#btncancelpopup").click(function () {
-            $("#popupcontentdelete").dialog('close');
-        });
+
+        //$("#btncancelpopup").click(function () {
+        //    $("#popupcontentdelete").dialog('close');
+        //});
 
         $("#btndeleteCategory").click(function () {
             var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
@@ -465,6 +469,44 @@
                 }
             });
         });
+
+
+
+        $("#popupcontentedit").dialog({
+            autoOpen: false
+        });
+
+
+        $("#btnupdateQuestion").click(function () {
+            $("#popupcontentedit").dialog({
+                position: 'bottom'
+            });
+        });
+
+        $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
+
+        $("#btncancelpopupedit").click(function () {
+            $("#popupcontentedit").dialog('close');
+        });
+
+
+        //$("#btncancelpopup").click(function () {
+        //    $("#popupcontentdelete").dialog('close');
+        //});
+
+        $("#btndeleteCategory").click(function () {
+            var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
+            $("#popupcontentdelete").dialog('close');
+            $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+                if (data) {
+                    oTable = $('#example').DataTable();
+                    oTable.draw();
+                } else {
+                    alert("Something Went Wrong!");
+                }
+            });
+        });
+
 
     });
 </script>

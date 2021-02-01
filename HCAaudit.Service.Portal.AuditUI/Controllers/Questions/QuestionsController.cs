@@ -116,7 +116,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         objtbQuestionMaster.QuestionId = questionbankdata.QuestionID;
                         objtbQuestionMaster.SubCatgID = Convert.ToInt32(data[0]);
                         objtbQuestionMaster.QuestionText = questionbankdata.QuestionName;
-                        objtbQuestionMaster.QuestionScore = Convert.ToInt32(data[2]);
+                        objtbQuestionMaster.QuestionScore = 10;// as Score column is not mandatory now Convert.ToInt32(data[2]);
                         objtbQuestionMaster.SeqNumber = Convert.ToInt32(data[3]);
                         objtbQuestionMaster.Status = 1;
                         _logger.LogInformation($"Request for Adding Question to DB with SubCategoryID: {data[0]} and Question Text as: {data[1]}");
