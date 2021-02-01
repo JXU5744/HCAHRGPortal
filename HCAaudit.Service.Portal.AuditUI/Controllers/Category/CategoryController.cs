@@ -61,7 +61,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var collection = GetDetails(); 
                     foreach (var item in collection)
                     {
-                        if (item.CatgDescription == param[1].Trim())
+                        if (item.CatgDescription.ToLower() == param[1].ToLower().Trim())
                         { resp = "1"; break; }
                     }
                     if (string.IsNullOrEmpty(resp.ToString()))
@@ -83,7 +83,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var collection = GetDetails(); object responce = "";
             foreach (var item in collection)
             {
-                if (item.CatgDescription == CategoryName.Trim())
+                if (item.CatgDescription.ToLower() == CategoryName.ToLower().Trim())
                 { responce = "1"; break; }
             }
             if (string.IsNullOrEmpty(responce.ToString()))

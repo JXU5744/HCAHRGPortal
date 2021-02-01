@@ -89,11 +89,11 @@
 
 </div>
 
-<div id="popupcontentdelete" title="Delete confirmation" hidden="hidden" class="container">
+<div id="popupcontentdelete" title="Delete Service Delivery Group" hidden="hidden" class="container">
 
     <div class="row">
         <div class="col-sm-12">
-            "Are you sure you want to delete ...?"
+            Do you want to Delete this Service Delivery Group?
         </div>
     </div>
     <br />
@@ -194,23 +194,23 @@
 
     $('#txtcategory').on('keypress', function (event) {
         $('#errormsg').hide();
-        var regex = new RegExp("^[a-zA-Z]+$");
-        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        if (!regex.test(key)) {
-            event.preventDefault();
-            return false;
-        }
+        //var regex = new RegExp("^[a-zA-Z]+$");
+        //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        //if (!regex.test(key)) {
+        //    event.preventDefault();
+        //    return false;
+        //}
     });
     $('#errormsg').hide();
 
     $('#txtcategoryedit').on('keypress', function (event) {
         $('#errormsgedit').hide();
-        var regex = new RegExp("^[a-zA-Z]+$");
-        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        if (!regex.test(key)) {
-            event.preventDefault();
-            return false;
-        }
+        //var regex = new RegExp("^[a-zA-Z]+$");
+        //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        //if (!regex.test(key)) {
+        //    event.preventDefault();
+        //    return false;
+        //}
     });
     $('#errormsgedit').hide();
 

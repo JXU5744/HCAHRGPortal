@@ -45,14 +45,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetCategoryByid(string id)
+        public ActionResult GetCategoryByid(int id)
         {
             object response = "";
-            if (string.IsNullOrEmpty(id))
+            if (id == 0)
             {
                 return Json(response);
             }
-            return Json(GetSingleCategoryByid(id));
+            var data = GetDetail(id);
+            return Json(data);
         }
         SubCategory GetSingleCategoryByid(string id)
         {
@@ -227,6 +228,30 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return query;
         }
 
+        CatSubCatJoinMast GetDetail(int subcatid)
+        {
+            var query = _auditToolContext.subCategories
+                .Join(
+        _auditToolContext.categories,
+        subCategories => subCategories.CatgID,
+        categories => categories.CatgID,
+        (subCategories, categories) => new
+        {
+            CatgID = categories.CatgID,
+            SubCatID = subCategories.SubCatgID,
+            CatgDescription = categories.CatgDescription,
+            SubCatgDescription = subCategories.SubCatgDescription
+        })
+         .Select(x => new CatSubCatJoinMast
+         {
+             CatgID = x.CatgID,
+             SubCatgID = x.SubCatID,
+             CatgDescription = x.CatgDescription,
+             SubCatgDescription = x.SubCatgDescription
+         }
+        ).Where(a => a.SubCatgID == subcatid).SingleOrDefault();
+            return query;
+        }
         [HttpPost]
         public IActionResult delete(int id)
         {
