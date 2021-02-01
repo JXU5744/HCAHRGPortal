@@ -102,7 +102,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = (from cat in _auditToolContext.categories select cat).ToList();
             Categorys objCategorys = data.Find(category => category.CatgID == id);
             _auditToolContext.categories.Remove(objCategorys); _auditToolContext.SaveChanges();
-            return RedirectToAction("details");
+            return RedirectToAction("details",GetDetails());
         }
 
         List<Categorys> GetDetails()
@@ -116,7 +116,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             object response;
             var data = (from cat in _auditToolContext.subCategories select cat).ToList();
             SubCategory obj = data.Find(a => a.CatgID ==  id);
-            response = obj == null ? true: false;
+            response = obj == null ? "HasecOrds" : "NoRecOrds";
             return Json(response);
         }
 

@@ -113,13 +113,15 @@
 <div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
 
     <div class="row">
-        <div class="col-sm-12">Do you want to Delete this Subcategory?</div>
+        
+        <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
     </div>
     <br />
     <div class="row">
         <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
         <div class="col-sm-2"></div>
         <div class="col-sm-6">
+            <button id="btndeleteCategoryok" class="btn btn-primary">Ok</button>&nbsp;
             <button id="btnSubCatdelete" class="btn btn-primary"> Yes</button>&nbsp;
             <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
 
@@ -283,6 +285,41 @@
         $("#popupcontentdelete").dialog('open');
         $("#hdndeletecatid").val(CatgID);
     }
+
+    function DeleteData(CatgID) {
+        $.ajax({
+            type: "POST",
+            url: "/SubCategory/HasDeleteAccess",
+            data: { "id": CatgID },
+            success: function (response) {
+                //alert(response);
+                if (response == "HasecOrds") {
+                    $("#lblcustomtextfor").text("Do you want to Delete this Service Delivery Group?");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").hide();
+                    $("#btnSubCatdelete").show();
+                    $("#btncancelpopupdelete").show();
+                    $("#hdndeletecatid").val(CatgID);
+                }
+                else if (response == "NoRecOrds") {
+                    $("#lblcustomtextfor").text("Cannot delete as it is currently mapped to Subcategory");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").show();
+                    $("#btnSubCatdelete").hide();
+                    $("#btncancelpopupdelete").hide();
+                    //alert('Entered else');
+                    //return trueOrFalse(false);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
+
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
     });
@@ -357,6 +394,8 @@
         position: 'bottom'
     });
 
+    
+
     function OpenEditpopup(SubCatgID) {
         $('#errormsgedit').hide();
         $("#popupcontentedit").dialog('open');
@@ -379,4 +418,8 @@
             }
         });
     }
+
+    $("#btndeleteCategoryok").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
 </script>

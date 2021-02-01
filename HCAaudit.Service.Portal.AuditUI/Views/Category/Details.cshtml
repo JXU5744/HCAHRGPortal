@@ -93,7 +93,8 @@
 
     <div class="row">
         <div class="col-sm-12">
-            Do you want to Delete this Service Delivery Group?
+            <label id="lblcustomtextfor"></label>
+            
         </div>
     </div>
     <br />
@@ -101,6 +102,7 @@
         <div class="col-sm-2"><input id="hdndeletecatid" type="hidden"/></div>
         <div class="col-sm-4"></div>
         <div class="col-sm-6">
+            <button id="btndeleteCategoryok" class="btn btn-primary">Ok</button>&nbsp;
             <button id="btndeleteCategory" class="btn btn-primary">Yes</button>&nbsp;
             <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
         </div>
@@ -302,6 +304,10 @@
         });
     }
 
+    
+    $("#btndeleteCategoryok").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
 
     function DeleteData(CatgID) {
         $.ajax({
@@ -310,14 +316,22 @@
             data: { "id": CatgID },
             success: function (response) {
                 //alert(response);
-                if (response) {
-                    //alert('Entered if');
+                if (response == "HasecOrds") {
+                    $("#lblcustomtextfor").text("Do you want to Delete this Service Delivery Group?");
                     $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").hide();
+                    $("#btndeleteCategory").show();
+                    $("#btncancelpopupdelete").show();
                     $("#hdndeletecatid").val(CatgID);
                 }
-                else {
+                else if (response == "NoRecOrds"){
+                    $("#lblcustomtextfor").text("Cannot delete as it is currently mapped to Subcategory");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").show();
+                    $("#btndeleteCategory").hide();
+                    $("#btncancelpopupdelete").hide();
                     //alert('Entered else');
-                    return trueOrFalse(false);
+                    //return trueOrFalse(false);
                 }
             },
             failure: function (response) {

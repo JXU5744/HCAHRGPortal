@@ -268,7 +268,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = (from subCat in _auditToolContext.categories select subCat).ToList();
             return data;
         }
-        
+
+        [HttpPost]
+        public ActionResult HasDeleteAccess(int id)
+        {
+            object response;
+            var data = (from cat in _auditToolContext.questionMasters select cat).ToList();
+            QuestionMaster obj = data.Find(a => a.SubCatgID == id);
+            response = obj == null ? "NoRecOrds" : "HasecOrds";
+            return Json(response);
+        }
+
     }
 
 }
