@@ -102,13 +102,11 @@
     <Content Update="wwwroot\js\site.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\template\Batch_Load_Template.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Controllers\Evaluation\" />
+    <Folder Include="wwwroot\assets\fonts\Glyphicons Halflings\" />
   </ItemGroup>
 
 </Project>

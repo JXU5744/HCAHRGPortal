@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Sub Category";
 }
 @model List<HCAaudit.Service.Portal.AuditUI.Models.CatSubCatJoinMast>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
 
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
@@ -15,120 +15,114 @@
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
 
-<div class="container">
-    <br />
-    <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-3"></div>
-        <div class="col-sm-3"></div>
-        <div class="col-sm-3"><button type="button" id="btnopenPopUp" class="btn btn-primary">Add Subcategory</button> </div>
-    </div>
-    <br />
-    <div style="width:90%; margin:0 auto;">
-        <table id="example" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>SubCatID</th>
-                    <th>Service Delivery Group</th>
-                    <th>Subcategory Name</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
-</div>
-
-<div id="popupcontent" title="Add Subcategory" hidden="hidden" class="container">
-
-    <div class="row">
-        <div class="col-sm-5">
-            <label for="format-pdf" class="input-group">Service Delivery Group:</label>
-            <select name="teams" id="ddlcategory" class="form-control">
-            </select>
-            <span id="errormsgcategory" style="color:red"></span>
+<main class="container neu-margin--top-30">
+    <div class="jumbotron-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Sub Category</h3>
+            </div>
         </div>
-        <div class="col-sm-5"></div>
-        <div class="col-sm-2"></div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-10">
-            <label for="format-pdf" style="text-align:left;">Subcategory</label>
-            <input id="txtsubcategory" class="form-control form-control-sm"
-                   type="text" />
-            <span id="errormsgsubcategory" style="color:red"></span>
-        </div>
-        <div class="col-sm-2"></div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-2"></div>
-        <div class="col-sm-6">
-            <button id="btnaddSubCategory" class="btn btn-primary"> Save</button>&nbsp;
-            <button id="btncancelpopup" class="btn btn-danger">Cancel</button>
-
-        </div>
-    </div>
-</div>
-
-<div id="popupcontentedit" title="Edit Subcategory" hidden="hidden" class="container">
-
-    <div class="row">
-        <div class="col-sm-5">
-            <label for="format-pdf" style="text-align:left;">Service Delivery Group:</label>
-            <input id="txtcategoryreadonly" disabled="disabled" class="form-control form-control-sm"
-                   type="text" />
-        </div>
-        <div class="col-sm-5">
-        </div>
-        <div class="col-sm-2">
-        </div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-10">
-            <label for="format-pdf" class="input-group">Subcategory:</label>
-            <input id="txtsubcategoryedit" class="form-control form-control-sm"
-                   type="text" />
-            <span id="errormsgedit" style="color:red"></span>
-        </div>
-        <div class="col-sm-2">
-            <input id="hdnid" type="hidden" />
-        </div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-4"></div>
-        <div class="col-sm-6">
-            <button id="btneditCategory" class="btn btn-primary">Update</button>&nbsp;
-            <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
-        </div>
-    </div>
-</div>
-
-
-<div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
-
-    <div class="row">
         
-        <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
-        <div class="col-sm-2"></div>
-        <div class="col-sm-6">
-            <button id="btndeleteCategoryok" class="btn btn-primary">Ok</button>&nbsp;
-            <button id="btnSubCatdelete" class="btn btn-primary"> Yes</button>&nbsp;
-            <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
+        <div class="container">
+            <br />
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Subcategory</button> </div>
+            </div>
+            <br />
+            <div style="width:90%; margin:0 auto;">
+                <table id="example" class="neu-table" width="100%" cellspacing="0">
+                    <thead class="neu-table__head">
+                        <tr class="neu-table__header neu-table__sort-icon">
+                            <th>SubCatID</th>
+                            <th>Service Delivery Group</th>
+                            <th>Sub Category Name</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
 
+        <div id="popupcontent" title="Add Subcategory" hidden="hidden" class="container">
+
+            <div class="row">
+                <div class="col-sm-5">
+                    <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
+                    <select name="teams" id="ddlcategory" class="neu-input__field">
+                    </select>
+                    <span id="errormsgcategory" class="neu-button--danger">Select Service Delivery Group</span>
+                </div>
+                <div class="col-sm-6">
+                    <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
+                    <input id="txtsubcategory" class="neu-input__field"
+                           type="text" />
+                    <span id="errormsgsubcategory" class="neu-button--danger">Enter Subcategory</span>
+                </div>
+                <div class="col-sm-1"></div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-6">
+                    <button id="btnaddSubCategory" class="neu-button--primary neu-button neu-button--raised">Save</button>&nbsp;
+                    <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="popupcontentedit" title="Edit Subcategory" hidden="hidden" class="container">
+
+            <div class="row">
+                <div class="col-sm-5">
+                    <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
+                    <select name="teams" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled">
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
+                    <input id="txtsubcategoryedit" class="neu-input__field"
+                           type="text" />
+                    <span id="errormsgedit" class="neu-button--danger" />
+                </div>
+                    <div class="col-sm-2">
+                        <input id="hdnid" type="hidden" />
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-6">
+                        <button id="btneditCategory" class="neu-button--primary neu-button neu-button--raised">Update</button>&nbsp;
+                        <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+
+        <div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
+
+            <div class="row">
+
+                <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
+                <div class="col-sm-6">
+                    <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">Ok</button>&nbsp;
+                    <button id="btnSubCatdelete" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+                    <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
+
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
+</main>
 <script>
 
     $(document).ready(function() {
@@ -152,12 +146,12 @@
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 { "data": "SubCatgDescription", "name": "SubCatgDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="#" onclick=OpenEditpopup(' + full.SubCatgID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="#" onclick=OpenEditpopup(' + full.SubCatgID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.SubCatgID + "'); >Delete</a>";
+                        return "<a href='#' class='neu-button--danger neu-button--small neu-button--flat' onclick=DeleteData('" + row.SubCatgID + "'); >Delete</a>";
                     }
                 }
             ]
@@ -180,7 +174,7 @@
             $("#popupcontent").dialog('close');
         });
     })
-    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 650 });
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
 
         $("#btnopenPopUp").click(function () {
             $('#errormsgsubcategory').hide();
@@ -275,7 +269,7 @@
         });
     });
 
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
 
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
@@ -394,7 +388,7 @@
         position: 'bottom'
     });
 
-    
+
 
     function OpenEditpopup(SubCatgID) {
         $('#errormsgedit').hide();
