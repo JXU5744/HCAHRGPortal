@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using System.Collections;
+using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -61,6 +62,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
+        public IActionResult GetSearchDetails(SearchViewModel  searchparameter)
+        {
+
+            return View();
+        }
+            
+
+
+        [HttpPost]
         public IActionResult Details(BindSearchGrid objBindSearchGrid)
         {
             try
@@ -89,7 +99,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;
 
-                SearchFilters searchFilters = new SearchFilters();
+                //SearchFilters searchFilters = new SearchFilters();
 
                 //if(group2.selected)
                 //searchFilters.Environment =

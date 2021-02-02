@@ -24,4 +24,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         //    optionsBuilder.UseSqlServer(@"data source=(localdb)\\MSSQLLocalDB; initial catalog=HRAudit;persist security info=True;user id=sa");
         //}
     }
+
+    
 }
