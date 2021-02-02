@@ -15,7 +15,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public DbSet<tblQuestionBank> questionBank { get; set; }
 
         public DbSet<clstbHROCAuditor> hrocAuditors { get; set; }
-        
+
+        public DbSet<TicketsViaSsi> searchTicketDetail { get; set; }
+
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{

@@ -11,7 +11,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 {
     public class clstbHROCRosterList
     {
-        public List<clstbHROCRoster>  _hrocrosterList { get; set; }
+        public List<clstbHROCRoster> _hrocrosterList { get; set; }
     }
 
     [Table("tbHROCAuditors")]
@@ -25,7 +25,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     [Table("tbHROCRoster")]
     public class clstbHROCRoster
     {
-        
+
         [Column("Employee Num")]
         public double? EmployeeNumber { get; set; }
         [Column("Employee Full Name")]
@@ -74,12 +74,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string membername { get; set; }
         public static List<AssignedTo> GetAssignedTo()
         {
-            List<AssignedTo> objticketsList = new List<AssignedTo> {
+            List<AssignedTo> objticketsList = new List<AssignedTo>
+            {
             new AssignedTo { memberID = 1, membername = "MadisonBoling" },
-    new AssignedTo { memberID = 2, membername = "ATSEmail-Channel" },
-    new AssignedTo { memberID = 3, membername = "NicoleDietz" },
-    new AssignedTo { memberID = 4, membername = "AllaMaria" },
-     new AssignedTo { memberID = 5, membername = "FelisaMccarver" }
+            new AssignedTo { memberID = 2, membername = "ATSEmail-Channel" },
+            new AssignedTo { memberID = 3, membername = "NicoleDietz" },
+            new AssignedTo { memberID = 4, membername = "AllaMaria" },
+            new AssignedTo { memberID = 5, membername = "FelisaMccarver" }
         };
             return objticketsList;
         }
@@ -101,15 +102,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     }
 
     public class BindSearchGrid
-        {
+    {
         public string TicketNumber { get; set; }
         public string CreatedDate { get; set; }
         public string status { get; set; }
         public string Subject { get; set; }
         public string ServiceGroup { get; set; }
         public string AssignedTo { get; set; }
+
+        public string Category { get; set; }
+
+        public string Subcategory { get; set; }
+        public string UserThreeFourID { get; set; }
+        public DateTime?  ClosedDateTime { get; set; }
+        public string Topic { get; set; }
+
         public List<BindSearchGrid> _dataforGrid { get; set; }
-        public  static List<BindSearchGrid> GetGridData()
+        public static List<BindSearchGrid> GetGridData()
         {
             List<BindSearchGrid> objgriddata = new List<BindSearchGrid> {
         new BindSearchGrid{ TicketNumber="ZYU126DG",CreatedDate=DateTime.Now.ToShortDateString(),status="Active",Subject="Onboarding Employees",ServiceGroup="OA",AssignedTo="Girish"},
@@ -148,7 +157,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         [Key]
         public int CatgID { get; set; }
         public string CatgDescription { get; set; }
-       
+
     }
 
 
@@ -186,11 +195,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
     //public class QuestionMaster
     //{
-        
+
     //   // public string QuestionId { get; set; }
     //   // public int SubCatgID { get; set; }
     //   // public int CatgID { get; set; }
-        
+
     //    public List<tbQuestionMaster> _questionMasterList { get; set; }
     //}
 

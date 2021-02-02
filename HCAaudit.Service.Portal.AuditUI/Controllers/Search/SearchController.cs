@@ -41,9 +41,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpGet]
         public IActionResult Details()
         {
+            //BindSearchGrid objBindSearchGrid = new BindSearchGrid();
+            //objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
+            //return View("Details", objBindSearchGrid);
+
+
             BindSearchGrid objBindSearchGrid = new BindSearchGrid();
-            objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
+            try
+            {
+                objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                // _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Details", ErrorDiscription = ex.Message });
+            }
             return View("Details", objBindSearchGrid);
+
         }
 
         [HttpPost]
@@ -75,9 +89,21 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;
 
-                // getting all Customer data  
-                var customerData = (from tempcustomer in BindSearchGrid.GetGridData()
-                                    select tempcustomer);
+                SearchFilters searchFilters = new SearchFilters();
+
+                //if(group2.selected)
+                //searchFilters.Environment =
+
+
+                //getting all Customer data
+                //var customerData = (from tempcustomer in BindSearchGrid.GetGridData()
+                //                    select tempcustomer);
+
+
+                var customerData = GetSearchResult();
+
+
+                // var customerData = GetSearchResult();
 
                 //Sorting  
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
@@ -87,11 +113,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         case "TicketNumber":
                             if (sortColumnDirection == "desc")
                             {
-                                customerData = customerData.OrderByDescending(s => s.TicketNumber);
+                                //customerData = customerData.OrderByDescending(s => s.TicketNumber);
                             }
                             else
                             {
-                                customerData = customerData.OrderBy(s => s.TicketNumber);
+                                //customerData = customerData.OrderBy(s => s.TicketNumber);
                             }
                             break;
                     }
@@ -99,7 +125,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 //Search  
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    customerData = customerData.Where(m => m.TicketNumber.ToLower() == searchValue.ToLower());
+                    //customerData = customerData.Where(m => m.TicketNumber.ToLower() == searchValue.ToLower());
                 }
 
                 //total number of rows counts   
@@ -110,9 +136,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -141,7 +167,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             //ticketList.Insert(0, new Tickets { TicketID = 0, Ticket = "Select Ticket" });
             ViewBag.ListOfTicket = ticketList;
 
-            var assignedtoList = AssignedTo.GetAssignedTo();
+            //var assignedtoList = AssignedTo.GetAssignedTo();
+
+            var assignedtoList = GetHRList();
             //assignedtoList.Insert(0, new AssignedTo { memberID = 0, membername = "Select Member" });
             ViewBag.ListOfMembers = assignedtoList;
 
@@ -167,6 +195,75 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = (from subCat in _auditToolContext.categories select subCat).ToList();
             return data;
         }
+
+        public List<AssignedTo> GetHRList()
+        {
+            var query = (from hrdata in _auditToolContext.hrocMaster
+                         select new
+                         {
+                             HrThreeFourID = hrdata.EmployeethreefourID
+                         }).Distinct().ToList();
+
+            int rowno = 1;
+
+            List<AssignedTo> lstAssignedTo = new List<AssignedTo>();
+            foreach (var emplist in query)
+            {
+                AssignedTo tempAssignedto = new AssignedTo();
+                tempAssignedto.memberID = rowno;
+                tempAssignedto.membername = emplist.HrThreeFourID;
+                rowno++;
+                lstAssignedTo.Add(tempAssignedto);
+            }
+            return lstAssignedTo.ToList();
+        }
+
+
+        public List<BindSearchGrid> GetSearchResult()
+        {
+            //isActiveFlag
+
+            var ticketdata = (from ticket in _auditToolContext.searchTicketDetail
+                              join hrdata in _auditToolContext.hrocMaster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
+                              join Category in _auditToolContext.categories on hrdata.JobCDDesc equals Category.CatgDescription 
+                               
+                              
+                              
+                              select new
+                              {
+                                  ticket.TicketCode,
+                                  hrdata.PositionDesc,
+                                  ticket.Category,
+                                  ticket.SubCategory,
+                                  ticket.CloseUserId,
+                                  hrdata.EmployeeFullName,
+                                  ticket.ClosedDateTime,
+                                  ticket.Topic
+                              }
+                              ).ToList();
+
+
+            List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
+            foreach (var t in ticketdata)
+            {
+                BindSearchGrid tempItem = new BindSearchGrid();
+                tempItem.TicketNumber = t.TicketCode;
+                tempItem.ServiceGroup = t.PositionDesc;
+                tempItem.Category = t.Category;
+                tempItem.Subcategory = t.SubCategory;
+                tempItem.UserThreeFourID = t.CloseUserId;
+                tempItem.AssignedTo = t.EmployeeFullName;
+                tempItem.ClosedDateTime = t.ClosedDateTime;
+                tempItem.Topic = t.Topic;
+                objgriddata.Add(tempItem);
+            }
+
+
+
+            return objgriddata;
+        }
     }
+
+
 }
 
