@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Service Delivery Group";
+    ViewData["Title"] = " Category Page";
 }
 @model List<HCAaudit.Service.Portal.AuditUI.Models.Categorys>
 
@@ -16,113 +16,108 @@
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
 
-<main class="container neu-margin--top-30">
-    <div class="jumbotron-fluid">
+<div class="container">
+    <br />
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3"><button type="button" id="btnopenPopUp" class="btn btn-primary">Add Service Delivery Group</button> </div>
+    </div>
 
-        <div class="row">
-            <div class="col-12">
-                <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Service Delivery Group</h3>
-            </div>
+    <br />
+    <div style="width:90%; margin:0 auto;">
+        <table id="example" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>CatgID</th>
+                    <th>Service Delivery Group</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-1"> </div>
+        <div class="col-sm-7">
+            <label for="format-pdf" class="input-group">Service Delivery Group:</label>
+            <input id="txtcategory" maxlength="10" class="form-control form-control-sm"
+                   type="text" />
+            <span id="errormsg" style="color:red"></span>
         </div>
-
-        <div class="container">
-            <br />
-            <div class="row">
-                <div class="col-sm-3"></div>
-                <div class="col-sm-3"></div>
-                <div class="col-sm-3" style="padding-left:17%"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Service Delivery Group</button> </div>
-                <div class="col-sm-3"></div>
-            </div>
-
-            <br />
-            <div style="width:90%; margin:0 auto;">
-                <table id="example" class="neu-table" width="100%" cellspacing="0">
-                    <thead>
-                        <tr class="neu-table__row--large">
-                            <th>CatgID</th>
-                            <th style="width:70%">Service Delivery Group</th>
-                            <th style="width:15%">Edit</th>
-                            <th style="width:15%">Delete</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-
-        <div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
-
-            <div class="row">
-                <div class="col-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:center;">
-                        <label class="neu-input__label" for="format-pdf" style="text-align:center;width:50%;">Service Delivery Group</label>
-                        <input class="neu-input__field" aria-disabled="false" type="text" id="txtcategory">
-                    </div>
-                    <div class="col-sm-4">
-                        <input id="hdnid" type="hidden" />
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-4">
-                    <button id="btnaddCategory" class="neu-button--primary neu-button neu-button--raised">Save</button>&nbsp;
-                    <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="popupcontentedit" title="Edit Category" hidden="hidden" class="container" >
-
-            <div class="row">
-                <div class="col-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:center;">
-                        <label class="neu-input__label" for="format-pdf" style="text-align:center;width:50%;">Service Delivery Group</label>
-                        <input class="neu-input__field" aria-disabled="false" type="text" id="txtcategory">
-                        <span id="errormsg" class="neu-button--danger">Please enter Service Delivery Group</span>
-                    </div>
-                    <div class="col-sm-4">
-                        <input id="hdnid" type="hidden" />
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-4">
-                    <button id="btneditCategory" class="neu-button--primary neu-button neu-button--raised">Update</button>&nbsp;
-                    <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="popupcontentdelete" title="Delete Service Delivery Group" hidden="hidden" class="container">
-
-            <div class="row">
-                <div class="col-sm-12">
-                    <label id="lblcustomtextfor"></label>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-sm-2"><input id="hdndeletecatid" type="hidden" /></div>
-                <div class="col-sm-4"></div>
-                <div class="col-sm-6">
-                    <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised neu-button--large">Ok</button>&nbsp;
-                    <button id="btndeleteCategory" class="neu-button--primary neu-button neu-button--raised neu-button--large">Yes</button>&nbsp;
-                    <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-button--large neu-margin--left-10">No</button>
-                </div>
-            </div>
+        <div class="col-sm-1"></div>
+    </div>
+    <br />  
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btnaddCategory" class="btn btn-primary">Save</button>&nbsp;
+            <button id="btncancelpopup" class="btn btn-danger">Cancel</button>
         </div>
     </div>
-</main>
+
+</div>
+
+<div id="popupcontentedit" title="Edit Category" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-2"> </div>
+        <div class="col-sm-6">
+            <label for="format-pdf" class="input-group">Service Delivery Group:</label>
+            <input id="txtcategoryedit" class="form-control form-control-sm"
+                   type="text" />
+            <span id="errormsgedit" style="color:red"></span>
+        </div>
+        <div class="col-sm-4">
+        <input id="hdnid" type="hidden" /></div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btneditCategory" class="btn btn-primary">Update</button>&nbsp;
+            <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="popupcontentdelete" title="Delete Service Delivery Group" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <label id="lblcustomtextfor"></label>
+            
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2"><input id="hdndeletecatid" type="hidden"/></div>
+        <div class="col-sm-4"></div>
+        <div class="col-sm-6">
+            <button id="btndeleteCategoryok" class="btn btn-primary">Ok</button>&nbsp;
+            <button id="btndeleteCategory" class="btn btn-primary">Yes</button>&nbsp;
+            <button id="btncancelpopupdelete" class="btn btn-danger">No</button>
+        </div>
+    </div>
+
+</div>
+
+
 <script>
 
     $(document).ready(function() {
         $("#example").DataTable({
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
-            "filter": false, // this is for disable filter (search box)
+            "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
             "ajax": {
                 "url": "/Category/Details",
@@ -138,12 +133,12 @@
                 { "data": "CatgID", "name": "CatgID", "autoWidth": true },
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="#" onclick=OpenEditpopup(' + full.CatgID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="#" onclick=OpenEditpopup(' + full.CatgID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return "<a href='#' class='neu-button--danger neu-button--small neu-button--flat' onclick=DeleteData('" + row.CatgID + "'); >Delete</a>";
+                        return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.CatgID + "'); >Delete</a>";
                     }
                 },
             ]
@@ -188,11 +183,11 @@
         });
     });
 
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+
     $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
 
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
-
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
 
     $("#btnopenPopUp").click(function () {
         $('#txtcategory').val(""); $('#errormsgedit').hide();
@@ -282,13 +277,13 @@
 
     });
 
-
+    
     $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
 
     $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
     function OpenEditpopup(CatgID) {
 
-        $('#errormsgedit').hide();
+        $('#errormsgedit').hide();        
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
             type: "POST",
@@ -309,7 +304,7 @@
         });
     }
 
-
+    
     $("#btndeleteCategoryok").click(function () {
         $("#popupcontentdelete").dialog('close');
     });
@@ -369,4 +364,4 @@
         });
     });
 
-        </script>
+</script>
