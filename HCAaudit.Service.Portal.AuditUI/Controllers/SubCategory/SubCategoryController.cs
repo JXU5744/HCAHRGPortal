@@ -75,7 +75,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var collection = GetDetails(); 
                     foreach (var item in collection)
                     {
-                        if (item.SubCatgDescription == param[1].Trim())
+                        if (item.SubCatgDescription.ToLower() == param[1].ToLower().Trim())
                         { responce = "1"; break; }
                     }
                     if (string.IsNullOrEmpty(responce.ToString()))
@@ -275,7 +275,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             object response;
             var data = (from cat in _auditToolContext.questionMasters select cat).ToList();
             QuestionMaster obj = data.Find(a => a.SubCatgID == id);
-            response = obj == null ? "NoRecOrds" : "HasecOrds";
+            response = obj == null ? "NoRecords" : "HasRecords";
             return Json(response);
         }
 

@@ -34,8 +34,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             config = configuration;
         }
 
+        [HttpPost]
         public JsonResult GetCommaSeperated()
         {
+
+            var mydata = _auditToolContext.hrocAuditors.Select(a => a.Agent34ID);
+
             return Json(_auditToolContext.hrocAuditors.Select(a => a.Agent34ID));
         }
 
@@ -282,10 +286,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
-        public JsonResult BindSubCategory(string categoryID)
+        public JsonResult 
+            BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            var filteredSubCategoryList = SubCategoryList.GetSubCategory()
+            var subCategoryList = _auditToolContext.subCategories.ToList();
+            var filteredSubCategoryList = subCategoryList
                                          .Where(x => x.CatgID == Convert.ToInt32(categoryID))
                                          .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
             _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");

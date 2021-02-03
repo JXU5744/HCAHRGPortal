@@ -18,6 +18,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         public DbSet<TicketsViaSSIS> searchTicketDetail { get; set; }
 
+        public DbSet<AuditMainResponse> AuditMainResponse { get; set; }
+
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
