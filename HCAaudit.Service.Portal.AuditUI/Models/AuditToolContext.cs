@@ -16,7 +16,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         public DbSet<clstbHROCAuditor> hrocAuditors { get; set; }
 
-        public DbSet<TicketsViaSsi> searchTicketDetail { get; set; }
+        public DbSet<TicketsViaSSIS> searchTicketDetail { get; set; }
 
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

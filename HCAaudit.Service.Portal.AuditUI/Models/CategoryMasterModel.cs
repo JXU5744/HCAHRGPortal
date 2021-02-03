@@ -157,7 +157,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         [Key]
         public int CatgID { get; set; }
         public string CatgDescription { get; set; }
-
+        public bool IsActive { get; set; }
     }
 
 
@@ -190,6 +190,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int SubCatgID { get; set; }
         public int CatgID { get; set; }
         public string SubCatgDescription { get; set; }
+
+        public bool IsActive { get; set; }
         //public List<QuestionMaster> _questionList { get; set; }
     }
 
@@ -315,7 +317,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     }
 
     [Table("TicketsViaSSIS")]
-    public partial class TicketsViaSsi
+    public partial class TicketsViaSSIS
     {
         [Key]
         public string TicketCode { get; set; }

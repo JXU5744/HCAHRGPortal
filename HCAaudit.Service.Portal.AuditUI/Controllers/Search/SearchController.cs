@@ -62,10 +62,104 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetSearchDetails(SearchViewModel  searchparameter)
+        public IActionResult GetSearchDetails(SearchViewModel searchparameter)
         {
+            List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
+            try
+            {
+                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
 
-            return View();
+                // Skip number of Rows count  
+                var start = Request.Form["start"].FirstOrDefault();
+
+                // Paging Length 10,20  
+                var length = Request.Form["length"].FirstOrDefault();
+
+                // Sort Column Name  
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+
+                // Sort Column Direction (asc, desc)  
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                // Search Value from (Search box)  
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+                //Paging Size (10, 20, 50,100)  
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                int recordsTotal = 0;
+                if (searchparameter == null)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    string environmentType = searchparameter.EnvironmentType != null ? searchparameter.EnvironmentType : "Production";
+                    int categoryId = searchparameter.CategoryID;
+                    int subCategoryId = searchparameter.SubcategoryID;
+                    string resultType = searchparameter.ResultType != null ? searchparameter.ResultType : "Audit";
+                    int ticketStatus = searchparameter.TicketStatus;
+                    DateTime fromDate = searchparameter.FromDate == null ? DateTime.Today.AddDays(-1) : searchparameter.FromDate;
+                    DateTime toDate = searchparameter.EndDate == null ? fromDate.AddDays(-7) : searchparameter.EndDate;
+                    string assignedTo = !String.IsNullOrWhiteSpace(searchparameter.AssignedTo) ? searchparameter.AssignedTo : string.Empty;
+                    string ticketSubStatus = !String.IsNullOrWhiteSpace(searchparameter.TicketSubStatus) ? searchparameter.TicketSubStatus : string.Empty;
+                    string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
+
+                    if (resultType.Equals("Audit"))
+                    {
+                        if (ticketStatus == 0)
+                        {
+                            objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                                ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate);
+                        }
+                        else
+                        {
+                            //GetPendingAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                            //  ticketStatus, assignedTo, fromDate, assignedTo);
+                        }
+                    }
+                    else
+                    {
+
+                    }
+
+                    //Sorting  
+                    if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                    {
+                        switch (sortColumn)
+                        {
+                            case "TicketNumber":
+                                if (sortColumnDirection == "desc")
+                                {
+                                    //customerData = customerData.OrderByDescending(s => s.TicketNumber);
+                                }
+                                else
+                                {
+                                    //customerData = customerData.OrderBy(s => s.TicketNumber);
+                                }
+                                break;
+                        }
+                    }
+                    //Search  
+                    if (!string.IsNullOrEmpty(searchValue))
+                    {
+                        //customerData = customerData.Where(m => m.TicketNumber.ToLower() == searchValue.ToLower());
+                    }
+
+                    //total number of rows counts   
+                    recordsTotal = objgriddata.Count();
+                    //Paging   
+                    var jsonData = objgriddata.Skip(skip).Take(pageSize).ToList();
+                    //Returning Json Data  
+                    return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
             
 
@@ -161,8 +255,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public IActionResult Index(BindSearchGrid objBindSearchGrid)
         {
-
-
             return RedirectToAction("Details", objBindSearchGrid);
         }
         [HttpGet]
@@ -228,8 +320,87 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return lstAssignedTo.ToList();
         }
 
+        public List<BindSearchGrid> GetClosedAuditSearchResult(String environmentType, int categoryId, int subCategoryId, String resultType,
+                            int ticketStatus, string ticketSubStatus, string resultCountCriteria, string assignedTo, DateTime fromDate, DateTime toDate)
+        {
+            List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
 
-        public List<BindSearchGrid> GetSearchResult()
+            //if (ticketStatus == 0)
+            //{
+            //    var activeCategories = categoryId == 0 ? (from category in _auditToolContext.categories where category.IsActive == true
+            //                                              select new { category.CatgID, category.CatgDescription }).ToList() : (from category in _auditToolContext.categories
+            //                                                                                                   where category.CatgID == categoryId
+            //                                                                                                   select new { category.CatgID, category.CatgDescription }).ToList();
+
+            //    var activeSubCategories = subCategoryId == 0 ? (from subcategory in _auditToolContext.subCategories where subcategory.IsActive == true
+            //                                              select new { subcategory.CatgID, subcategory.SubCatgID, subcategory.SubCatgDescription }).ToList() : (from subcategory in _auditToolContext.subCategories
+            //                                                                                                                                                    where subcategory.SubCatgID == subCategoryId
+            //                                                                                                                             select new { subcategory.CatgID, subcategory.SubCatgID, subcategory.SubCatgDescription }).ToList();
+
+            //    var hrProfessionals = !String.IsNullOrWhiteSpace(assignedTo) ? (from hrProfessional in _auditToolContext.hrocMaster
+            //                                                                    where hrProfessional.EmployeethreefourID.ToLower() == assignedTo.ToLower()
+            //                                                                    select new {
+            //                                                                        hrProfessional.EmployeeFullName,
+            //                                                                        hrProfessional.EmployeethreefourID,
+            //                                                                        hrProfessional.JobCDDesc
+            //                                                                    }).ToList() : (from hrProfessional in _auditToolContext.hrocMaster
+            //                                                                                   select new
+            //                                                                                   {
+            //                                                                                       hrProfessional.EmployeeFullName,
+            //                                                                                       hrProfessional.EmployeethreefourID,
+            //                                                                                       hrProfessional.JobCDDesc
+            //                                                                                   }).ToList();
+
+            //    var ticketdata = (from ticket in _auditToolContext.searchTicketDetail
+            //                      join hrresult in hrProfessionals on ticket.CloseUserId.ToLower().Substring(0, 7) equals hrresult.EmployeethreefourID.ToLower() 
+            //                      join activesubCategory in activeSubCategories on ticket.SubCategory equals activesubCategory.SubCatgDescription
+            //                      where ticket.TicketStatus == ticketStatus.ToString() && 
+            //                      ticket.ClosedDate >= fromDate &&
+            //                      ticket.ClosedDate <= toDate
+
+            //                      select new
+            //                      {
+            //                          ticket.TicketCode,
+            //                          hrresult.JobCDDesc,
+            //                          ticket.Category,
+            //                          ticket.SubCategory,
+            //                          hrresult.EmployeethreefourID,
+            //                          hrresult.EmployeeFullName,
+            //                          ticket.ClosedDateTime,
+            //                          ticket.Topic
+            //                      }
+            //                      ).ToList();
+
+            //    objgriddata = new List<BindSearchGrid>();
+            //    foreach (var t in ticketdata)
+            //    {
+            //        BindSearchGrid tempItem = new BindSearchGrid();
+            //        tempItem.TicketNumber = t.TicketCode;
+            //        tempItem.ServiceGroup = t.JobCDDesc;
+            //        tempItem.Category = t.Category;
+            //        tempItem.Subcategory = t.SubCategory;
+            //        tempItem.UserThreeFourID = t.EmployeethreefourID;
+            //        tempItem.AssignedTo = t.EmployeeFullName;
+            //        tempItem.ClosedDateTime = t.ClosedDateTime;
+            //        tempItem.Topic = t.Topic;
+            //        objgriddata.Add(tempItem);
+            //    }
+
+
+            //}
+            //else
+            //{
+
+            //}
+
+            //var query = "Exec dbo.usp_GetHRAuditSearchResult";
+
+            //objgriddata = _auditToolContext.Database.SqlQuery<BindSearchGrid>
+
+            return objgriddata;
+        }
+
+            public List<BindSearchGrid> GetSearchResult()
         {
             //isActiveFlag
 
