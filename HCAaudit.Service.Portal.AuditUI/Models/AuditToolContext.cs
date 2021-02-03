@@ -15,11 +15,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public DbSet<tblQuestionBank> questionBank { get; set; }
 
         public DbSet<clstbHROCAuditor> hrocAuditors { get; set; }
-        
+
+        public DbSet<TicketsViaSSIS> searchTicketDetail { get; set; }
+
+        public DbSet<AuditMainResponse> AuditMainResponse { get; set; }
+
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    optionsBuilder.UseSqlServer(@"data source=(localdb)\\MSSQLLocalDB; initial catalog=HRAudit;persist security info=True;user id=sa");
         //}
     }
+
+    
 }

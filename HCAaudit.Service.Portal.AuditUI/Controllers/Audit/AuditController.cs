@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using System.Collections;
+using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -117,34 +118,126 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return Redirect("https://www.google.com");
         }
 
-        [HttpPost]
-        public IActionResult Index(BindSearchGrid objBindSearchGrid)
-        {
-            return RedirectToAction("Details", objBindSearchGrid);
-        }
+        //[HttpPost]
+        //public IActionResult Index(BindSearchGrid objBindSearchGrid)
+        //{
+        //    return RedirectToAction("Details", objBindSearchGrid);
+        //}
         [HttpGet]
-        public IActionResult Index()
+        //public IActionResult Index(AuditViewModel auditViewModel)
+
+            public IActionResult Index()
         {
-            var categoryList = GetCategoryDetails();
-            _logger.LogInformation($"No of records: {categoryList.Count()}");
-            //categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
-            ViewBag.ListOfCategory = categoryList;
+            //if (auditViewModel != null)
+            {
+                //var ticketId = auditViewModel.TicketId;
+                //var ticketStatus = auditViewModel.TicketStatus;
+                //var ticketSubStatus = auditViewModel.TicketStatus;
+                //var auditTicketDate = auditViewModel.TicketDate;
+                //var serviceCategory = auditViewModel.ServiceCatId;
+                //var subCategory = auditViewModel.SubCatId;
 
-            var ticketList = Tickets.GetTickets();
-            //ticketList.Insert(0, new Tickets { TicketID = 0, Ticket = "Select Ticket" });
-            ViewBag.ListOfTicket = ticketList;
+                //if (ticketStatus == 0)
+                //{
+                //   // var ticketInfo = _auditToolContext.t
+                //}
+                //else
+                //{
 
-            var assignedtoList = AssignedTo.GetAssignedTo();
-            //assignedtoList.Insert(0, new AssignedTo { memberID = 0, membername = "Select Member" });
-            ViewBag.ListOfMembers = assignedtoList;
+                //}
 
-            var statusList = Status.GetStatus();
-            //statusList.Insert(0, new Status { StatusID = 0, Statusname = "Select Status" });
-            ViewBag.StatusList = statusList;
-            return View();
+               
+
+                var query = _auditToolContext.questionBank
+                   .Join(
+                        _auditToolContext.questionMasters,
+                        questionBanks => questionBanks.QuestionID,
+                       questionMasters => questionMasters.QuestionId,
+                       (questionBanks, questionMasters) => new
+                       {
+                           QuestionId = questionBanks.QuestionID,
+                           QuestionName = questionBanks.QuestionName,
+                           SeqNumber = questionMasters.SeqNumber,
+                           CatSubCatId = questionMasters.SubCatgID
+                       })
+                    .Where(a => a.CatSubCatId == 25)
+                    .OrderBy(b => b.SeqNumber)
+                    .Select(x => new QuestionConfigMappingJoinMast
+                    {
+                        QuestionId = x.QuestionId,
+                        QuestionName = x.QuestionName,
+                        QuestionSeqNumber = x.SeqNumber
+                    }
+                   ).ToList();
+
+
+
+                //var data = (from config in _auditToolContext.questionMasters
+                //            join question in _auditToolContext.questionBank
+                //            on config.QuestionId equals question.QuestionID
+                //            select question).Distinct().ToList();
+                ViewModel.Action objAction = new ViewModel.Action();
+                Impact objImpact = new Impact();
+                objImpact.IsHighImpact = false;
+                objImpact.IsLowImpact = false;
+                objAction.Impact = objImpact;
+                objAction.IsCompliance = false;
+                objAction.IsNonCompliance = false;
+                objAction.IsNotApplicable = false;
+                CategoryMast objCategoryMast = new CategoryMast();
+                objCategoryMast._categoryList = new List<Category>();
+                List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question> lstQuestionList = new List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question>();
+                foreach (var item in query)
+                {
+                    HCAaudit.Service.Portal.AuditUI.ViewModel.Question objQuestion = new HCAaudit.Service.Portal.AuditUI.ViewModel.Question();
+                    objQuestion.QuestionId = item.QuestionId;
+                    objQuestion.QuestionName = item.QuestionName;
+                    objQuestion.Action = objAction;
+                    objQuestion.CorrectionRequire = true;
+                    lstQuestionList.Add(objQuestion);
+                }
+                AuditViewModel auditDetail = new AuditViewModel();
+
+                auditDetail.Question = lstQuestionList;
+
+                return View(auditDetail);
+            }
+            //else
+            //{
+            //    return View(auditViewModel);
+            //}
         }
 
         [HttpPost]
+        //public IActionResult SaveAudit(AuditViewModel audit)
+        public IActionResult Index(AuditViewModel audit)
+        {
+            if (audit != null) {
+                AuditMainResponse obj = new AuditMainResponse();
+                
+                //        obj.QuestionId
+                //        obj.QuestionRank
+                //        obj.TicketID
+                foreach (var item in audit.Question)
+                {
+                    obj.QuestionId = item.QuestionId;
+                    obj.QuestionRank = item.QuestionSequence;
+                        obj.TicketID = Guid.NewGuid();
+                    obj.isCompliant = item.Action.IsCompliance;
+                    obj.isCorrectionRequired = item.CorrectionRequire;
+                    obj.isHighNonComplianceImpact = item.Action.Impact.IsHighImpact;
+                    obj.isLowNonComplianceImpact = item.Action.Impact.IsLowImpact;
+                    obj.isNA = item.Action.IsNotApplicable;
+                    obj.isNonCompliant = item.Action.IsNonCompliance;
+                    obj.NonComplianceComments = item.Comments;
+                    obj.ModifiedDate = DateTime.Now.ToShortDateString();
+                    _auditToolContext.AuditMainResponse.Add(obj);
+                    _auditToolContext.SaveChanges();
+                }
+            }
+            return View(audit);
+        }
+            [HttpPost]
         public JsonResult BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
@@ -196,6 +289,26 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             return RedirectToAction("Details");
         }
+       
+        //[HttpPost]
+        //public ActionResult GetTicketDetails()
+        //{
+        //    var data = (from config in _auditToolContext.questionMasters
+        //                join question in _auditToolContext.questionBank
+        //                on config.QuestionId equals question.QuestionID
+        //                select question).ToList();
+        //    CategoryMast objCategoryMast = new CategoryMast();
+        //    objCategoryMast._categoryList = new List<Category>();
+        //    List<QuestionMapping> lstQuestionList = new List<QuestionMapping>();
+        //    foreach (var item in data)
+        //    {
+        //        QuestionMapping objQUestionmapping = new QuestionMapping();
+        //        objQUestionmapping.QuestionId = item.QuestionID;
+        //        objQUestionmapping.QuestionDescription = item.QuestionName;
+        //        lstQuestionList.Add(objQUestionmapping);
+        //    }
+        //    return Json(lstQuestionList);
+     //   }
     }
 }
 

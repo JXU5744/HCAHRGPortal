@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-sm-6">
                     <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
-                    <input id="txtsubcategory" class="neu-input__field"
+                    <input id="txtsubcategory" class="neu-input__field" maxlength="50"
                            type="text" />
                     <span id="errormsgsubcategory" class="neu-button--danger">Enter Subcategory</span>
                 </div>
@@ -80,12 +80,12 @@
             <div class="row">
                 <div class="col-sm-5">
                     <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
-                    <select name="teams" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled">
-                    </select>
+                    <input  name="teams" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled">
+                    </input>
                 </div>
                 <div class="col-sm-6">
                     <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
-                    <input id="txtsubcategoryedit" class="neu-input__field"
+                    <input id="txtsubcategoryedit" class="neu-input__field"  maxlength="50"
                            type="text" />
                     <span id="errormsgedit" class="neu-button--danger" />
                 </div>
@@ -211,12 +211,12 @@
 
     $('#txtsubcategory').on('keypress', function (event) {
         $('#errormsgsubcategory').hide();
-        //var regex = new RegExp("^[a-zA-Z]+$");
-        //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        //if (!regex.test(key)) {
-        //    event.preventDefault();
-        //    return false;
-        //}
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
     });
     $('#errormsgsubcategory').hide();
     $('#errormsgcategory').hide();
@@ -269,7 +269,7 @@
         });
     });
 
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 190, width: 700 });
 
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
@@ -287,16 +287,16 @@
             data: { "id": CatgID },
             success: function (response) {
                 //alert(response);
-                if (response == "HasecOrds") {
-                    $("#lblcustomtextfor").text("Do you want to Delete this Service Delivery Group?");
+                if (response == "NoRecords") {
+                    $("#lblcustomtextfor").text("Do you want to Delete this Subcategory?");
                     $("#popupcontentdelete").dialog('open');
                     $("#btndeleteCategoryok").hide();
                     $("#btnSubCatdelete").show();
                     $("#btncancelpopupdelete").show();
                     $("#hdndeletecatid").val(CatgID);
                 }
-                else if (response == "NoRecOrds") {
-                    $("#lblcustomtextfor").text("Cannot delete as it is currently mapped to Subcategory");
+                else if (response == "HasRecords") {
+                    $("#lblcustomtextfor").text("Cannot delete as it is currently mapped to Questions");
                     $("#popupcontentdelete").dialog('open');
                     $("#btndeleteCategoryok").show();
                     $("#btnSubCatdelete").hide();
@@ -345,12 +345,12 @@
 
     $('#txtsubcategoryedit').on('keypress', function (event) {
         $('#errormsgedit').hide();
-        //var regex = new RegExp("^[a-zA-Z]+$");
-        //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        //if (!regex.test(key)) {
-        //    event.preventDefault();
-        //    return false;
-        //}
+        var regex = new RegExp("^[a-zA-Z ]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
     });
 
     $("#btneditCategory").click(function () {

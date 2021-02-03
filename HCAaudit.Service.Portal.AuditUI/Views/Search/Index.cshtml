@@ -1,27 +1,33 @@
 ﻿<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
 
-    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
-    <script type="text/javascript" src="~/js/moment.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
+<script type="text/javascript" src="~/js/moment.min.js"></script>
+
+
+<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <main class="container neu-margin--top-30">
     <div class="jumbotron-fluid">
-        <form class="form-inline" action="Audit/Index">
+        <form class="form-inline">
             <div class="row">
                 <div class="col-12">
                     <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Tickets For Audit/Dispute</h3>
@@ -37,14 +43,14 @@
                 <div class="col-4">
                     <label class="neu-input__label">Environment</label>
                     <label>&nbsp;&nbsp;</label>
-                    <input type="radio" name="group2" checked="checked"
-                           value="PDF"
+                    <input type="radio" name="EnvironmentType" checked="checked"
+                           value="Production"
                            tabindex="0"
                            required class="radio-success" />
                     <label class="neu-input__label">Production</label>
                     <label>&nbsp;</label>
-                    <input type="radio" name="group2"
-                           value="XML"
+                    <input type="radio" name="EnvironmentType"
+                           value="Training"
                            tabindex="0"
                            required />
                     <label class="neu-input__label">Training</label>
@@ -53,14 +59,14 @@
                     <div class="cols" tabindex="-1">
                         <label class="neu-input__label">Select Audit /Dispute</label>
                         <label>&nbsp;&nbsp;</label>
-                        <input type="radio" name="group1" checked="checked"
-                               value="PDF"
+                        <input type="radio" name="ResultType" checked="checked"
+                               value="Audit"
                                tabindex="0"
                                required class="radio-success" />
                         <label class="neu-input__label">Audit</label>&nbsp;
                         <label>&nbsp;</label>
-                        <input type="radio" name="group1"
-                               value="XML"
+                        <input type="radio" name="ResultType"
+                               value="Dispute"
                                tabindex="0"
                                required class="radio-success" />
                         <label class="neu-input__label">Dispute</label>
@@ -69,36 +75,36 @@
             </div>
             <br />
             <div class="row">
-                <div class="col-4">
+                <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;">
                         <label class="neu-input__label required" for="format-pdf" style="text-align:left;width:50%">Service Delivery Group</label>
-                        <select name="teams" id="CatgID" class="neu-select" title="select"
+                        <select name="CatgID" id="CatgID" class="neu-select" title="select"
                                 asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
                         </select>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label required" for="format-pdf" style="text-align:left;width:25%;">Sub Category</label>
-                        <select name="teams" id="SubCatID" class="neu-select">
+                        <label class="neu-input__label required" for="SubCatID" style="text-align:left;width:25%;">Sub Category</label>
+                        <select name="SubCatID" id="SubCatID" class="neu-select">
                             <option value="0">Select SubCategory</option>
                         </select>
 
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label" for="format-pdf" style="text-align:left;width:30%;">Assigned To</label>
-                        <input class="neu-input__field" aria-disabled="false" type="text" id="txtassignedto">
+                        <label class="neu-input__label required" for="txtassignedto" style="text-align:left;width:30%;">Assigned To</label>
+                        <input id="txtassignedto" class="neu-input__field" type="text" style="width:50%" />
                     </div>
                 </div>
             </div>
             <br />
             <div class="row">
-                <div class="col-4">
+                <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label required" for="format-pdf" style="text-align:left;width:30%;">Ticket Status</label>
-                        <select name="teams" id="StatusList" class="neu-select">
+                        <label class="neu-input__label" for="StatusList" style="text-align:left;width:30%;">Ticket Status</label>
+                        <select name="TicketStatus" id="StatusList" class="neu-select">
                             <option value="0">Closed</option>
                             <option value="1">Pending</option>
                         </select>
@@ -121,7 +127,7 @@
             <br />
             <div class="row" style="text-align:center;width:100%;">
                 <div class="col-12">
-                    <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
+                    <button id="btnsearch" class="neu-button--primary neu-button neu-button--raised">
                         &nbsp;Search
                     </button>
                     <button asp-controller="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
@@ -174,11 +180,15 @@
                 maxYear: parseInt(moment().format('YYYY'), 10)
             }).val(moment(dateEnd).format("MM/DD/YYYY"));
 
+
+
+
             $.ajax({
                 type: "POST",
                 url: "/search/GetCommaSeperated",
                 data: null,
                 success: function (response) {
+                    alert(response.length);
                     $("#txtassignedto").autocomplete({
                         source: response
                     });
@@ -203,17 +213,59 @@
 
             $("#btnsearch").click(function () {
                 $("#errormsgforcategory").text("");
+                debugger
+                var environmenttype = $("input[name='EnvironmentType']:checked").val();
+
+                var screentype = $("input[name='ResultType']:checked").val();
+
+
                 var categoryID = $("#CatgID").val();
                 var subcategoryID = $("#SubCatID").val();
-                var statusid = $("#txtassignedto").val();
+                var assignedTo = $("#txtassignedto").val();
 
-                if (categoryID == "0" && subcategoryID == "0" && statusid == "") {
-                    $("#errormsgforcategory").append("Select Either Category Or Sub Category Or Assigned To field.<br/>");
+                var ticketStatus = $("#StatusList").val();
+
+                var startdate = $("#startdate").val();
+
+                var enddate = $("#enddate").val();
+
+
+
+                if (categoryID == "0" && subcategoryID == "0" && assignedTo == "") {
+                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.<br/>");
                 }
 
                 if ($("#errormsgforcategory").text() != "") {
                     return false;
                 }
+
+                var searchparameter = {
+                    "EnvironmentType": environmenttype,
+                    "ResultType": screentype,
+                    "CategoryID": categoryID,
+                    "SubcategoryID": subcategoryID,
+                    "AssignedTo": assignedTo,
+                    "TicketStatus": ticketStatus,
+                    "FromDate": startdate,
+                    "EndDate": enddate
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/search/GetSearchDetails",
+
+                    data: { searchparameter: searchparameter },
+
+                    success: function (response) {
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
             });
 
             $("#CatgID").change(function () {

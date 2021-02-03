@@ -1,4 +1,4 @@
-﻿
+﻿@model HCAaudit.Service.Portal.AuditUI.ViewModel.AuditViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -64,607 +64,157 @@
         resize: none; /* Remove this if you want the user to resize the textarea */
     }
 </style>
-<div class="card">
-    <div class="row">
-        <div class="col">
-            <label for="format-pdf" class="input-group">Enter Agent's 3-4 ID:</label>
-            <input id="txtcategory" class="form-control" type="text" readonly />
+<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="Index">
+    <div>
+        <div class="card">
+            <div class="row">
+                <div class="col">
+                    <label for="format-pdf" class="input-group">Enter Agent's 3-4 ID:</label>
+                    @Html.TextBoxFor(m=>m.Agent34Id,new {@disabled=true})
+                </div>
+                <div class="col">
+                    <label for="format-pdf" class="input-group" ">Agent Information Name:</label>
+                    @Html.TextBoxFor(m => m.AgentName, new { @disabled = true })
+                </div>
+                <div class="col">
+                    <label for="format-pdf" class="input-group" ">Date of Auditor:</label>
+                    @Html.TextBoxFor(m => m.DateOfAuditor, new { @disabled = true })
+                </div>
+                <div class="col">
+                    <label for="format-pdf" class="input-group" ">Supervisor:</label>
+                    @Html.TextBoxFor(m => m.AuditorName, new { @disabled = true })
+                </div>
+                <div class="col">
+                    <label for="format-pdf" class="input-group">MTD Audits:</label>
+                    @Html.TextBoxFor(m => m.EnvironmentType, new { @disabled = true })
+                </div>
+                <div class="col">
+                    <label for="format-pdf" class="input-group">Auditor:</label>
+                    @Html.TextBoxFor(m => m.AuditorName, new { @disabled = true })
+                </div>
+            </div>
+            <div class="row"><hr /></div>
+            <div ">
+                <table id="auditDetails" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th style="width:5%">Question No</th>
+                            <th style="width:30%">Question Desc</th>
+                            <th style="width:40%">Action</th>
+                            <th style="width:10%">Correction Required</th>
+                            <th style="width:15%">Comment</th>
+                        </tr>
+
+                    </thead>
+                    @for (int i = 0; i < Model.Question.Count; i++)
+                    {
+                        <tr>
+                            <td><div>
+                             @Model.Question[i].QuestionId
+                            @Html.HiddenFor(m => m.Question[i].QuestionId)
+                            @Html.HiddenFor(m => m.Question[i].QuestionName)
+                        </div></td>
+                            <td>
+                            @Html.TextAreaFor(m => m.Question[i].QuestionName, new { style = "height:50%;width:100%" , @disabled = true })</td>
+                            <td>
+                                <div id="action">
+                                    <table width="100%">
+                                        <tr style=" border: 1px solid #ddd">
+                                            <td style=" border-right: 1px solid #ddd">
+                                                <div>
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id=Model.Question[i].QuestionId+"-compliance", @class = "actioncheck",title= Model.Question[i].QuestionId+"-action" }) <label>Compliance</label>
+                                                    @*<label style="white-space:nowrap"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.Compliance" name='@Model.Question[i].QuestionId-Action' @(Model.Question[i].Action.Compliance == true ? "checked" : "") />Compliance</label>*@
+                                                </div>
+                                            </td>
+                                            <td style=" border-right: 1px solid #ddd">
+                                                @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck",title = Model.Question[i].QuestionId + "-action" }) <label>Non Compliance</label>
+                                                @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
+                                                <br />
+                                                <table width="100%" style="border: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
+                                                    <tr>
+                                                        <td style=" border-right: 1px solid #ddd">
+                                                            @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High Impact</label>
+                                                            
+                                                        </td>
+                                                        <td>
+                                                            @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low Impact</label>
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" }) <label>Not Applicable</label>
+                                                @*<label style="white-space:nowrap;padding-right:3%"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.NotApplicable" name='@Model.Question[i].QuestionId-Action' />Not Applicable</label>*@
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" /></td>
+                            <td>@Html.TextAreaFor(m=>m.Question[i].Comments,new { style="height:50%"})</td>
+
+                        </tr>
+                    }
+                </table>
+            </div>
         </div>
-        <div class="col">
-            <label for="format-pdf" class="input-group" ">Agent Information Name:</label>
-            <input id="txtcategory" class="form-control" type="text" readonly />
-        </div>
-        <div class="col">
-            <label for="format-pdf" class="input-group" ">Date of Auditor:</label>
-            <input id="txtcategory" class="form-control" type="text" readonly />
-        </div>
-        <div class="col">
-            <label for="format-pdf" class="input-group" ">Supervisor:</label>
-            <input id="txtcategory" class="form-control" type="text" readonly />
-        </div>
-        <div class="col">
-            <label for="format-pdf" class="input-group">MTD Audits:</label>
-            <input id="txtcategory" class="form-control" type="text" readonly />
-        </div>
-        <div class="col">
-            <label for="format-pdf" class="input-group">Auditor:</label>
-            <input id="txtAuditor" class="form-control" type="text" readonly />
-        </div>
-    </div>
-    <div class="row"><hr /></div>
-    <div class="row">
-        <div class="col">
-            <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-        </div>
-        <div class="col">
-            <input type="radio" class="radio-success" name="optradio" />
-            <label class="text-success">Compliance</label>
-            <input type="radio" class="radio-danger" name="optradio" />
-            <label class="text-danger">Non Compliance</label>
-            <input type="radio" class="radio-primary" name="optradio" checked />
-            <label class="text-primary">Reset</label>
-            <input type="radio" class="radio-warning" name="optradio" />
-            <label class="text-warning">Not Applicable</label>
-        </div>
-        <div class="col">
-            <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-        </div>
-        <div class="col">
-            <input type="radio" class="radio-success" name="optradio" />
-            <label class="text-success">Compliance</label>
-            <input type="radio" class="radio-danger" name="optradio" />
-            <label class="text-danger">Non Compliance</label>
-            <input type="radio" class="radio-primary" name="optradio" checked />
-            <label class="text-primary">Reset</label>
-            <input type="radio" class="radio-warning" name="optradio" />
-            <label class="text-warning">Not Applicable</label>
-        </div>
-    </div>
-</div>
-<div class="row"><hr /></div>
-<div class="row">
-    <div class="col">
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-    <div class="col">
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-</div> <div class="row"><hr /></div>
-<div class="row">
-    <div class="col">
-        <label for="format-pdf" class="input-group"></label><label for="format-pdf" class="input-group"></label>
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-    <div class="col">
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-</div> <div class="row"><hr /></div>
-<div class="row">
-    <div class="col">
-        <label for="format-pdf" class="input-group"></label><label for="format-pdf" class="input-group"></label>
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-    <div class="col">
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-</div> <div class="row"><hr /></div>
-<div class="row">
-    <div class="col">
-        <label for="format-pdf" class="input-group"></label><label for="format-pdf" class="input-group"></label>
-        <label for="format-pdf" class="input-group">Did WFA Rep facilitate all necessary research before taking action?</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-    <div class="col">
-        <label for="format-pdf" class="input-group">Notes (clear, concise, shows steps taken) and Attachments (relevant/promotes portal adoption, i.e. links, step by step accessing information all email communications attached)</label>
-    </div>
-    <div class="col">
-        <input type="radio" class="radio-success" name="optradio" />
-        <label class="text-success">Compliance</label>
-        <input type="radio" class="radio-danger" name="optradio" />
-        <label class="text-danger">Non Compliance</label>
-        <input type="radio" class="radio-primary" name="optradio" checked />
-        <label class="text-primary">Reset</label>
-        <input type="radio" class="radio-warning" name="optradio" />
-        <label class="text-warning">Not Applicable</label>
-    </div>
-</div> <div class="row"><hr /></div>
-<div class="well">
-    <div class="row">
-        <div class="col">
-            <label for="format-pdf" class="input-group">Total Score (Actual):</label>
-            <input id="txtScoreActual" class="form-control" type="text" value="0" readonly />
-        </div>
-        <div class="col"></div>
-        <div class="col">
-            <label for="format-pdf" class="input-group">Total Score (Possible):</label>
-            <input id="txtScorePossible" class="form-control" type="text" value="0" readonly />
-        </div>
-        <div class="col"></div>
-        <div class="col">
-            <label for="format-pdf" class="input-group">Total Score (Percent):</label>
-            <input id="txtScorePercent" class="form-control" type="text" value="0.00%" readonly />
+
+        <div class="row"></div>
+        <div class="form-group">
+            <label for="auditnotes" class="text-primary">Audit Notes:</label>
+
+            @Html.TextAreaFor(m=>m.AuditNote, new { rows = "4", style = "width:100%" } )
+        <div class="row">
+            <div class="col">
+                @*<button id="btnAnswerNo" class="btn btn-primary">
+                    Return to Toolbox (Will NOT Submit Audit)
+                </button>*@
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col">
+                <button id="btnAnswerYes" class="btn btn-success">
+                    Submit Audit
+                </button>
+            </div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col">
+
+            </div>
         </div>
     </div>
-</div>
-<div class="form-group">
-    <label for="auditnotes" class="text-primary">Audit Notes:</label>
-    <textarea class="form-control" rows="4" id="auditnotes"></textarea>
-</div>
-<div class="row">
-    <div class="col">
-        <button id="btnAnswerNo" class="btn btn-primary">
-            Return to Toolbox (Will NOT Submit Audit)
-        </button>
-    </div>
-    <div class="col"></div>
-    <div class="col"></div>
-    <div class="col">
-        <button id="btnAnswerYes" class="btn btn-success">
-            Submit Audit
-        </button>
-    </div>
-    <div class="col"></div>
-    <div class="col"></div>
-    <div class="col"></div>
-    <div class="col">
-       
-    </div>
-</div>
-<div class="row"><hr /></div>
-</div>
-@section Scripts
-    {
+</form>
+
     <!-- Script for the date range picker -->
     <script type="text/javascript" src="~/js/daterangepicker.js"></script>
     <link rel="stylesheet"
           type="text/css"
           href="~/css/daterangepicker.css" />
     <!-- Script for the date range picker -->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.datepicker').datepicker();
-            $("#CatgID").change(function () {
-                var categoryID = $('#CatgID').val();
-                $.ajax({
-                    type: "POST",
-                    url: "/search/BindSubCategory",
-                    data: { "categoryID": categoryID },
-                    success: function (response) {
-                        $('#SubCatID').html(''); $("#ShowQuestions").hide();
-                        var options = '';
-                        options += '<option value="Select">Select SubCategory</option>';
-                        for (var i = 0; i < response.length; i++) {
-                            options += '<option value="' + response[i].subCatgID + '">' + response[i].subCatgDescription + '</option>';
-                        }
-                        $('#SubCatID').append(options);
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    }
-                });
+<script type="text/javascript">
+    $('.actioncheck').click(function ()
+    {
+        debugger;
+        var name = $(this).attr("id");
+        var questionId = name.substring(0, name.indexOf("-"));
+        $('[title=' + questionId +'-action'+ ']').not(this).prop('checked', false);
+        if ($("#" + questionId + "-noncompliance").prop('checked') == true)
+        {
+            $("#" + questionId +"-tblNonCompliance").show();
+        }
+        else
+        {
+            $("#" + questionId + "-tblNonCompliance").hide();
+            $("#" + questionId + "-Impact").prop('checked', false);
+        }
+    });
+    $('.chkimpact').click(function () {
+        var name = $(this).attr("id");
+        var questionId = name.substring(0, name.indexOf("-"));
+        $('[title=' + questionId + '-Impact' + ']').not(this).prop('checked', false);
 
-            });
-
-        });
-
-        $(function () {
-            $('input[name="dtstartdate"]').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10)
-            });
-            $('input[name="dtenddate"]').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10)
-            });
-        });
-        $("#btnaddCategory").click(function () {
-
-            var subCategoryName = $('#txtcategory').val(); // + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val();
-            $.ajax({
-                type: "POST",
-                url: "/category/Insert",
-                data: { "subcatgname": subCategoryName },
-                success: function (response) {
-                    $("#popupcontent").dialog('close');
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                }
-            });
-
-        });
-    </script>
-}
-
-<script>
-    $(document).ready(function () {
-        $('select').multiselect({
-            templates: { // Use the Awesome Bootstrap Checkbox structure
-                li: '<li class="checkList"><a tabindex="0"><div class="aweCheckbox aweCheckbox-danger"><label for=""></label></div></a></li>'
-            }
-        });
-        $('.multiselect-container div.aweCheckbox').each(function (index) {
-
-            var id = 'multiselect-' + index,
-                $input = $(this).find('input');
-
-            // Associate the label and the input
-            $(this).find('label').attr('for', id);
-            $input.attr('id', id);
-
-            // Remove the input from the label wrapper
-            $input.detach();
-
-            // Place the input back in before the label
-            $input.prependTo($(this));
-
-            $(this).click(function (e) {
-                // Prevents the click from bubbling up and hiding the dropdown
-                e.stopPropagation();
-            });
-
-        });
     });
 </script>
-
-<style>
-    body {
-        padding: 20px;
-    }
-
-    form {
-        max-width: 500px;
-        margin: auto;
-    }
-
-    .aweCheckbox {
-        padding-left: 20px;
-    }
-
-        .aweCheckbox label {
-            display: inline-block;
-            vertical-align: middle;
-            position: relative;
-            padding: 0 20px 0 10px;
-            cursor: pointer;
-        }
-
-            .aweCheckbox label::before {
-                content: "";
-                display: inline-block;
-                position: absolute;
-                width: 17px;
-                height: 17px;
-                left: 0;
-                margin-left: -20px;
-                border: 1px solid #cccccc;
-                border-radius: 3px;
-                background-color: #fff;
-                -webkit-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
-                -o-transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
-                transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
-            }
-
-            .aweCheckbox label::after {
-                display: inline-block;
-                position: absolute;
-                width: 16px;
-                height: 16px;
-                left: 0;
-                top: 0;
-                margin-left: -20px;
-                padding-left: 3px;
-                padding-top: 1px;
-                font-size: 11px;
-                color: #555555;
-            }
-
-        .aweCheckbox input[type="checkbox"] {
-            opacity: 0;
-            z-index: 1;
-        }
-
-            .aweCheckbox input[type="checkbox"]:focus + label::before {
-                outline: thin dotted;
-                outline: 5px auto -webkit-focus-ring-color;
-                outline-offset: -2px;
-            }
-
-            .aweCheckbox input[type="checkbox"]:checked + label::after {
-                font-family: "FontAwesome";
-                content: "\f00c";
-            }
-
-            .aweCheckbox input[type="checkbox"]:indeterminate + label::after {
-                display: block;
-                content: "";
-                width: 10px;
-                height: 3px;
-                background-color: #555555;
-                border-radius: 2px;
-                margin-left: -16.5px;
-                margin-top: 7px;
-            }
-
-            .aweCheckbox input[type="checkbox"]:disabled + label {
-                opacity: 0.65;
-            }
-
-                .aweCheckbox input[type="checkbox"]:disabled + label::before {
-                    background-color: #eeeeee;
-                    cursor: not-allowed;
-                }
-
-        .aweCheckbox.aweCheckbox-circle label::before {
-            border-radius: 50%;
-        }
-
-        .aweCheckbox.aweCheckbox-inline {
-            margin-top: 0;
-        }
-
-    .aweCheckbox-danger input[type="checkbox"]:checked + label::before {
-        background-color: #d9534f;
-        border-color: #d9534f;
-    }
-
-    .aweCheckbox-danger input[type="checkbox"]:checked + label::after {
-        color: #fff;
-    }
-
-    .aweCheckbox-danger input[type="checkbox"]:indeterminate + label::before {
-        background-color: #d9534f;
-        border-color: #d9534f;
-    }
-
-    .aweCheckbox-danger input[type="checkbox"]:indeterminate + label::after {
-        background-color: #fff;
-    }
-
-    input[type="checkbox"].styled:checked + label:after {
-        font-family: 'FontAwesome';
-        content: "\f00c";
-    }
-
-    input[type="checkbox"] .styled:checked + label::before {
-        color: #fff;
-    }
-
-    input[type="checkbox"] .styled:checked + label::after {
-        color: #fff;
-    }
-</style>
-
-@*<form asp-controller="Home" asp-action="Index" method="post" role="form">
-        <main class="container neu-margin--top-20">
-            <fieldset>
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label class="neu-text--caption">
-                            Environment
-                        </label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <div tabindex="0"
-                             role="radiogroup"
-                             class="neu-radiogroup neu-margin--bottom-30 neu-margin--top-10">
-                            <div class="neu-radio" tabindex="-1" aria-checked="false">
-                                <input type="radio" name="group2"
-                                       value="PDF"
-                                       tabindex="0"
-                                       required />
-                                <label class="neu-input__label" for="format-pdf">Production</label>
-                            </div>
-                            <div class="neu-radio" tabindex="-1" aria-checked="false">
-                                <input type="radio" name="group2"
-                                       value="XML"
-                                       tabindex="0"
-                                       required />
-                                <label class="neu-input__label" for="format-xml">Training</label>
-                            </div>
-                            <span class="neu-button--danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label class="neu-text--caption">
-                            Select Audit /Dispute
-                        </label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <div tabindex="1"
-                             role="radiogroup"
-                             class="neu-radiogroup neu-margin--bottom-30 neu-margin--top-10">
-                            <div class="neu-radio" tabindex="-1" aria-checked="false">
-                                <input type="radio" name="group1"
-                                       value="PDF"
-                                       tabindex="0"
-                                       required />
-                                <label class="neu-input__label" for="format-pdf">Audit</label>
-                            </div>
-
-                            <div class="neu-radio" tabindex="-1" aria-checked="false">
-                                <input type="radio" name="group1"
-                                       value="XML"
-                                       tabindex="0"
-                                       required />
-                                <label class="neu-input__label" for="format-xml">Dispute</label>
-                            </div>
-                            <span class="neu-button--danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">Service Group / Department:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <select class="neu-select" name="CatgID"
-                                asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-                        </select>
-                        <span class="material-icons neu-input__select-icon">arrow_drop_down</span>
-                    </div>
-                </div>
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">Sub Category:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <select class="neu-select" name="SubCatID"
-                                asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-                        </select>
-                        <span class="material-icons neu-input__select-icon">arrow_drop_down</span>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">AssignedTo:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <select class="neu-select"
-                                asp-items="@(new SelectList(@ViewBag.ListOfMembers, "memberID", "membername"))">
-                        </select>
-                        <span class="material-icons neu-input__select-icon">arrow_drop_down</span>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">Start Date:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <input class="neu-input__field"
-                               type="datetime" name="dtstartdate"
-                               aria-disabled="false" required />
-                        <span class="neu-button--danger"></span>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">To Date:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <input class="neu-input__field"
-                               type="datetime" name="dtenddate"
-                               aria-disabled="false" required />
-                        <span class="neu-button--danger"></span>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">Ticket Status:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <select class="neu-select"
-                                asp-items="@(new SelectList(@ViewBag.StatusList, "StatusID", "Statusname"))">
-                        </select>
-                        <span class="material-icons neu-input__select-icon">arrow_drop_down</span>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-20 ">
-                    <div class="neu-input col-4">
-                        <label for="state" class="neu-input__label required">Ticket Numbers:</label>
-                    </div>
-                    <div class="neu-input col-5">
-                        <select class="neu-select"
-                                asp-items="@(new SelectList(@ViewBag.ListOfTicket, "TicketID", "Ticket"))">
-                        </select>
-                        <span class="material-icons neu-input__select-icon">arrow_drop_down</span>
-                    </div>
-                </div>
-                <div>
-                    <button asp-controller="Search" asp-action="Details" class="neu-button--primary neu-button neu-button--raised neu-button--large neu-margin--top-30">
-                        Search
-                    </button>&nbsp;
-                    <button asp-controller="Search" asp-action="Index" class="neu-button--primary neu-button neu-button--raised neu-button--large neu-margin--top-30">
-                        Clear
-                    </button>
-                </div>
-            </fieldset>
-        </main>
-    </form>*@
