@@ -1,30 +1,390 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@{
+    ViewData["Title"] = "Service Delivery Group";
 }
-@model HCAaudit.Service.Portal.AuditUI.Models.Category
+@model List<HCAaudit.Service.Portal.AuditUI.Models.Categorys>
 
-<form asp-controller="Home" asp-action="Index" method="post" role="form">
-    <main class="container neu-margin--top-20">
-        <fieldset>
-            <div class="neu-padding--30">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
 
-                <div>
-                    <label for="state" class="neu-input__label required">Category:</label>
-                    <input class="neu-input__field"
-                           type="text"
-                           aria-disabled="false"
-                           asp-for="CatgDescription"
-                           required />
-                    <span asp-validation-for="CatgDescription" class="neu-button--danger"></span>
-                </div>
-                <div>
-                    <button asp-controller="category" asp-action="Insert" formmethod="post"  class="neu-button--primary neu-button neu-button--raised neu-button--large neu-margin--top-30">
-                        Add Category
-                    </button>
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+
+<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+<main class="container neu-margin--top-30">
+    <div class="jumbotron-fluid">
+
+        <div class="row">
+            <div class="col-12">
+                <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Service Delivery Group</h3>
+            </div>
+        </div>
+
+        <div class="container">
+            <br />
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3"></div>
+                <div class="col-sm-3" style="padding-left:17%"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Service Delivery Group</button> </div>
+                <div class="col-sm-3"></div>
+            </div>
+
+            <br />
+            <div style="width:90%; margin:0 auto;">
+                <table id="example" class="neu-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr class="neu-table__row--large">
+                            <th>CatgID</th>
+                            <th style="width:70%">Service Delivery Group</th>
+                            <th style="width:15%">Edit</th>
+                            <th style="width:15%">Delete</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
+
+            <div class="row">
+                <div class="col-sm-7">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                        <label class="neu-input__label" for="format-pdf" style="text-align:left;width:50%;">Service Delivery Group</label>
+                        <input class="neu-input__field" aria-disabled="false" maxlength="10" type="text" id="txtcategory">
+                        <span id="errormsg" class="neu-button--danger">Please enter Service Delivery Group</span>
+                    </div>
+                    <div class="col-sm-5">
+                        <input id="hdnid" type="hidden" />
+                    </div>
                 </div>
             </div>
-        </fieldset>
-    </main>
-</form>
+            <br />
+            <div class="row">
+                <div class="col-sm-6">
+                </div>
+
+                <div class="col-sm-4">
+                    <button id="btnaddCategory" class="neu-button--primary neu-button neu-button--raised">Save</button>&nbsp;
+                    <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+                </div>
+
+                <div class="col-sm-2">
+                </div>
+            </div>
+
+        </div>
 
 
+        <div id="popupcontentedit" title="Edit Service Delivery Group" hidden="hidden" class="container">
+
+            <div class="row">
+                <div class="col-sm-7">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                        <label class="neu-input__label" for="format-pdf" style="text-align:left;width:50%;">Service Delivery Group</label>
+                        <input class="neu-input__field" aria-disabled="false" maxlength="10" type="text" id="txtcategoryedit">
+                        <span id="errormsgedit" class="neu-button--danger">Please enter Service Delivery Group</span>
+                    </div>
+                    <div class="col-sm-5">
+                        <input id="hdnid" type="hidden" />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-5">
+                </div>
+
+                <div class="col-sm-5">
+                    <button id="btneditCategory" class="neu-button--primary neu-button neu-button--raised">Update</button>&nbsp;
+                    <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+                </div>
+
+                <div class="col-sm-2">
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div id="popupcontentdelete" title="Delete Service Delivery Group" hidden="hidden" class="container">
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <label id="lblcustomtextfor"></label>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
+                <div class="col-sm-2">
+                    <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised neu-button--large">Ok</button>&nbsp;
+                </div>
+                <div class="col-sm-6">
+                    
+                    <button id="btndeleteCategory" class="neu-button--primary neu-button neu-button--raised neu-button--large">Yes</button>&nbsp;
+                    <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-button--large neu-margin--left-10">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+
+    $(document).ready(function() {
+        $("#example").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/Category/Index",
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "visible": false,
+                "searchable":true
+            }],
+            "columns": [
+                { "data": "CatgID", "name": "CatgID", "autoWidth": true },
+                { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
+                {
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="#" onclick=OpenEditpopup(' + full.CatgID + ');>Edit</a>'; }
+                },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        return "<a href='#' class='neu-button--danger neu-button--small neu-button--flat' onclick=DeleteData('" + row.CatgID + "'); >Delete</a>";
+                    }
+                },
+            ]
+
+        });
+    });
+
+    $(function () {
+        $("#popupcontent").dialog({
+            autoOpen: false
+        });
+
+        $("#popupcontentedit").dialog({
+            autoOpen: false
+        });
+
+        $("#popupcontentdelete").dialog({
+            autoOpen: false
+        });
+
+        $("#btncancelpopupdelete").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+
+        $("#btncancelpopup").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+
+        $("#btncancelpopupedit").click(function () {
+            $("#popupcontentedit").dialog('close');
+        });
+
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontent").dialog({
+                position: 'bottom'
+            });
+        });
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontentedit").dialog({
+                position: 'bottom'
+            });
+        });
+    });
+
+    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
+
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
+
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 190, width: 700 });
+
+    $("#btnopenPopUp").click(function () {
+        $('#txtcategory').val(""); $('#errormsgedit').hide();
+        $("#popupcontent").dialog('open');
+    });
+
+    $('#txtcategory').on('keypress', function (event) {
+        $('#errormsg').hide();
+        var regex = new RegExp("^[a-zA-Z]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#errormsg').hide();
+
+    $('#txtcategoryedit').on('keypress', function (event) {
+        $('#errormsgedit').hide();
+        var regex = new RegExp("^[a-zA-Z]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#errormsgedit').hide();
+
+    $("#btnaddCategory").click(function () {
+
+        var CategoryName = $('#txtcategory').val();
+        if (CategoryName == "") { $('#errormsg').show(); $("#errormsg").text("Please enter Service Delivery Group"); }
+        else {
+            $.ajax({
+                type: "GET",
+                url: "/category/Insert",
+                data: { "CategoryName": CategoryName },
+                success: function (response) {
+                    if (response == "1") {
+                        $("#errormsg").text("Record already exists!");
+                        $('#errormsg').show();
+                    }
+                    else {
+                        $("#popupcontent").dialog('close');
+                        $('#txtcategory').val("");
+                        location.reload();
+                    }
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+    });
+
+    $("#btneditCategory").click(function () {
+        if ($('#txtcategoryedit').val() == "") {
+            $('#errormsgedit').show(); $('#errormsgedit').text("Please enter Service Delivery Group");
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/category/Edit",
+            data: { "id": $('#hdnid').val() + "$" + $('#txtcategoryedit').val() },
+            success: function (response) {
+                if (response == "1") {
+                    $("#errormsgedit").text("Record already exists!");
+                    $("#errormsgedit").show();
+                }
+                else {
+                    $("#popupcontentedit").dialog('close');
+                    $('#txtcategoryedit').val("");
+                    location.reload();
+                }
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+
+    });
+
+
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+
+    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
+    function OpenEditpopup(CatgID) {
+
+        $('#errormsgedit').hide();
+        $("#hdnid").val(""); $("#hdnid").val(CatgID);
+        $.ajax({
+            type: "POST",
+            url: "/category/GetCategoryByid",
+            data: { "id": CatgID },
+            success: function (response) {
+                if (response != null && response != "") {
+                    $("#txtcategoryedit").val(response.CatgDescription);
+                    $("#popupcontentedit").dialog('open');
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
+
+
+    $("#btndeleteCategoryok").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
+
+    function DeleteData(CatgID) {
+        $.ajax({
+            type: "POST",
+            url: "/category/HasDeleteAccess",
+            data: { "id": CatgID },
+            success: function (response) {
+                //alert(response);
+                if (response == "HasecOrds") {
+                    $("#lblcustomtextfor").text("Do you want to Delete this Service Delivery Group?");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").hide();
+                    $("#btndeleteCategory").show();
+                    $("#btncancelpopupdelete").show();
+                    $("#hdndeletecatid").val(CatgID);
+                }
+                else if (response == "NoRecOrds"){
+                    $("#lblcustomtextfor").text("First remove Subcategory mapping and then delete this Category");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").show();
+                    $("#btndeleteCategory").hide();
+                    $("#btncancelpopupdelete").hide();
+                    //alert('Entered else');
+                    //return trueOrFalse(false);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
+    }
+
+    function trueOrFalse(bool) {
+        return bool;
+    }
+
+    $("#btncancelpopupdelete").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
+
+    $("#btndeleteCategory").click(function () {
+        var url = '@Url.Content("~/")' + "Category/Delete";
+        $("#popupcontentdelete").dialog('close');
+        $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
+            if (data) {
+                oTable = $('#example').DataTable();
+                oTable.draw();
+            } else {
+                alert("Something Went Wrong!");
+            }
+        });
+    });
+
+        </script>

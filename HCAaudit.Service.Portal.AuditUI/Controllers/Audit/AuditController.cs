@@ -27,6 +27,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private IAuthService _authService;
         List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
+
+        
+
         public AuditController(ILogger<AuditController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
         {
             _auditToolContext = audittoolc;
@@ -118,111 +121,232 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return Redirect("https://www.google.com");
         }
 
-        //[HttpPost]
-        //public IActionResult Index(BindSearchGrid objBindSearchGrid)
-        //{
-        //    return RedirectToAction("Details", objBindSearchGrid);
-        //}
-        [HttpGet]
-        //public IActionResult Index(AuditViewModel auditViewModel)
-
-            public IActionResult Index()
+        public IActionResult Test(string Name, string LastName)
         {
-            //if (auditViewModel != null)
+            return View();
+        }
+
+        
+        public IActionResult Index(String TicketId, String TicketStatus, String TicketDate,
+            int ServiceCatId, int SubCatId, String EnvironmentType, String TicketSubStatus)
+        {
+            if (string.IsNullOrWhiteSpace(TicketId) ||
+                string.IsNullOrWhiteSpace(TicketStatus) || 
+                string.IsNullOrWhiteSpace(TicketDate) ||
+                ServiceCatId == 0 || SubCatId == 0)
+                return RedirectToAction("Index", "Search");
+
+            
+            var ticketId = TicketId;
+            var ticketStatus = TicketStatus;
+            var ticketSubStatus = TicketSubStatus;
+            var auditTicketDate = TicketDate.Replace("%2F", "/");
+            var recordDate = DateTime.Parse(auditTicketDate);
+            var serviceCategory = ServiceCatId;
+            var subCategory = SubCatId;
+            var environmentType = EnvironmentType;
+
+            var auditMain = _auditToolContext.AuditMain.Where(x => x.TicketID == TicketId
+                && x.AuditType == environmentType
+                && x.TicketDate == recordDate
+                && x.SubcategoryID == subCategory).FirstOrDefault();
+
+            if (auditMain != null)
+                return RedirectToAction("Index", "Search");
+
+            var auditViewModel = new AuditViewModel();
+
+            var subcategory = _auditToolContext.SubCategories.Where(cat => cat.SubCatgID == subCategory &&
+            cat.CatgID == serviceCategory && cat.IsActive == true).FirstOrDefault();
+            var subCategoryDescription = subcategory != null ? subcategory.SubCatgDescription : String.Empty;
+
+            var category = _auditToolContext.Categories.Where(cat => cat.CatgID == serviceCategory
+                && cat.IsActive == true).FirstOrDefault();
+            var categoryDescription = category != null ? category.CatgDescription : String.Empty;
+
+            if (ticketStatus == "0")
             {
-                //var ticketId = auditViewModel.TicketId;
-                //var ticketStatus = auditViewModel.TicketStatus;
-                //var ticketSubStatus = auditViewModel.TicketStatus;
-                //var auditTicketDate = auditViewModel.TicketDate;
-                //var serviceCategory = auditViewModel.ServiceCatId;
-                //var subCategory = auditViewModel.SubCatId;
+                var ssisTicket = _auditToolContext.SearchTicketDetail.Where(
+                    ssis => ssis.TicketCode == ticketId
+                    && ssis.TicketStatus == "0"
+                    && ssis.ClosedDate == recordDate
+                    && ssis.SubCategory == subCategoryDescription).FirstOrDefault();
 
-                //if (ticketStatus == 0)
-                //{
-                //   // var ticketInfo = _auditToolContext.t
-                //}
-                //else
-                //{
-
-                //}
-
-               
-
-                var query = _auditToolContext.questionBank
-                   .Join(
-                        _auditToolContext.questionMasters,
-                        questionBanks => questionBanks.QuestionID,
-                       questionMasters => questionMasters.QuestionId,
-                       (questionBanks, questionMasters) => new
-                       {
-                           QuestionId = questionBanks.QuestionID,
-                           QuestionName = questionBanks.QuestionName,
-                           SeqNumber = questionMasters.SeqNumber,
-                           CatSubCatId = questionMasters.SubCatgID
-                       })
-                    .Where(a => a.CatSubCatId == 25)
-                    .OrderBy(b => b.SeqNumber)
-                    .Select(x => new QuestionConfigMappingJoinMast
-                    {
-                        QuestionId = x.QuestionId,
-                        QuestionName = x.QuestionName,
-                        QuestionSeqNumber = x.SeqNumber
-                    }
-                   ).ToList();
-
-
-
-                //var data = (from config in _auditToolContext.questionMasters
-                //            join question in _auditToolContext.questionBank
-                //            on config.QuestionId equals question.QuestionID
-                //            select question).Distinct().ToList();
-                ViewModel.Action objAction = new ViewModel.Action();
-                Impact objImpact = new Impact();
-                objImpact.IsHighImpact = false;
-                objImpact.IsLowImpact = false;
-                objAction.Impact = objImpact;
-                objAction.IsCompliance = false;
-                objAction.IsNonCompliance = false;
-                objAction.IsNotApplicable = false;
-                CategoryMast objCategoryMast = new CategoryMast();
-                objCategoryMast._categoryList = new List<Category>();
-                List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question> lstQuestionList = new List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question>();
-                foreach (var item in query)
+                if (ssisTicket != null)
                 {
-                    HCAaudit.Service.Portal.AuditUI.ViewModel.Question objQuestion = new HCAaudit.Service.Portal.AuditUI.ViewModel.Question();
-                    objQuestion.QuestionId = item.QuestionId;
-                    objQuestion.QuestionName = item.QuestionName;
-                    objQuestion.Action = objAction;
-                    objQuestion.CorrectionRequire = true;
-                    lstQuestionList.Add(objQuestion);
+
+                    auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CloseUserId) ? "" : ssisTicket.CloseUserId.Substring(0, 7);
+
+                    var hrProff = _auditToolContext.HrocMaster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
+                    var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
+
+
+                    auditViewModel.TicketId = ssisTicket.TicketCode;
+                    auditViewModel.AuditorName = "Test";
+                    auditViewModel.EnvironmentType = environmentType;
+                    auditViewModel.ServiceCatId = serviceCategory;
+                    auditViewModel.SubCatName = subCategoryDescription;
+                    auditViewModel.SupervisorName = hrProff != null? hrProff.EmployeeFullName:String.Empty;
+                    auditViewModel.ServiceGroupName = categoryDescription;
+                    auditViewModel.SubCatId = subCategory;
+                    auditViewModel.AgentName = hrProffName;
+                    auditViewModel.TicketDate = (DateTime)ssisTicket.ClosedDate;
+
+                    var query = _auditToolContext.QuestionBank
+                        .Join(
+                        _auditToolContext.QuestionMasters.Where(a => a.SubCatgID == subCategory
+                        && a.IsActive == true),
+                    questionBanks => questionBanks.QuestionID,
+                    questionMasters => questionMasters.QuestionId,
+                    (questionBanks, questionMasters) => new
+                    {
+                        QuestionId = questionBanks.QuestionID,
+                        QuestionName = questionBanks.QuestionName,
+                        QuestionDescription = questionBanks.QuestionDescription,
+                        SeqNumber = questionMasters.SeqNumber,
+                        CatSubCatId = questionMasters.SubCatgID
+                    })
+                        .OrderBy(b => b.SeqNumber)
+                        .Select(x => new QuestionConfigMappingJoinMast
+                        {
+                            QuestionId = x.QuestionId,
+                            QuestionName = x.QuestionName,
+                            QuestionDescription = x.QuestionDescription,
+                            QuestionSeqNumber = x.SeqNumber
+                        }).OrderBy(c=>c.QuestionSeqNumber).ToList();
+
+                    List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question> lstQuestionList = new List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question>();
+                    foreach (var item in query)
+                    {
+                        ViewModel.Action objAction = new ViewModel.Action();
+                        Impact objImpact = new Impact();
+                        objImpact.IsHighImpact = false;
+                        objImpact.IsLowImpact = false;
+                        objAction.Impact = objImpact;
+                        objAction.IsCompliance = false;
+                        objAction.IsNonCompliance = false;
+                        objAction.IsNotApplicable = false;
+
+                        HCAaudit.Service.Portal.AuditUI.ViewModel.Question objQuestion = new HCAaudit.Service.Portal.AuditUI.ViewModel.Question();
+                        objQuestion.QuestionId = item.QuestionId;
+                        objQuestion.QuestionName = item.QuestionName;
+                        objQuestion.QuestionDescription = item.QuestionDescription;
+                        objQuestion.QuestionSequence = item.QuestionSeqNumber;
+                        objQuestion.Action = objAction;
+                        objQuestion.CorrectionRequire = true;
+                        lstQuestionList.Add(objQuestion);
+                    }
+
+                    auditViewModel.Question = lstQuestionList;
                 }
-                AuditViewModel auditDetail = new AuditViewModel();
-
-                auditDetail.Question = lstQuestionList;
-
-                return View(auditDetail);
             }
-            //else
-            //{
-            //    return View(auditViewModel);
-            //}
+            else if (ticketStatus == "1")
+            {
+                var ssisTicket = _auditToolContext.SearchTicketDetail.Where(
+                    ssis => ssis.TicketCode == ticketId
+                    && ssis.TicketStatus == "1"
+                    && ssis.CreateDate == recordDate
+                    && ssis.SubCategory == subCategoryDescription).FirstOrDefault();
+
+                if (ssisTicket != null)
+                {
+
+                    auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CreatorUserId) ? "" : ssisTicket.CreatorUserId.Substring(0, 7);
+
+                    var hrProff = _auditToolContext.HrocMaster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
+                    var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
+
+
+                    auditViewModel.TicketId = ssisTicket.TicketCode;
+                    auditViewModel.AuditorName = "Test";
+                    auditViewModel.EnvironmentType = environmentType;
+                    auditViewModel.ServiceCatId = serviceCategory;
+                    auditViewModel.SubCatName = subCategoryDescription;
+                    auditViewModel.ServiceGroupName = categoryDescription;
+                    auditViewModel.ServiceCatId = serviceCategory;
+                    auditViewModel.AgentName = hrProffName;
+                    auditViewModel.TicketDate = (DateTime)ssisTicket.CreateDate;
+
+                    var query = _auditToolContext.QuestionBank
+                        .Join(
+                        _auditToolContext.QuestionMasters.Where(a => a.SubCatgID == serviceCategory
+                        && a.IsActive == true),
+                    questionBanks => questionBanks.QuestionID,
+                    questionMasters => questionMasters.QuestionId,
+                    (questionBanks, questionMasters) => new
+                    {
+                        QuestionId = questionBanks.QuestionID,
+                        QuestionName = questionBanks.QuestionName,
+                        QuestionDescription = questionBanks.QuestionDescription,
+                        SeqNumber = questionMasters.SeqNumber,
+                        CatSubCatId = questionMasters.SubCatgID
+                    })
+                        .OrderBy(b => b.SeqNumber)
+                        .Select(x => new QuestionConfigMappingJoinMast
+                        {
+                            QuestionId = x.QuestionId,
+                            QuestionName = x.QuestionName,
+                            QuestionDescription = x.QuestionDescription,
+                            QuestionSeqNumber = x.SeqNumber
+                        }).ToList();
+
+                    List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question> lstQuestionList = new List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question>();
+                    foreach (var item in query)
+                    {
+                        ViewModel.Action objAction = new ViewModel.Action();
+                        Impact objImpact = new Impact();
+                        objImpact.IsHighImpact = false;
+                        objImpact.IsLowImpact = false;
+                        objAction.Impact = objImpact;
+                        objAction.IsCompliance = false;
+                        objAction.IsNonCompliance = false;
+                        objAction.IsNotApplicable = false;
+
+                        HCAaudit.Service.Portal.AuditUI.ViewModel.Question objQuestion = new HCAaudit.Service.Portal.AuditUI.ViewModel.Question();
+                        objQuestion.QuestionId = item.QuestionId;
+                        objQuestion.QuestionName = item.QuestionName;
+                        objQuestion.QuestionDescription = item.QuestionDescription;
+                        objQuestion.QuestionSequence = item.QuestionSeqNumber;
+                        objQuestion.Action = objAction;
+                        objQuestion.CorrectionRequire = true;
+                        lstQuestionList.Add(objQuestion);
+                    }
+
+                    auditViewModel.Question = lstQuestionList;
+                }
+            }
+
+            return View(auditViewModel);
         }
 
         [HttpPost]
-        //public IActionResult SaveAudit(AuditViewModel audit)
-        public IActionResult Index(AuditViewModel audit)
+        public IActionResult SaveAudit(AuditViewModel audit)
         {
             if (audit != null) {
-                AuditMainResponse obj = new AuditMainResponse();
-                
-                //        obj.QuestionId
-                //        obj.QuestionRank
-                //        obj.TicketID
+                AuditMain main = new AuditMain();
+                main.TicketID = audit.TicketId;
+                main.Agent34ID = audit.Agent34Id;
+                main.AgentName = audit.AgentName;
+                main.AuditNotes = audit.AuditNote;
+                main.AuditorName = audit.AuditorName;
+                main.AuditType = audit.EnvironmentType;
+                main.ModifiedDate = DateTime.Now;
+                main.ServiceGroupID = audit.ServiceCatId;
+                main.SubcategoryID = audit.SubCatId;
+                main.SubmitDT = DateTime.Now;
+                main.TicketDate = audit.TicketDate;
+                _auditToolContext.AuditMain.Add(main);
+                _auditToolContext.SaveChanges();
+
+
                 foreach (var item in audit.Question)
                 {
+                    AuditMainResponse obj = new AuditMainResponse();
+
                     obj.QuestionId = item.QuestionId;
+                    //Audit Main ID to be set in AuditMainresponse
                     obj.QuestionRank = item.QuestionSequence;
-                        obj.TicketID = Guid.NewGuid();
+                    obj.TicketID = main.TicketID;
                     obj.isCompliant = item.Action.IsCompliance;
                     obj.isCorrectionRequired = item.CorrectionRequire;
                     obj.isHighNonComplianceImpact = item.Action.Impact.IsHighImpact;
@@ -250,13 +374,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         List<Categorys> GetCategoryDetails()
         {
-            var data = (from subCat in _auditToolContext.categories select subCat).ToList();
+            var data = (from subCat in _auditToolContext.Categories select subCat).ToList();
             return data;
         }
 
         CategoryMast GetDetails()
         {
-            var data = (from cat in _auditToolContext.categories select cat).ToList();
+            var data = (from cat in _auditToolContext.Categories select cat).ToList();
             CategoryMast objCategoryMast = new CategoryMast();
             objCategoryMast._categoryList = new List<Category>();
             foreach (var item in data)
@@ -284,7 +408,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             Categorys objCategorys = new Categorys(); objCategorys.CatgDescription = subcatgname;
             objCategorys.CatgID = max + 1;
-            _auditToolContext.categories.Add(objCategorys);
+            _auditToolContext.Categories.Add(objCategorys);
             _auditToolContext.SaveChanges();
 
             return RedirectToAction("Details");

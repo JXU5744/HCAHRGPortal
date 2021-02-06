@@ -77,7 +77,7 @@
             <div class="row">
                 <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label required" for="format-pdf" style="text-align:left;width:50%">Service Delivery Group</label>
+                        <label class="neu-input__label required" for="CatgID" style="text-align:left;width:50%">Service Delivery Group</label>
                         <select name="CatgID" id="CatgID" class="neu-select" title="select"
                                 asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
                         </select>
@@ -94,8 +94,8 @@
                 </div>
                 <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label required" for="txtassignedto" style="text-align:left;width:30%;">Assigned To</label>
-                        <input id="txtassignedto" class="neu-input__field" type="text" style="width:50%" />
+                        <label class="neu-input__label required" for="txtassignedto" style="text-align:left;width:25%;">Assigned To</label>
+                        <input name="AssignedTo" id="txtassignedto" class="neu-input__field" type="text" style="width:100%" />
                     </div>
                 </div>
             </div>
@@ -111,6 +111,27 @@
 
                     </div>
                 </div>
+                <div class="col-sm-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                        <label class="neu-input__label" for="TicketSubStatus" style="text-align:left;width:30%;">Ticket Sub Status</label>
+                        <select name="TicketSubStatus" id="TicketSubStatus" class="neu-select">
+                            <option>Select Below</option>
+                            <option value="InProgress">In Progress</option>
+                            <option value="Pending">Pending</option>
+                            <option value="UnAssigned">UnAssigned</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                        <label class="neu-input__label" for="TicketId" style="text-align:left;width:30%;">Ticket Id</label>
+                        <input name="TicketId" id="TicketId" class="neu-input__field" type="text" style="width:100%" />
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
                 <div class="neu-input col-4">
                     <div aria-checked="false" style="text-align:left;width:100%;">
                         <label class="neu-input__label">Start Date</label>
@@ -123,11 +144,18 @@
                         <input class="neu-input__field" id="enddate" name="enddate" type="text" aria-disabled="false">
                     </div>
                 </div>
+                <div class="col-sm-4">
+                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                        <label class="neu-input__label" for="ResultCount" style="text-align:left;width:30%;">Result Count</label>
+                        <input name="ResultCount" id="ResultCount" class="neu-input__field" type="text" style="width:100%" />
+                    </div>
+                </div>
+
             </div>
             <br />
             <div class="row" style="text-align:center;width:100%;">
                 <div class="col-12">
-                    <button id="btnsearch" class="neu-button--primary neu-button neu-button--raised">
+                    <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
                         &nbsp;Search
                     </button>
                     <button asp-controller="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
@@ -188,7 +216,7 @@
                 url: "/search/GetCommaSeperated",
                 data: null,
                 success: function (response) {
-                    alert(response.length);
+                   // alert(response.length);
                     $("#txtassignedto").autocomplete({
                         source: response
                     });
@@ -221,7 +249,7 @@
 
                 var categoryID = $("#CatgID").val();
                 var subcategoryID = $("#SubCatID").val();
-                var assignedTo = $("#txtassignedto").val();
+                var assignedTo = $("#AssignedTo").val();
 
                 var ticketStatus = $("#StatusList").val();
 
@@ -239,33 +267,35 @@
                     return false;
                 }
 
-                var searchparameter = {
-                    "EnvironmentType": environmenttype,
-                    "ResultType": screentype,
-                    "CategoryID": categoryID,
-                    "SubcategoryID": subcategoryID,
-                    "AssignedTo": assignedTo,
-                    "TicketStatus": ticketStatus,
-                    "FromDate": startdate,
-                    "EndDate": enddate
-                };
+                //var searchparameter = {
+                //    "EnvironmentType": environmenttype,
+                //    "ResultType": screentype,
+                //    "CategoryID": categoryID,
+                //    "SubcategoryID": subcategoryID,
+                //    "AssignedTo": assignedTo,
+                //    "TicketStatus": ticketStatus,
+                //    "FromDate": startdate,
+                //    "EndDate": enddate
+                //};
 
-                $.ajax({
-                    type: "POST",
-                    url: "/search/GetSearchDetails",
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/search/GetSearchDetails",
 
-                    data: { searchparameter: searchparameter },
+                //    data: { searchparameter: searchparameter },
 
-                    success: function (response) {
+                //    success: function (response)
+                //    {
+                //        alert(response.length);
 
-                    },
-                    failure: function (response) {
-                        alert(response.responseText);
-                    },
-                    error: function (response) {
-                        alert(response.responseText);
-                    }
-                });
+                //    },
+                //    failure: function (response) {
+                //        alert(response.responseText);
+                //    },
+                //    error: function (response) {
+                //        alert(response.responseText);
+                //    }
+                //});
             });
 
             $("#CatgID").change(function () {

@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using System.Collections;
+using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -34,167 +35,105 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details()
+        public IActionResult Index(int ticketId)
         {
-            BindSearchGrid objBindSearchGrid = new BindSearchGrid();
-            objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
-            return View("Details", objBindSearchGrid);
-        }
+            var disp = _auditToolContext.AuditMain.Where(y => y.ID == (int)ticketId && 
+                    y.isDisputed == true).FirstOrDefault();
 
-        [HttpPost]
-        public IActionResult Details(BindSearchGrid objBindSearchGrid)
-        {
-            try
+            if (disp != null)
+                return RedirectToAction("Index", "Search");
+
+            var model = new DisputeModel();
+            //need check for isDisputed
+            model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.ID == ticketId);
+            var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainID == ticketId && 
+                x.isNonCompliant == true).ToList();
+            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive).ToList();
+
+            var gracePeriod = new List<SelectListItem>();
+            gracePeriod.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+            foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Grace Period"))
             {
-                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+                gracePeriod.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+            }
 
-                // Skip number of Rows count  
-                var start = Request.Form["start"].FirstOrDefault();
+            var overturn = new List<SelectListItem>();
+            overturn.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+            foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Over Turn"))
+            {
+                overturn.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+            }
 
-                // Paging Length 10,20  
-                var length = Request.Form["length"].FirstOrDefault();
 
-                // Sort Column Name  
-                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+            var auditNonCompList = new List<AuditNonComplianceModel>();
+            foreach (var auditRes in auditResponses)
+            {
+                var questionText = _auditToolContext.QuestionBank.Where(x => x.QuestionID == auditRes.QuestionId).FirstOrDefault();
 
-                // Sort Column Direction (asc, desc)  
-                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                if (questionText != null) {
 
-                // Search Value from (Search box)  
-                var searchValue = Request.Form["search[value]"].FirstOrDefault();
-
-                //Paging Size (10, 20, 50,100)  
-                int pageSize = length != null ? Convert.ToInt32(length) : 0;
-
-                int skip = start != null ? Convert.ToInt32(start) : 0;
-
-                int recordsTotal = 0;
-
-                // getting all Customer data  
-                var customerData = (from tempcustomer in BindSearchGrid.GetGridData()
-                                    select tempcustomer);
-
-                //Sorting  
-                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-                {
-                    switch (sortColumn)
+                    auditNonCompList.Add(new AuditNonComplianceModel()
                     {
-                        case "TicketNumber":
-                            if (sortColumnDirection == "desc")
-                            {
-                                customerData = customerData.OrderByDescending(s => s.TicketNumber);
-                            }
-                            else
-                            {
-                                customerData = customerData.OrderBy(s => s.TicketNumber);
-                            }
-                            break;
-                    }
+
+                        QuestionId = auditRes.QuestionId,
+                        Question = questionText.QuestionDescription, //need to call service to get the question
+                        IsCompliant = auditRes.isCompliant,
+                        IsNonCompliant = auditRes.isNonCompliant,
+                        IsCorrectionRequired = auditRes.isCorrectionRequired,
+                        NonComplianceComments = auditRes.NonComplianceComments,
+                        TicketId = auditRes.TicketID,
+                        QuestionRank = auditRes.QuestionRank
+
+                    });
                 }
-                //Search  
-                if (!string.IsNullOrEmpty(searchValue))
+            
+            }
+            model.GracePeriod = gracePeriod;
+            model.Overturn = overturn;
+            model.AuditNonComplianceModel = auditNonCompList;
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public IActionResult GetData([FromBody]List<AuditNonComplianceModel> model)
+        {
+            //Not handled error and logs
+            var ticketId = model.First().TicketId;
+            var auditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.TicketID == ticketId);
+            auditMain.isDisputed = true;
+            auditMain.DisputeDate = DateTime.Now;
+            //auditMain.DisputeAuditor34ID = "";
+
+            var auditRes = _auditToolContext.AuditMainResponse.Where(x => x.TicketID == ticketId);
+            var dispute = new List<AuditDispute>();
+            foreach (var ques in model)
+            {
+                if (Convert.ToInt32(ques.GracePeriodId) > 0 || Convert.ToInt32(ques.OverturnId) > 0)
                 {
-                    customerData = customerData.Where(m => m.TicketNumber == searchValue);
+                    auditRes.First(x => x.QuestionId == ques.QuestionId).isNonCompliant = false;
+                    dispute.Add(new AuditDispute()
+                    {
+                        TicketID = ques.TicketId,
+                        GracePeriodId = Convert.ToInt32(ques.GracePeriodId),
+                        OverTurnId = Convert.ToInt32(ques.OverturnId),
+                        QuestionId = Convert.ToInt32(ques.QuestionId),
+                        QuestionRank = Convert.ToInt32(ques.QuestionRank),
+                        Comments = ques.Comment
+                    });
                 }
 
-                //total number of rows counts   
-                recordsTotal = customerData.Count();
-                //Paging   
-                var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
-                //Returning Json Data  
-                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
             }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
-        [HttpGet]
-        public ActionResult Navigate(string id)
-        {
-            return Redirect("https://www.google.com");
-        }
+            _auditToolContext.AuditMain.Update(auditMain);
+            _auditToolContext.AuditMainResponse.UpdateRange(auditRes);
+            _auditToolContext.AuditDispute.AddRange(dispute);
 
-        [HttpPost]
-        public IActionResult Index(BindSearchGrid objBindSearchGrid)
-        {
-            return RedirectToAction("Details", objBindSearchGrid);
-        }
-        [HttpGet]
-        public IActionResult Index()
-        {
-            var categoryList = GetCategoryDetails();
-            _logger.LogInformation($"No of records: {categoryList.Count()}");
-            //categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
-            ViewBag.ListOfCategory = categoryList;
+            var result = _auditToolContext.SaveChanges();
 
-            var ticketList = Tickets.GetTickets();
-            //ticketList.Insert(0, new Tickets { TicketID = 0, Ticket = "Select Ticket" });
-            ViewBag.ListOfTicket = ticketList;
+            return Json(result); 
 
-            var assignedtoList = AssignedTo.GetAssignedTo();
-            //assignedtoList.Insert(0, new AssignedTo { memberID = 0, membername = "Select Member" });
-            ViewBag.ListOfMembers = assignedtoList;
-
-            var statusList = Status.GetStatus();
-            //statusList.Insert(0, new Status { StatusID = 0, Statusname = "Select Status" });
-            ViewBag.StatusList = statusList;
-            return View();
-        }
-
-        [HttpPost]
-        public JsonResult BindSubCategory(string categoryID)
-        {
-            _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            var filteredSubCategoryList = SubCategoryList.GetSubCategory()
-                                         .Where(x => x.CatgID == Convert.ToInt32(categoryID))
-                                         .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
-            _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
-            return Json(filteredSubCategoryList);
-        }
-
-        List<Categorys> GetCategoryDetails()
-        {
-            var data = (from subCat in _auditToolContext.categories select subCat).ToList();
-            return data;
-        }
-
-        CategoryMast GetDetails()
-        {
-            var data = (from cat in _auditToolContext.categories select cat).ToList();
-            CategoryMast objCategoryMast = new CategoryMast();
-            objCategoryMast._categoryList = new List<Category>();
-            foreach (var item in data)
-            {
-                Category objCategory = new Category();
-                objCategory.CatgID = item.CatgID; objCategory.CatgDescription = item.CatgDescription;
-                objCategoryMast._categoryList.Add(objCategory);
-            }
-            return objCategoryMast;
-        }
-
-        [HttpPost]
-        public ActionResult Insert(string subcatgname)
-        {
-            CategoryMast objCategoryMast = new CategoryMast();
-            objCategoryMast = GetDetails();
-            int max;
-            if (objCategoryMast._categoryList.Count == 0)
-            {
-                max = 0;
-            }
-            else
-            {
-                max = objCategoryMast._categoryList.OrderByDescending(x => x.CatgID).First().CatgID;
-            }
-            Categorys objCategorys = new Categorys(); objCategorys.CatgDescription = subcatgname;
-            objCategorys.CatgID = max + 1;
-            _auditToolContext.categories.Add(objCategorys);
-            _auditToolContext.SaveChanges();
-
-            return RedirectToAction("Details");
         }
     }
 }

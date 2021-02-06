@@ -228,7 +228,7 @@
 
     $("#btnaddSubCategory").click(function () {
         var catgID = $('#ddlcategory').val();
-        var subCategoryName = $('#txtsubcategory').val();
+        var subCategoryName = $('#txtsubcategory').val().trim();
         if (catgID == "0") { $('#errormsgcategory').show(); $('#errormsgcategory').text('Select Service Delivery Group'); return false;}
         if (subCategoryName == "") { $('#errormsgsubcategory').show(); $('#errormsgsubcategory').text('Enter Subcategory'); return false;}
 
@@ -296,7 +296,7 @@
                     $("#hdndeletecatid").val(CatgID);
                 }
                 else if (response == "HasRecords") {
-                    $("#lblcustomtextfor").text("Cannot delete as it is currently mapped to Questions");
+                    $("#lblcustomtextfor").text("First remove Question mapping and then delete this Subcategory");
                     $("#popupcontentdelete").dialog('open');
                     $("#btndeleteCategoryok").show();
                     $("#btnSubCatdelete").hide();

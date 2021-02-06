@@ -5,27 +5,29 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     public class AuditToolContext :DbContext
     {
 
-        public AuditToolContext(DbContextOptions<AuditToolContext> options) : base(options) { }
+        public AuditToolContext(DbContextOptions<AuditToolContext> options) : base(options) {
+            this.Database.SetCommandTimeout(300);
+        }
 
-        public DbSet<Categorys> categories { get; set; }
-        public DbSet<SubCategory> subCategories { get; set; }
-        public DbSet<QuestionMaster> questionMasters { get; set; }
-        public DbSet<clstbHROCRoster> hrocMaster { get; set; }
+        public DbSet<Categorys> Categories { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<QuestionMaster> QuestionMasters { get; set; }
+        public DbSet<clstbHROCRoster> HrocMaster { get; set; }
 
-        public DbSet<tblQuestionBank> questionBank { get; set; }
+        public DbSet<tblQuestionBank> QuestionBank { get; set; }
 
-        public DbSet<clstbHROCAuditor> hrocAuditors { get; set; }
+        public DbSet<clstbHROCAuditor> HrocAuditors { get; set; }
 
-        public DbSet<TicketsViaSSIS> searchTicketDetail { get; set; }
+        public DbSet<TicketsViaSSIS> SearchTicketDetail { get; set; }
 
         public DbSet<AuditMainResponse> AuditMainResponse { get; set; }
 
+        public DbSet<AuditMain> AuditMain { get; set; }
+        public DbSet<Usp_GetHRAuditSearchResult> Usp_GetHRAuditSearchResult { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(@"data source=(localdb)\\MSSQLLocalDB; initial catalog=HRAudit;persist security info=True;user id=sa");
-        //}
+        public DbSet<AuditDispute> AuditDispute { get; set; }
+        public DbSet<ListOfValues> ListOfValues { get; set; }
+
     }
-
     
 }

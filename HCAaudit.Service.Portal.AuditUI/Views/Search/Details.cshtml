@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = " HRRoster Page";
+    ViewData["Title"] = " Resut Page";
 }
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -31,8 +31,8 @@
                         <tr>
                             <th>Ticket Number</th>
                             <th>Created Date</th>
-                            <th>Status</th>
                             <th>Subject</th>
+                            <th>SubCategory</th>
                             <th>Service Group</th>
                             <th>Assigned To</th>
                         </tr>
@@ -43,16 +43,45 @@
     </div>
 </main>
         <script>
-            $(document).ready(function () {
+            $(document).ready(function ()
+            {
+
+                function getUrlVars() {
+                    var vars = [], hash;
+                    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                    for (var i = 0; i < hashes.length; i++)
+                    {
+                        hash = hashes[i].split('=');
+                        vars.push(hash[0]);
+                        vars[hash[0]] = hash[1];
+                    }
+                    return vars;
+                }
+
+                var searchparameter = {
+                    "EnvironmentType": getUrlVars()["EnvironmentType"],
+                    "ResultType": getUrlVars()["ResultType"],
+                    "CategoryID": getUrlVars()["CatgID"],
+                    "SubcategoryID": getUrlVars()["SubCatID"],
+                    "AssignedTo": getUrlVars()["AssignedTo"],
+                    "TicketStatus": getUrlVars()["TicketStatus"],
+                    "TicketSubStatus": getUrlVars()["TicketSubStatus"],
+                    "FromDate": getUrlVars()["startdate"],
+                    "EndDate": getUrlVars()["enddate"],
+                    "TicketId": getUrlVars()["TicketId"],
+                    "ResultCountCriteria": getUrlVars()["ResultCount"]
+                };
+
                 $("#example").DataTable({
                     "processing": true, // for show progress bar
                     "serverSide": true, // for process server side
                     "filter": true, // this is for disable filter (search box)
                     "orderMulti": false, // for disable multiple column at once
                     "ajax": {
-                        "url": "/Search/Details",
+                        "url": "/search/GetSearchDetails",
                         "type": "POST",
-                        "datatype": "json"
+                        "datatype": "json",
+                        "data": { searchparameter: searchparameter },
                     },
                     "columnDefs": [{
                         "targets": [0],
@@ -61,13 +90,16 @@
                     }],
                     "columns": [
                         {
-                            "render": function (data, type, full, meta) { return '<a class="neu-topnav__compact" style="text-decoration-style:solid;font-weight:bold" href="https://www.google.com" target="_blank">' + full.TicketNumber + '</a>'; }
+                            "render": function (data, type, full, meta) {
+                                debugger;
+                                return '<a class="neu-topnav__compact" style="text-decoration-style:solid;font-weight:bold" href="'+full.Url +'" target="_self">' + full.TicketCode + '</a>';
+                            }
                         },
-                        { "data": "CreatedDate", "name": "CreatedDate", "autoWidth": true },
-                        { "data": "Subject", "name": "Subject", "autoWidth": true },
-                        { "data": "status", "name": "status", "autoWidth": true },
-                        { "data": "ServiceGroup", "name": "ServiceGroup", "autowidth": true },
-                        { "data": "AssignedTo", "name": "AssignedTo", "autowidth": true },
+                        { "data": "ClosedDate", "name": "CreatedDate", "autoWidth": true },
+                        { "data": "Topic", "name": "Subject", "autoWidth": true },
+                        { "data": "SubCategory", "name": "SubCategory", "autoWidth": true },
+                        { "data": "ServiceDeliveryGroup", "name": "ServiceGroup", "autowidth": true },
+                        { "data": "Agent34ID", "name": "AssignedTo", "autowidth": true },
                     ]
                 });
             });

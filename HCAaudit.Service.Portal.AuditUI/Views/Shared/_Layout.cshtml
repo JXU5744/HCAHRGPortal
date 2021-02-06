@@ -35,11 +35,11 @@
     </nav>
     <div class="neu-topnav">
         <div style="z-index: 1;" class="neu-topnav__large">
-            <a asp-controller="category" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Service Delivery Group</a>
+            <a asp-controller="category" asp-action="index" class="neu-margin--right-20" style="text-decoration:none">Service Delivery Group</a>
             <a asp-controller="subcategory" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Subcategory</a>
             <a asp-controller="HRRoster" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">HR Professional</a>
-            <a asp-controller="Questions" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
-            <a asp-controller="Questions" asp-action="index" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
+            <a asp-controller="Questions" asp-action="QuestionMaster" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
+            <a asp-controller="Questions" asp-action="QuestionMapping" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
             <a asp-controller="Audit" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Audit</a>
             <a asp-controller="Dispute" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Dispute</a>
 
@@ -49,6 +49,7 @@
 
 
     @RenderBody()
+
     @*<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
         <script type="text/javascript" src="~/js/moment.min.js"></script>
         <link href="~/css/gridstyle.css" rel="stylesheet" />
@@ -66,5 +67,23 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>*@
 
     @RenderSection("Scripts", required: false)
+        @*<footer class="neu-footer--compact neu-footer--compact__navy">
+            <div class="row" role="navigation" id="a11y-menu">
+                <div class="col-md-12 col-lg-4">
+                    <a href="#!">
+                        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/4296082/HCA-Horizontal-white.png"
+                             alt="hca healthcare logo"
+                             height="20px" />
+                    </a>
+                </div>
+
+                <div class="col-md-12 col-lg-4">
+                    <p class="neu-text--caption neu-margin--left-10 neu-footer--compact__right-elem">
+                        ©2020 HCA, Inc. or its affiliates
+                    </p>
+                </div>
+            </div>
+        </footer>*@
 </body>
+
 </html>

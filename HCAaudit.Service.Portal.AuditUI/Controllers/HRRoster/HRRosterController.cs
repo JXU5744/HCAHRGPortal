@@ -36,14 +36,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             clstbHROCRosterList objclstbHROCRosterList = new clstbHROCRosterList();
             objclstbHROCRosterList._hrocrosterList = new List<clstbHROCRoster>();
-            objclstbHROCRosterList._hrocrosterList = (from hroc in _auditToolContext.hrocMaster select hroc).ToList();
+            objclstbHROCRosterList._hrocrosterList = (from hroc in _auditToolContext.HrocMaster select hroc).ToList();
             return objclstbHROCRosterList;
         }
 
         [HttpGet]
         public IActionResult StatusUpdate(string id)
         {
-            var data = (from hroc in _auditToolContext.hrocMaster select hroc).ToList();
+            var data = (from hroc in _auditToolContext.HrocMaster select hroc).ToList();
             clstbHROCRoster objclstbHROCRoster = data.Find(a => a.EmployeethreefourID == id);
 
             if (objclstbHROCRoster.EmployeeStatusDesc.ToLower() == "active full time")
@@ -56,7 +56,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 objclstbHROCRoster.EmployeeStatus = "01";
             }
 
-            _auditToolContext.hrocMaster.Update(objclstbHROCRoster);
+            _auditToolContext.HrocMaster.Update(objclstbHROCRoster);
             _auditToolContext.SaveChanges();
 
             return RedirectToAction("details");
@@ -98,7 +98,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 int recordsTotal = 0;
 
                 objclstbHROCRosterList._hrocrosterList = new List<clstbHROCRoster>();
-                objclstbHROCRosterList._hrocrosterList = (from hroc in _auditToolContext.hrocMaster select hroc).ToList();
+                objclstbHROCRosterList._hrocrosterList = (from hroc in _auditToolContext.HrocMaster select hroc).ToList();
 
                 // getting all Customer data  
                 var customerData = (from tempcustomer in objclstbHROCRosterList._hrocrosterList

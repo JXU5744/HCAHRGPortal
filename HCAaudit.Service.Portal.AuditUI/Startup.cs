@@ -173,11 +173,6 @@ namespace HCAaudit.Service.Portal.AuditUI
             //app.UseHttpsRedirection();
             //app.UseCookiePolicy();
 
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute("default", "{controller=Login}/{action=Index}/{id?}");
-            //});
-
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapControllerRoute(

@@ -45,7 +45,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         Categorys GetSingleCategoryByid(string id)
         {
-            var data = (from cat in _auditToolContext.categories select cat).ToList();
+            var data = (from cat in _auditToolContext.Categories select cat).ToList();
             Categorys objCategorys = data.Find(category => category.CatgID == Convert.ToInt32(id));
             return objCategorys;
         }
@@ -69,7 +69,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         Categorys objCategorys = new Categorys();
                         objCategorys = GetSingleCategoryByid(param[0]);
                         objCategorys.CatgDescription = param[1];
-                        _auditToolContext.categories.Update(objCategorys);
+                        _auditToolContext.Categories.Update(objCategorys);
                         _auditToolContext.SaveChanges();
                     }
                 }
@@ -89,9 +89,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             if (string.IsNullOrEmpty(responce.ToString()))
             {
                 Categorys objCategorys = new Categorys(); objCategorys.CatgDescription = CategoryName;
-                _auditToolContext.categories.Add(objCategorys);
+                _auditToolContext.Categories.Add(objCategorys);
                 _auditToolContext.SaveChanges();
-                return RedirectToAction("details");
+                return RedirectToAction("index");
             }
             return Json(responce);
         }
@@ -99,35 +99,35 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var data = (from cat in _auditToolContext.categories select cat).ToList();
+            var data = (from cat in _auditToolContext.Categories select cat).ToList();
             Categorys objCategorys = data.Find(category => category.CatgID == id);
-            _auditToolContext.categories.Remove(objCategorys); _auditToolContext.SaveChanges();
-            return RedirectToAction("details",GetDetails());
+            _auditToolContext.Categories.Remove(objCategorys); _auditToolContext.SaveChanges();
+            return RedirectToAction("Index",GetDetails());
         }
 
         List<Categorys> GetDetails()
         {
-            var data = _auditToolContext.categories.ToList();
+            var data = _auditToolContext.Categories.ToList();
             return data;
         }
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
             object response;
-            var data = (from cat in _auditToolContext.subCategories select cat).ToList();
+            var data = (from cat in _auditToolContext.SubCategories select cat).ToList();
             SubCategory obj = data.Find(a => a.CatgID ==  id);
             response = obj == null ? "HasecOrds" : "NoRecOrds";
             return Json(response);
         }
 
         [HttpGet]
-        public IActionResult Details()
+        public IActionResult Index()
         {
-            return View("details", GetDetails());
+            return View("Index", GetDetails());
         }
 
         [HttpPost]
-        public IActionResult Details(CategoryMast objCategoryMast)
+        public IActionResult Index(CategoryMast objCategoryMast)
         {
             try
             {
@@ -155,7 +155,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;                              
 
-                var data = (from cat in _auditToolContext.categories select cat).ToList();
+                var data = (from cat in _auditToolContext.Categories select cat).ToList();
                 objCategoryMast = new CategoryMast();
                 objCategoryMast._categoryList = new List<Category>();
                 foreach (var item in data)

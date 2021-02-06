@@ -39,8 +39,9 @@
                             <tr class="neu-table__row">
                                 <th>QuestionID</th>
                                 <th>Question Name</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                <th>Question Description</th>
+                                <th style="width:10%">Edit</th>
+                                <th style="width:10%">Delete</th>
                             </tr>
                         </thead>
                     </table>
@@ -50,11 +51,19 @@
             <div id="popupcontent" title="Add Question" hidden="hidden" class="container">
 
                 <div class="row">
-                    <div class="col-sm-9"> 
-                        <label for="format-pdf" class="neu-input__label">Question Short Description:</label>
-                        <input id="txtQuestion" class="neu-input__field" type="text" style="width:50%" />
+                    <div class="col-sm-9">
+                        <label for="txtQuestion" class="neu-input__label">Question Text:</label>
+                        <input id="txtQuestion" class="neu-input__field" type="text" />
                         <span id="errormsg" class="neu-button--danger"></span>
-                        </div>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <label for="txtdescription" class="neu-input__label">Question Short Description:</label>
+                        <textarea id="txtdescription" class="neu-input__field"></textarea>
+                        <span id="errordescriptionmsg" class="neu-button--danger"></span>
+                    </div>
                     <div class="col-sm-3"></div>
                 </div>
                 <br />
@@ -73,12 +82,20 @@
 
                 <div class="row">
                     <div class="col-sm-8">
-                        <label for="format-pdf" class="neu-input__label">Question Short Description:</label>
+                        <label for="format-pdf" class="neu-input__label">Question Text:</label>
                         <input id="txtQuestionedit" class="neu-input__field"
-                           type="text" />
-                    <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
-                        </div>
+                               type="text" />
+                        <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
+                    </div>
                     <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <label for="txtdescriptionedit" class="neu-input__label">Question Short Description:</label>
+                        <textarea id="txtdescriptionedit" class="neu-input__field"></textarea>
+                        <span id="errordescriptionmsgedit" class="neu-button--danger"></span>
+                    </div>
+                    <div class="col-sm-3"></div>
                 </div>
                 <br />
                 <div class="row">
@@ -94,19 +111,19 @@
             <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
 
                 <div class="row">
-                    <div class="col-sm-12">Do you want to Delete this Question?</div>
+                    <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
                 </div>
                 <br />
                 <div class="row">
                     <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-6">
+                        <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">Ok</button>&nbsp;
+                        <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+                        <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
 
                     </div>
-                    <div class="col-sm-5">
-                        <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised ">Yes</button>&nbsp;
-                        <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
-                    </div>
                 </div>
+
             </div>
         </div>
     </main>
@@ -131,6 +148,7 @@
             "columns": [
                 { "data": "QuestionID", "name": "QuestionID", "autoWidth": true },
                 { "data": "QuestionName", "name": "QuestionName", "autoWidth": true },
+                { "data": "QuestionDescription", "name": "QuestionDescription", "autoWidth": true },
                 {
                     "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="#" onclick=OpenEditpopup(' + full.QuestionID + ');>Edit</a>'; }
                 },
@@ -254,6 +272,7 @@
             success: function (response) {
                 if (response != null && response != "") {
                     $("#txtQuestionedit").val(response.QuestionName);
+                    $("#txtdescriptionedit").val(response.QuestionDescription);
                 }
                 $("#popupcontentedit").dialog('open');
             },
@@ -274,7 +293,7 @@
         $.ajax({
             type: "POST",
             url: "/questions/Edit",
-            data: { "id": $('#hdnid').val() + "$" + $('#txtQuestionedit').val() },
+            data: { "id": $('#hdnid').val() + "$" + $('#txtQuestionedit').val() + "$" + $('#txtdescriptionedit').val()},
             success: function (response) {
                 if (response == "1") {
                     $("#errormsgedit").show(); $("#errormsgedit").text("Record already exists!");
@@ -282,6 +301,7 @@
                 else {
                     $("#popupcontentedit").dialog('close');
                     $('#txtQuestionedit').val("");
+                    $('#txtdescriptionedit').val("");
                     location.reload();
                 }
             },
@@ -298,11 +318,13 @@
     $("#btnaddQuestion").click(function () {
 
         var questionName = $('#txtQuestion').val();
-        if (questionName == "") { $("#errormsg").show(); $("#errormsg").text("Please Enter Question"); return false;}
+        var questionDesc = $('#txtdescription').val();
+        if (questionName == "") { $("#errormsg").show(); $("#errormsg").text("Please Enter Question"); return false; }
+        if (questionDesc == "") { $("#errordescriptionmsg").show(); $("#errordescriptionmsg").text("Please Enter Description"); return false; }
         $.ajax({
             type: "POST",
             url: "/Questions/Insert",
-            data: { "questionname": questionName },
+            data: { "questionname": questionName, "questiondesc": questionDesc },
             success: function (response) {
                 if (response == "1") {
                     $("#errormsg").show(); $("#errormsg").text("Record already exists!");
@@ -339,11 +361,45 @@
         $("#popupcontentdelete").dialog('close');
     });
 
+    $("#btndeleteCategoryok").click(function () {
+        $("#popupcontentdelete").dialog('close');
+    });
 
     function DeleteData(CatgID) {
-        $("#popupcontentdelete").dialog('open');
-        $("#hdndeletecatid").val(CatgID);
+        $.ajax({
+            type: "POST",
+            url: "/questions/HasDeleteAccessforQB",
+            data: { "id": CatgID },
+            success: function (response) {
+                //alert(response);
+                if (response == "NoRecords") {
+                    $("#lblcustomtextfor").text("Do you want to Delete this Question?");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").hide();
+                    $("#btndeleteQuestion").show();
+                    $("#btncancelpopupdelete").show();
+                    $("#hdndeletecatid").val(CatgID);
+                }
+                else if (response == "HasRecords") {
+                    $("#lblcustomtextfor").text("First remove Subcategory mapping and then delete this Question");
+                    $("#popupcontentdelete").dialog('open');
+                    $("#btndeleteCategoryok").show();
+                    $("#btndeleteQuestion").hide();
+                    $("#btncancelpopupdelete").hide();
+                    //alert('Entered else');
+                    //return trueOrFalse(false);
+                }
+            },
+            failure: function (response) {
+                // alert(response.responseText);
+            },
+            error: function (response) {
+                //  alert(response.responseText);
+            }
+        });
     }
+
+   
 
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
