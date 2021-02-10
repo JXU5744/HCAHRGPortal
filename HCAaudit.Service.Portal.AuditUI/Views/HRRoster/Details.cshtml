@@ -3,74 +3,665 @@
     ViewData["Title"] = "HR Professional";
 }
 
-@model HCAaudit.Service.Portal.AuditUI.Models.clstbHROCRosterList
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 @*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
 
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
+<script type="text/javascript" src="~/js/moment.min.js"></script>
+<script type="text/javascript" src="~/js/numeric.js"></script>
 
-<main class="container neu-margin--top-30">
-    <div class="jumbotron-fluid">
 
-        <div class="row">
+        <div class="row neu-margin--bottom-16">
             <div class="col-12">
                 <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">HR Professional</h3>
             </div>
         </div>
 
-
-        <div class="container">
-            <br />
-            <div style="width:100%; margin:0 auto;">
-                <table id="example" class="neu-table" width="100%" cellspacing="0">
-                    <thead class="neu-table__header">
-                        <tr class="neu-table__row--large">
-                            <th>Employee 3-4 ID</th>
-                            <th>Employee Full Name</th>
-                            <th>Job Code Desc</th>
-                            <th>Position Desc</th>
-                            <th>Employee Status Desc</th>
-                            <th>Change Status</th>
-                        </tr>
-                    </thead>
-                </table>
+        <div class="row neu-margin--bottom-16 d-flex align-items-end">
+            <div class="col-sm-4" tabindex="-1" aria-checked="false">
+                    <label class="neu-input__label required" style="text-align:left;width:30%;">Enter Employee (by 3-4 ID)</label>
+                    <input name="txtSearch34Id" id="txtSearch34Id" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}"/>
+                    <input name="hiddenHROCRosterId" id="hiddenHROCRosterId" class="neu-input__field" type="hidden" />
+                    <span id="errorMessage" class="neu-button--danger"></span>
+            </div>
+            <div class="col-sm-4">
+                <div tabindex="-1" aria-checked="false">
+                    <button id="btnAddEmployee" name="btnAddEmployee" class="neu-button--primary neu-button neu-button--raised" style="display:none">
+                        Add Employee
+                    </button>
+                </div>
+                <div tabindex="-1" aria-checked="false">
+                    <button id="btnSearchEmployee" name="btnSearchEmployee" class="neu-button--primary neu-button neu-button--raised">
+                        Search
+                    </button>
+                </div>
             </div>
         </div>
+<div class="row">
+    <div class="col-sm-12">
+        <fieldset id="fieldsetEmployeeForm" name="fieldsetEmployeeForm" class="neu-padding--0" disabled>
+            <div id="employeeForm">
+                <div class="row neu-margin--bottom-16">
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">First Name</label>
+                            <input name="txtEmployeeFirstName" id="txtEmployeeFirstName" class="neu-input__field" type="text" />
+                            <span id="errorMessageFirstName" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Last Name</label>
+                            <input name="txtEmployeeLastName" id="txtEmployeeLastName" class="neu-input__field" type="text" />
+                            <span id="errorMessageLastName" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Employee Full Name</label>
+                            <input name="txtEmployeeFullName" id="txtEmployeeFullName" class="neu-input__field" type="text" disabled />
+                            <span id="errorMessageEmployeeFullName" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row neu-margin--bottom-16">
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Employee Number</label>
+                            <input name="txtEmployeeNumber" id="txtEmployeeNumber" class="neu-input__field" type="text" />
+                            <span id="errorMessageEmployeeNumber" class="neu-button--danger neu-button--small"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Supervisor First Name</label>
+                            <input name="txtSuperVisorFirstName" id="txtSuperVisorFirstName" class="neu-input__field" type="text" />
+                            <span id="errorMessageSuperVisorFirstName" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                            <label class="neu-input__label required" style="text-align:left;width:30%;">Supervisor Last Name</label>
+                            <input name="txtSupervisorLastName" id="txtSupervisorLastName" class="neu-input__field" type="text" />
+                            <span id="errorMessageSupervisorLastName" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row neu-margin--bottom-16">
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Job Category Description</label>
+                            <input name="txtJobCatDesc" id="txtJobCatDesc" class="neu-input__field" type="text" />
+                            <span id="errorMessageJobCatDesc" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Position Description</label>
+                            <input name="txtPositionDesc" id="txtPositionDesc" class="neu-input__field" type="text" />
+                            <span id="errorMessagePositionDesc" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Employee Status</label>
+                            <input name="txtEmployeeStatus" id="txtEmployeeStatus" class="neu-input__field" type="text" />
+                            <span id="errorMessageEmployeeStatus" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row neu-margin--bottom-16">
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label required">Employee Status Description</label>
+                            <input name="txtEmployeeStatusDesc" id="txtEmployeeStatusDesc" class="neu-input__field" type="text" />
+                            <span id="errorMessageEmployeeStatusDesc" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div tabindex="-1" aria-checked="false">
+                            <label class="neu-input__label">Date Hired</label>
+                            <input name="txtDateHired" id="txtDateHired" class="neu-input__field" type="text" />
+                            <span id="errorMessageDateHired" class="neu-button--danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="divButtonCollection" name="divButtonCollection" class="row neu-margin--bottom-16">
+                    <div class="col-12 neu-text--align-center">
+                        <button asp-controller="Save" id="btnSave" name="btnSave" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
+                            Save
+                        </button>
+                        <button asp-controller="Save" id="btnUpdate" name="btnUpdate" asp-action="Details" class="neu-button--primary neu-button neu-button--raised" style="display:none">
+                            Save
+                        </button>
+                        <button asp-controller="HRRoster" id="btncancel" name="btncancel" asp-action="details" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="divSuccessMessage" name="divSuccessMessage" class="neu-padding--0" style="display:none">
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <i class="material-icons neu-text--dusty-green">check_circle</i>
+                        </div>
+                        <div class="col-sm-4">
+                            <h4 id="headingSuccessMessage" name="headingSuccessMessage" class="neu-text--bold text-success">
+                            </h4>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="col-sm-auto">
+                        <button asp-controller="Save" id="btnOkSuccess" name="btnOkSuccess" asp-action="Details" class="neu-button--success neu-button neu-button--raised neu-button--large">
+                            OK
+                        </button>
+                    </div>
+                </div>
+                <div id="divFailureMessage" name="divFailureMessage" class="neu-padding--0" style="display:none">
+                    <div class="row">
+                        <div class="col-sm-auto">
+                            <i class="material-icons neu-text--american-rose neu-margin--left-10">close</i>
+                        </div>
+                        <div class="col-sm-4">
+                            <h4 id="headingFailureMessage" name="headingFailureMessage" class="neu-text--bold text-danger">
+                            </h4>
+                        </div>
+                        <br>
+                        <div class="col-sm-4">
+                            <button asp-controller="Save" id="btnOkFailure" name="btnOkFailure" asp-action="Details" class="neu-button--success neu-button neu-button--raised neu-button--large">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </fieldset>
     </div>
-</main>
-        <script>
-            $(document).ready(function () {
-                $("#example").DataTable({
-                    "processing": true, // for show progress bar
-                    "serverSide": true, // for process server side
-                    "filter": true, // this is for disable filter (search box)
-                    "orderMulti": false, // for disable multiple column at once
-                    "ajax": {
-                        "url": "/HRRoster/Details",
-                        "type": "POST",
-                        "datatype": "json"
-                    },
-                    "columnDefs": [{
-                        "targets": [0],
-                        "visible": true,
-                        "searchable": true
-                    }],
-                    "columns": [
-                        { "data": "EmployeethreefourID", "name": "EmployeethreefourID", "autoWidth": true },
-                        { "data": "EmployeeFullName", "name": "EmployeeFullName", "autoWidth": true },
-                        //{ "data": "EmployeeNumber", "name": "EmployeeNumber", "autoWidth": true },
-                        { "data": "JobCDDesc", "name": "JobCDDesc", "autoWidth": true },
-                        { "data": "PositionDesc", "name": "PositionDesc", "autowidth": true },
-                        { "data": "EmployeeStatusDesc", "name": "EmployeeStatusDesc", "autowidth": true },
-                        {
-                            "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="/hrroster/statusupdate/' + full.EmployeethreefourID + '">Update Status</a>'; }
-                        },
-                    ]
-                });
+</div>
+        
+
+
+@section Scripts
+    {
+    <!-- Script for the date range picker -->
+    <script type="text/javascript" src="~/js/daterangepicker.js"></script>
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/css/daterangepicker.css" />
+    <script>
+        $(document).ready(function () {
+
+
+            $('input[name="txtDateHired"]').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                minYear: 1901,
+                maxYear: parseInt(moment().format('YYYY'), 10)
             });
-        </script>
+
+            $("#txtEmployeeNumber").numeric();
+
+            $('#txtEmployeeFirstName').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageFirstName').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageFirstName').text('');
+                }
+
+                $('#txtEmployeeFullName').val($('#txtEmployeeLastName').val() + ", " + $('#txtEmployeeFirstName').val())
+            });
+
+            $('#txtEmployeeLastName').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageLastName').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageLastName').text('');
+                }
+                $('#txtEmployeeFullName').val($('#txtEmployeeLastName').val() + ", " + $('#txtEmployeeFirstName').val())
+            });
+
+            $('#txtEmployeeFullName').on('keydown keyup change input', function () {
+                var maxLength = 100;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageEmployeeFullName').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageEmployeeFullName').text('');
+                }
+            });
+
+            $('#txtEmployeeNumber').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageEmployeeNumber').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageEmployeeNumber').text('');
+                }
+            });
+
+            $('#txtSuperVisorFirstName').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageSuperVisorFirstName').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageSuperVisorFirstName').text('');
+                }
+            });
+
+
+            $('#txtSupervisorLastName').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageSupervisorLastName').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageSupervisorLastName').text('');
+                }
+            });
+
+            $('#txtJobCatDesc').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageJobCatDesc').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageJobCatDesc').text('');
+                }
+            });
+
+
+            $('#txtPositionDesc').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessagePositionDesc').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessagePositionDesc').text('');
+                }
+            });
+
+
+            $('#txtEmployeeStatus').on('keydown keyup change input', function () {
+                var maxLength = 2;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageEmployeeStatus').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength + 1));
+                } else {
+                    $('#errorMessageEmployeeStatus').text('');
+                }
+            });
+
+            $('#txtEmployeeStatusDesc').on('keydown keyup change input', function () {
+                var maxLength = 30;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength) {
+                    $('#errorMessageEmployeeStatusDesc').text('Length is not valid, maximum ' + maxLength + ' allowed.');
+                    $(this).val(char.substring(0, maxLength));
+                } else {
+                    $('#errorMessageEmployeeStatusDesc').text('');
+                }
+            });
+
+
+            $('#txtDateHired').on('keydown keyup change input', function ()
+            {
+
+                var currentDate = new Date();
+                if (new Date(moment(currentDate).format("MM/DD/YYYY")) < new Date($("#txtDateHired").val()))
+                {
+                    $('#errorMessageDateHired').text('Date Hired cannot be future date');
+                }
+                else
+                {
+                    $('#errorMessageDateHired').text('');
+                }
+            });
+
+            $('#txtSearch34Id').on('keydown keyup change input', function ()
+            {
+                if ($("#txtSearch34Id").val() != "") {
+                    $("#errorMessage").text("");
+                }
+                var maxLength = 7;
+                var char = $(this).val();
+                var charLength = $(this).val().length;
+                if (charLength > maxLength)
+                {
+                    $(this).val(char.substring(0, maxLength));
+                } 
+
+            });
+
+            $("#btnSearchEmployee").click(function () {
+
+                if ($("#txtSearch34Id").val().trim().length > 0)
+                {
+                    var inputVal = $("#txtSearch34Id").val().trim();
+                    var inputRegx = $("#txtSearch34Id").attr("pattern");;
+
+                    if (!ValidateRex(inputVal, inputRegx)) {
+                        $("#errorMessage").text("Incorrect 3-4 Id Pattern.");
+                        return false;
+                    }
+
+                    $("#fieldsetEmployeeForm").removeAttr("disabled");
+                    $.ajax({
+                        type: "POST",
+                        url: "/HRRoster/GetDetailsById",
+                        data: { "EmployeeId": $("#txtSearch34Id").val() },
+                        success: function (response) {
+                            if (response.length > 0) {
+                                $("#hiddenHROCRosterId").val(response[0].HROCRosterId)
+                                $("#txtEmployeeFullName").val(response[0].EmployeeFullName);
+                                $("#txtEmployeeFirstName").val(response[0].EmployeeFirstName);
+                                $("#txtEmployeeLastName").val(response[0].EmployeeLastName);
+                                $("#txtEmployeeNumber").val(response[0].EmployeeNumber);
+                                $("#txtSuperVisorFirstName").val(response[0].SupervisorFirstName);
+                                $("#txtSupervisorLastName").val(response[0].SupervisorLastName);
+                                $("#txtJobCatDesc").val(response[0].JobCDDesc);
+                                $("#txtPositionDesc").val(response[0].PositionDesc);
+                                $("#txtEmployeeStatus").val(response[0].EmployeeStatus);
+                                $("#txtEmployeeStatusDesc").val(response[0].EmployeeStatusDesc);
+                                $("#txtDateHired").val((moment(response[0].DateHired).format("MM/DD/YYYY")));
+
+                                $("#txtSearch34Id").attr("disabled", "disabled")
+                                //$("#txtEmployeeFullName").attr("disabled", "disabled")
+                                $("#employeeForm").show();
+                                $("#btnUpdate").show();
+                                $("#btnSave").hide();
+                                $("#btnAddEmployee").hide();
+
+                            }
+                            else
+                            {
+                                $("#errorMessage").text("Data not available for 3-4 Id : " + $("#txtSearch34Id").val());
+                                //$("#btnAddEmployee").show();
+                            }
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+                else {
+                    $("#errorMessage").text("Employee 3-4 ID Required");
+                    $("#btnAddEmployee").hide();
+                }
+               
+            });
+
+            $("#btnAddEmployee").click(function () {
+                $("#employeeForm").show();
+                $("#btnSave").show();
+                $("#btnUpdate").hide();
+
+            });
+
+            $("#btncancel").click(function () {
+                location.reload();
+            });
+
+            $("#btnOkFailure").click(function () {
+                location.reload();
+            });
+
+            $("#btnOkSuccess").click(function () {
+                location.reload();
+            });
+
+            $("#btnUpdate").click(function () {
+
+                var isValid = ValidateHROCRosterViewModel();
+
+                if (isValid) {
+                    var HROCRosterViewModel =
+                    {
+                        "HROCRosterId": $("#hiddenHROCRosterId").val(),
+                        "EmployeeNumber": $("#txtEmployeeNumber").val(),
+                        "EmployeeFullName": $("#txtEmployeeFullName").val(),
+                        "EmployeeLastName": $("#txtEmployeeLastName").val(),
+                        "EmployeeFirstName": $("#txtEmployeeFirstName").val(),
+                        "SupervisorLastName": $("#txtSupervisorLastName").val(),
+                        "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
+                        "EmployeethreefourID": $("#txtSearch34Id").val(),
+                        "EmployeeStatus": $("#txtEmployeeStatus").val(),
+                        "PositionDesc": $("#txtPositionDesc").val(),
+                        "JobCDDesc": $("#txtJobCatDesc").val(),
+                        "EmployeeStatusDesc": $("#txtEmployeeStatusDesc").val(),
+                        "DateHired": $("#txtDateHired").val()
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/HRRoster/Edit",
+                        data: { "HROCRosterViewModel": HROCRosterViewModel },
+                        success: function (response) {
+                            if (response == "Success") {
+                                $("#divSuccessMessage").show();
+                                $("#divButtonCollection").hide();
+                                $("#headingSuccessMessage").text("Data Saved Successful.");
+                            }
+                            else {
+                                $("#divFailureMessage").show();
+                                $('#divButtonCollection').hide();
+                                $("#headingFailureMessage").text(response);
+                            }
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+
+                }
+            });
+
+            $("#btnSave").click(function () {
+
+                var isValid = ValidateHROCRosterViewModel();
+
+                if (isValid)
+                {
+                    var HROCRosterViewModel =
+                    {
+                        "HROCRosterId": $("#hiddenHROCRosterId").val(),
+                        "EmployeeNumber": $("#txtEmployeeNumber").val(),
+                        "EmployeeFullName": $("#txtEmployeeFullName").val(),
+                        "EmployeeLastName": $("#txtEmployeeLastName").val(),
+                        "EmployeeFirstName": $("#txtEmployeeFirstName").val(),
+                        "SupervisorLastName": $("#txtSupervisorLastName").val(),
+                        "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
+                        "EmployeethreefourID": $("#txtSearch34Id").val(),
+                        "EmployeeStatus": $("#txtEmployeeStatus").val(),
+                        "PositionDesc": $("#txtPositionDesc").val(),
+                        "JobCDDesc": $("#txtJobCatDesc").val(),
+                        "EmployeeStatusDesc": $("#txtEmployeeStatusDesc").val(),
+                        "DateHired": $("#txtDateHired").val()
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/HRRoster/Insert",
+                        data: { "HROCRosterViewModel": HROCRosterViewModel },
+                        success: function (response) {
+                            if (response == "Success") {
+                                $("#divSuccessMessage").show();
+                                $("#divButtonCollection").hide();
+                                $("#headingSuccessMessage").text("Data Saved Successful.");
+                            }
+                            else {
+                                $("#divFailureMessage").show();
+                                $('#divButtonCollection').hide();
+                                $("#headingFailureMessage").text(response);
+                            }
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+                        }
+                    });
+                }
+            });
+
+            function ValidateRex(ctrlVal, Regx) {
+                var pattern = new RegExp(Regx);
+                if (pattern.test(ctrlVal)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            function ValidateHROCRosterViewModel()
+            {
+                var isValid = true;
+
+                if ($("#txtSearch34Id").val().trim().length == 0)
+                {
+                    $('#errorMessage').text('Employee 3-4 ID Required');
+                    isValid = false;
+                }
+
+                if ($("#txtSearch34Id").val().trim().length != 7) {
+                    $('#errorMessage').text('7 Digit Employee 3-4 ID Required');
+                    isValid = false;
+                }
+
+                if ($("#txtEmployeeFirstName").val().trim().length == 0)
+                {
+                    $('#errorMessageFirstName').text('First Name Required');
+                    isValid = false;
+                }
+
+                if ($("#txtEmployeeLastName").val().trim().length == 0) {
+                    $('#errorMessageLastName').text('Last Name Required');
+                    isValid = false;
+                }
+
+                if ($("#txtEmployeeFullName").val().trim().length == 0) {
+                    $('#errorMessageEmployeeFullName').text('Employee Full Name Required');
+                    isValid = false;
+                }
+
+                if ($("#txtEmployeeNumber").val().trim().length == 0) {
+                    $('#errorMessageEmployeeNumber').text('Employee Number Required');
+                    isValid = false;
+                }
+
+                if ($("#txtSuperVisorFirstName").val().trim().length == 0) {
+                    $('#errorMessageSuperVisorFirstName').text('Supervisor First Name Required');
+                    isValid = false;
+                }
+
+                if ($("#txtSupervisorLastName").val().trim().length == 0) {
+                    $('#errorMessageSupervisorLastName').text('Supervisor Last Name Required');
+                    isValid = false;
+                }
+
+                if ($("#txtJobCatDesc").val().trim().length == 0) {
+                    $('#errorMessageJobCatDesc').text('Job Category Description Required');
+                    isValid = false;
+                }
+
+                if ($("#txtPositionDesc").val().trim().length == 0) {
+                    $('#errorMessagePositionDesc').text('Position Description Required');
+                    isValid = false;
+                }
+
+                if ($("#txtEmployeeStatus").val().trim().length == 0) {
+                    $('#errorMessageEmployeeStatus').text('Employee Status Required');
+                    isValid = false;
+                }
+
+                if ($("#txtEmployeeStatusDesc").val().trim().length == 0) {
+                    $('#errorMessageEmployeeStatusDesc').text('Employee Status Description Required');
+                    isValid = false;
+                }
+
+                if ($("#txtDateHired").val().trim().length == 0) {
+                    $('#errorMessageDateHired').text('Employee Status Description Required');
+                    isValid = false;
+                }
+
+                var currentDate = new Date();
+                if (new Date(moment(currentDate).format("MM/DD/YYYY")) < new Date($("#txtDateHired").val())) {
+                    $('#errorMessageDateHired').text('Date Hired cannot be future date');
+                    isValid = false;
+                }
+
+                return isValid;
+             }
+            //$("#example").DataTable({
+            //    "processing": true, // for show progress bar
+            //    "serverSide": true, // for process server side
+            //    "filter": true, // this is for disable filter (search box)
+            //    "orderMulti": false, // for disable multiple column at once
+            //    "ajax": {
+            //        "url": "/HRRoster/Details",
+            //        "type": "POST",
+            //        "datatype": "json"
+            //    },
+            //    "columnDefs": [{
+            //        "targets": [0],
+            //        "visible": true,
+            //        "searchable": true
+            //    }],
+            //    "columns": [
+            //        { "data": "EmployeethreefourID", "name": "EmployeethreefourID", "autoWidth": true },
+            //        { "data": "EmployeeFullName", "name": "EmployeeFullName", "autoWidth": true },
+            //        { "data": "EmployeeNumber", "name": "EmployeeNumber", "autoWidth": true },
+            //        { "data": "JobCDDesc", "name": "JobCDDesc", "autoWidth": true },
+            //        { "data": "PositionDesc", "name": "PositionDesc", "autowidth": true },
+            //        { "data": "EmployeeStatusDesc", "name": "EmployeeStatusDesc", "autowidth": true },
+            //        {
+            //            "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="/hrroster/statusupdate/' + full.EmployeethreefourID + '">Update Status</a>'; }
+            //        },
+            //    ]
+            //});
+        });
+    </script>
+}

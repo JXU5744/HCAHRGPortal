@@ -27,7 +27,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         {
             var token = await GetIdToken();
             var group = token.Claims.FirstOrDefault(claim => claim.Type == "group").Value.ToLower();
-            if (group.Equals("corp_hiesvcportal_admin") || group.Equals("corp_hiesvcportal_payer") || group.Equals("corp_hiesvcportal_provider"))
+            if (group.ToLower().Equals("corp_hr_hraudit_admin") || group.ToLower().Equals("corp_hr_hraudit_user"))
             {
                 return true;
             }
@@ -46,7 +46,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                 LoggedInLname = lastName,
                 LoggedInFullName = firstName + " " + lastName,
                 Initials = GetUserInitials(firstName, lastName),
-                HcaId = "",
+                HcaId = hcdId,
                 LoggedInIp = Convert.ToString(contextAccessor.HttpContext.Connection.RemoteIpAddress)
             };
 

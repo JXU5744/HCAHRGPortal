@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
 using System.Collections;
 using HCAaudit.Service.Portal.AuditUI.ViewModel;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -38,19 +41,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public JsonResult GetCommaSeperated()
         {
 
-            var mydata = _auditToolContext.hrocAuditors.Select(a => a.Agent34ID);
+            var mydata = _auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID);
 
-            return Json(_auditToolContext.hrocAuditors.Select(a => a.Agent34ID));
+            return Json(_auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID));
         }
 
         [HttpGet]
         public IActionResult Details()
         {
-            //BindSearchGrid objBindSearchGrid = new BindSearchGrid();
-            //objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
-            //return View("Details", objBindSearchGrid);
-
-
             BindSearchGrid objBindSearchGrid = new BindSearchGrid();
             try
             {
@@ -68,7 +66,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public IActionResult GetSearchDetails(SearchViewModel searchparameter)
         {
-            List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
+            List<Usp_GetHRAuditSearchResult> objgriddata = new List<Usp_GetHRAuditSearchResult>();
             try
             {
                 var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
@@ -105,55 +103,34 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     int subCategoryId = searchparameter.SubcategoryID;
                     string resultType = searchparameter.ResultType != null ? searchparameter.ResultType : "Audit";
                     int ticketStatus = searchparameter.TicketStatus;
-                    DateTime fromDate = searchparameter.FromDate == null ? DateTime.Today.AddDays(-1) : searchparameter.FromDate;
-                    DateTime toDate = searchparameter.EndDate == null ? fromDate.AddDays(-7) : searchparameter.EndDate;
+                    string fromDate = searchparameter.FromDate == null ? DateTime.Today.AddDays(-1).ToString() : searchparameter.FromDate;
+                    string toDate = searchparameter.EndDate == null ? Convert.ToDateTime(fromDate).AddDays(-7).ToString() : searchparameter.EndDate;
                     string assignedTo = !String.IsNullOrWhiteSpace(searchparameter.AssignedTo) ? searchparameter.AssignedTo : string.Empty;
                     string ticketSubStatus = !String.IsNullOrWhiteSpace(searchparameter.TicketSubStatus) ? searchparameter.TicketSubStatus : string.Empty;
                     string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
+                    string TicketId = String.IsNullOrWhiteSpace(searchparameter.TicketId) ? string.Empty : searchparameter.TicketId;
 
                     if (resultType.Equals("Audit"))
                     {
-                        if (ticketStatus == 0)
-                        {
-                            objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
-                                ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate);
-                        }
-                        else
-                        {
-                            //GetPendingAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
-                            //  ticketStatus, assignedTo, fromDate, assignedTo);
-                        }
+                        //objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                        //        ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
                     }
                     else
                     {
 
                     }
 
-                    //Sorting  
-                    if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-                    {
-                        switch (sortColumn)
-                        {
-                            case "TicketNumber":
-                                if (sortColumnDirection == "desc")
-                                {
-                                    //customerData = customerData.OrderByDescending(s => s.TicketNumber);
-                                }
-                                else
-                                {
-                                    //customerData = customerData.OrderBy(s => s.TicketNumber);
-                                }
-                                break;
-                        }
-                    }
-                    //Search  
-                    if (!string.IsNullOrEmpty(searchValue))
-                    {
-                        //customerData = customerData.Where(m => m.TicketNumber.ToLower() == searchValue.ToLower());
-                    }
+                    objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                                ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
 
-                    //total number of rows counts   
+                    // All
+                    // 1-100%
+                    // X RecCounts
+                    
+                    //objgriddata = objgriddata.OrderBy(x => Guid.NewGuid()).Take(20).ToList();
+
                     recordsTotal = objgriddata.Count();
+
                     //Paging   
                     var jsonData = objgriddata.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
@@ -197,21 +174,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;
 
-                //SearchFilters searchFilters = new SearchFilters();
-
-                //if(group2.selected)
-                //searchFilters.Environment =
-
-
-                //getting all Customer data
-                //var customerData = (from tempcustomer in BindSearchGrid.GetGridData()
-                //                    select tempcustomer);
-
-
                 var customerData = GetSearchResult();
-
-
-                // var customerData = GetSearchResult();
 
                 //Sorting  
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
@@ -290,7 +253,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            var subCategoryList = _auditToolContext.subCategories.ToList();
+            var subCategoryList = _auditToolContext.SubCategories.ToList();
             var filteredSubCategoryList = subCategoryList
                                          .Where(x => x.CatgID == Convert.ToInt32(categoryID))
                                          .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
@@ -300,13 +263,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         List<Categorys> GetCategoryDetails()
         {
-            var data = (from subCat in _auditToolContext.categories select subCat).ToList();
+            var data = (from subCat in _auditToolContext.Categories select subCat).ToList();
             return data;
         }
 
         public List<AssignedTo> GetHRList()
         {
-            var query = (from hrdata in _auditToolContext.hrocMaster
+            var query = (from hrdata in _auditToolContext.HROCRoster
                          select new
                          {
                              HrThreeFourID = hrdata.EmployeethreefourID
@@ -326,95 +289,50 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return lstAssignedTo.ToList();
         }
 
-        public List<BindSearchGrid> GetClosedAuditSearchResult(String environmentType, int categoryId, int subCategoryId, String resultType,
-                            int ticketStatus, string ticketSubStatus, string resultCountCriteria, string assignedTo, DateTime fromDate, DateTime toDate)
+        public List<Usp_GetHRAuditSearchResult> GetClosedAuditSearchResult(String environmentType, int categoryId, int subCategoryId, String resultType,
+                            int ticketStatus, string ticketSubStatus, string resultCountCriteria, string assignedTo, string fromDate, string toDate, String TicketId)
         {
-            List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
+            List<Usp_GetHRAuditSearchResult> objgriddata = new List<Usp_GetHRAuditSearchResult>();
+            try
+            {
+                var query = "Exec  [dbo].[usp_GetHRAuditSearchResult] @EnvironmentType, @CategoryId, @SubCategoryId, @ResultType, " +
+                            "@TicketStatus, @TicketSubStatus, @ResultCountCriteria," +
+                            "@AssignedTo, @FromDate, @ToDate, @TicketId";
 
-            //if (ticketStatus == 0)
-            //{
-            //    var activeCategories = categoryId == 0 ? (from category in _auditToolContext.categories where category.IsActive == true
-            //                                              select new { category.CatgID, category.CatgDescription }).ToList() : (from category in _auditToolContext.categories
-            //                                                                                                   where category.CatgID == categoryId
-            //                                                                                                   select new { category.CatgID, category.CatgDescription }).ToList();
+                List<SqlParameter> parms = new List<SqlParameter>
+                { 
+                    // Create parameters    
+                    new SqlParameter { ParameterName = "@EnvironmentType", Value = environmentType },
+                    new SqlParameter { ParameterName = "@CategoryId", Value = categoryId },
+                    new SqlParameter { ParameterName = "@SubCategoryId", Value = subCategoryId },
+                    new SqlParameter { ParameterName = "@ResultType", Value = resultType },
+                    new SqlParameter { ParameterName = "@TicketStatus", Value = ticketStatus },
+                    new SqlParameter { ParameterName = "@TicketSubStatus", Value = ticketSubStatus },
+                    new SqlParameter { ParameterName = "@ResultCountCriteria", Value = resultCountCriteria },
+                    new SqlParameter { ParameterName = "@AssignedTo", Value = assignedTo },
+                    new SqlParameter { ParameterName = "@FromDate", Value = fromDate.Replace("%2F","/") },
+                    new SqlParameter { ParameterName = "@ToDate", Value = toDate.Replace("%2F","/") },
+                    new SqlParameter { ParameterName = "@TicketId", Value = TicketId }
+                };
 
-            //    var activeSubCategories = subCategoryId == 0 ? (from subcategory in _auditToolContext.subCategories where subcategory.IsActive == true
-            //                                              select new { subcategory.CatgID, subcategory.SubCatgID, subcategory.SubCatgDescription }).ToList() : (from subcategory in _auditToolContext.subCategories
-            //                                                                                                                                                    where subcategory.SubCatgID == subCategoryId
-            //                                                                                                                             select new { subcategory.CatgID, subcategory.SubCatgID, subcategory.SubCatgDescription }).ToList();
+                objgriddata = _auditToolContext.Usp_GetHRAuditSearchResult.FromSqlRaw(query,parms.ToArray()).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error While Getting Data" + ex);
+            }
 
-            //    var hrProfessionals = !String.IsNullOrWhiteSpace(assignedTo) ? (from hrProfessional in _auditToolContext.hrocMaster
-            //                                                                    where hrProfessional.EmployeethreefourID.ToLower() == assignedTo.ToLower()
-            //                                                                    select new {
-            //                                                                        hrProfessional.EmployeeFullName,
-            //                                                                        hrProfessional.EmployeethreefourID,
-            //                                                                        hrProfessional.JobCDDesc
-            //                                                                    }).ToList() : (from hrProfessional in _auditToolContext.hrocMaster
-            //                                                                                   select new
-            //                                                                                   {
-            //                                                                                       hrProfessional.EmployeeFullName,
-            //                                                                                       hrProfessional.EmployeethreefourID,
-            //                                                                                       hrProfessional.JobCDDesc
-            //                                                                                   }).ToList();
-
-            //    var ticketdata = (from ticket in _auditToolContext.searchTicketDetail
-            //                      join hrresult in hrProfessionals on ticket.CloseUserId.ToLower().Substring(0, 7) equals hrresult.EmployeethreefourID.ToLower() 
-            //                      join activesubCategory in activeSubCategories on ticket.SubCategory equals activesubCategory.SubCatgDescription
-            //                      where ticket.TicketStatus == ticketStatus.ToString() && 
-            //                      ticket.ClosedDate >= fromDate &&
-            //                      ticket.ClosedDate <= toDate
-
-            //                      select new
-            //                      {
-            //                          ticket.TicketCode,
-            //                          hrresult.JobCDDesc,
-            //                          ticket.Category,
-            //                          ticket.SubCategory,
-            //                          hrresult.EmployeethreefourID,
-            //                          hrresult.EmployeeFullName,
-            //                          ticket.ClosedDateTime,
-            //                          ticket.Topic
-            //                      }
-            //                      ).ToList();
-
-            //    objgriddata = new List<BindSearchGrid>();
-            //    foreach (var t in ticketdata)
-            //    {
-            //        BindSearchGrid tempItem = new BindSearchGrid();
-            //        tempItem.TicketNumber = t.TicketCode;
-            //        tempItem.ServiceGroup = t.JobCDDesc;
-            //        tempItem.Category = t.Category;
-            //        tempItem.Subcategory = t.SubCategory;
-            //        tempItem.UserThreeFourID = t.EmployeethreefourID;
-            //        tempItem.AssignedTo = t.EmployeeFullName;
-            //        tempItem.ClosedDateTime = t.ClosedDateTime;
-            //        tempItem.Topic = t.Topic;
-            //        objgriddata.Add(tempItem);
-            //    }
-
-
-            //}
-            //else
-            //{
-
-            //}
-
-            //var query = "Exec dbo.usp_GetHRAuditSearchResult";
-
-            //objgriddata = _auditToolContext.Database.SqlQuery<BindSearchGrid>
 
             return objgriddata;
         }
 
-            public List<BindSearchGrid> GetSearchResult()
+         public List<BindSearchGrid> GetSearchResult()
         {
             //isActiveFlag
 
-            var ticketdata = (from ticket in _auditToolContext.searchTicketDetail
-                              join hrdata in _auditToolContext.hrocMaster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
-                              join Category in _auditToolContext.categories on hrdata.JobCDDesc equals Category.CatgDescription 
-                               
-                              
+            var ticketdata = (from ticket in _auditToolContext.SearchTicketDetail
+                              join hrdata in _auditToolContext.HROCRoster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
+                              join Category in _auditToolContext.Categories on hrdata.JobCDDesc equals Category.CatgDescription 
                               
                               select new
                               {

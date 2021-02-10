@@ -14,27 +14,12 @@
 
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
 <script type="text/javascript" src="~/js/moment.min.js"></script>
+
+
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-
-<style type="text/css">
-    .ui-autocomplete {
-        /* these sets the height and width */
-        max-height: 200px;
-        max-width: 50%;
-        /* these make it scroll for anything outside */
-        overflow-x: scroll;
-        overflow-y: scroll;
-        font-family: inherit;
-        font-size: initial;
-    }
-
-    .ui-autocomplete:hover{
-        color: #fff;
-        background-color: red;
-    }
-</style>
 
 
 
@@ -46,6 +31,11 @@
             <div class="row">
                 <div class="col-12">
                     <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Tickets For Audit/Dispute</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-10">
+                    <span id="errormsgforcategory" class="neu-button--danger"></span>
                 </div>
             </div>
             <br />
@@ -67,15 +57,15 @@
                 </div>
                 <div class="col-4">
                     <div class="cols" tabindex="-1">
-                        <label class="neu-input__label">Audit/Dispute</label>
+                        <label class="neu-input__label">Select Audit /Dispute</label>
                         <label>&nbsp;&nbsp;</label>
-                        <input type="radio" name="ResultType" id="rbtaudit" checked="checked"
+                        <input type="radio" name="ResultType" checked="checked"
                                value="Audit"
                                tabindex="0"
                                required class="radio-success" />
                         <label class="neu-input__label">Audit</label>&nbsp;
                         <label>&nbsp;</label>
-                        <input type="radio" name="ResultType" id="rbtdispute"
+                        <input type="radio" name="ResultType"
                                value="Dispute"
                                tabindex="0"
                                required class="radio-success" />
@@ -97,7 +87,7 @@
                     <div tabindex="-1" aria-checked="false" style="text-align:left;">
                         <label class="neu-input__label required" for="SubCatID" style="text-align:left;width:25%;">Sub Category</label>
                         <select name="SubCatID" id="SubCatID" class="neu-select">
-                            <option value="0">Select Sub Category</option>
+                            <option value="0">Select SubCategory</option>
                         </select>
 
                     </div>
@@ -125,7 +115,7 @@
                     <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
                         <label class="neu-input__label" for="TicketSubStatus" style="text-align:left;width:30%;">Ticket Sub Status</label>
                         <select name="TicketSubStatus" id="TicketSubStatus" class="neu-select">
-                            <option>Select Substatus</option>
+                            <option>Select Below</option>
                             <option value="InProgress">In Progress</option>
                             <option value="Pending">Pending</option>
                             <option value="UnAssigned">UnAssigned</option>
@@ -157,9 +147,10 @@
                 <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
                         <label class="neu-input__label" for="ResultCount" style="text-align:left;width:30%;">Result Count</label>
-                        <input name="ResultCount" id="ResultCount" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}" style="width:100%" />
+                        <input name="ResultCount" id="ResultCount" class="neu-input__field" type="text" style="width:100%" />
                     </div>
                 </div>
+
             </div>
             <br />
             <div class="row" style="text-align:center;width:100%;">
@@ -170,12 +161,6 @@
                     <button asp-controller="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
                         &nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;
                     </button>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-10">
-                    <span id="errormsgforcategory" class="neu-button--danger"></span>
                 </div>
             </div>
         </form>
@@ -204,10 +189,10 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var dateStart = new Date();
-            dateStart.setDate(dateStart.getDate() - 7);
+            dateStart.setDate(dateStart.getDate() - 8);
 
             var dateEnd = new Date();
-            dateEnd.setDate(dateEnd.getDate());
+            dateEnd.setDate(dateEnd.getDate() - 1);
 
             $('input[name="startdate"]').daterangepicker({
                 singleDatePicker: true,
@@ -223,12 +208,15 @@
                 maxYear: parseInt(moment().format('YYYY'), 10)
             }).val(moment(dateEnd).format("MM/DD/YYYY"));
 
+
+
+
             $.ajax({
                 type: "POST",
-                url: "/Search/GetCommaSeperated",
+                url: "/search/GetCommaSeperated",
                 data: null,
                 success: function (response) {
-                    // alert(response.length);
+                   // alert(response.length);
                     $("#txtassignedto").autocomplete({
                         source: response
                     });
@@ -240,13 +228,6 @@
                     alert(response.responseText);
                 }
             });
-
-            $.ui.autocomplete.filter = function (array, term) {
-                var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
-                return $.grep(array, function (value) {
-                    return matcher.test(value.label || value.value || value);
-                });
-            };
 
             //$("#popupcontent").dialog({
             //    autoOpen: false
@@ -268,8 +249,7 @@
 
                 var categoryID = $("#CatgID").val();
                 var subcategoryID = $("#SubCatID").val();
-                var assignedTo = $("#txtassignedto").val();
-                var ticketId = $("#TicketId").val();
+                var assignedTo = $("#AssignedTo").val();
 
                 var ticketStatus = $("#StatusList").val();
 
@@ -277,12 +257,10 @@
 
                 var enddate = $("#enddate").val();
 
-                if (screentype == "Audit" && categoryID == "0" && subcategoryID == "0" && assignedTo == "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.<br/>");
-                }
 
-                if (screentype == "Dispute" && categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId== "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Ticket Id field.<br/>");
+
+                if (categoryID == "0" && subcategoryID == "0" && assignedTo == "") {
+                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.<br/>");
                 }
 
                 if ($("#errormsgforcategory").text() != "") {
@@ -320,53 +298,6 @@
                 //});
             });
 
-            $('#StatusList').change(function () {
-                if ($('#StatusList').val() == 0) {
-                    $('#TicketSubStatus').prop('disabled', true);
-                }
-                else {
-                    $('#TicketSubStatus').prop('disabled', false);
-                }
-            });
-
-            if ($('#StatusList').val() == 0) {
-                $('#TicketSubStatus').prop('disabled', true);
-            }
-            else {
-                $('#TicketSubStatus').prop('disabled', false);
-            }
-
-            if ($("#rbtaudit").val() == "Audit") {
-                $('#TicketId').prop('disabled', true);
-            }
-            else {
-                $('#TicketId').prop('disabled', false);
-            }
-
-            $("#rbtaudit").change(function () {
-                if ($(this).val() == "Audit") {
-                    $('#TicketId').prop('disabled', true);
-                    $('#StatusList').prop('disabled', false);
-                    if ($('#StatusList').val() == 0) {
-                        $('#TicketSubStatus').prop('disabled', true);
-                    }
-                    else {
-                        $('#TicketSubStatus').prop('disabled', false);
-                    }
-                }
-            });
-
-            $("#rbtdispute").change(function () {
-                if ($(this).val() != "Audit") {
-                    $('#StatusList').prop('disabled', true);
-                    $('#TicketSubStatus').prop('disabled', true);
-                    $('#TicketId').prop('disabled', false);
-                }
-            });
-
-
-
-
             $("#CatgID").change(function () {
                 var categoryID = $('#CatgID').val();
                 $.ajax({
@@ -376,7 +307,7 @@
                     success: function (response) {
                         $('#SubCatID').html(''); $("#ShowQuestions").hide();
                         var options = '';
-                        options += '<option value="0">Select Sub Category</option>';
+                        options += '<option value="0">Select SubCategory</option>';
                         for (var i = 0; i < response.length; i++) {
                             options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
                         }

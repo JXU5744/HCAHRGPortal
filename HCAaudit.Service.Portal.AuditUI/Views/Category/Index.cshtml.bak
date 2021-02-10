@@ -9,7 +9,8 @@
 
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="~/css/main.css" />
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
 
@@ -143,7 +144,7 @@
             "filter": true, // this is for disable filter (search box)
             "orderMulti": false, // for disable multiple column at once
             "ajax": {
-                "url": "/Category/Details",
+                "url": "/Category/Index",
                 "type": "POST",
                 "datatype": "json"
             },
@@ -348,7 +349,7 @@
                     $("#hdndeletecatid").val(CatgID);
                 }
                 else if (response == "NoRecOrds"){
-                    $("#lblcustomtextfor").text("Cannot delete as it is currently mapped to Subcategory");
+                    $("#lblcustomtextfor").text("Please remove Subcategory mapping and then delete this Category");
                     $("#popupcontentdelete").dialog('open');
                     $("#btndeleteCategoryok").show();
                     $("#btndeleteCategory").hide();

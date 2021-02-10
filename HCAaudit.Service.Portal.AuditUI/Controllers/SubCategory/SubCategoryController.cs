@@ -57,7 +57,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         SubCategory GetSingleCategoryByid(string id)
         {
-            var data = (from cat in _auditToolContext.subCategories select cat).ToList();
+            var data = (from cat in _auditToolContext.SubCategories select cat).ToList();
             SubCategory objCategorys = data.Find(category => category.SubCatgID == Convert.ToInt32(id));
             return objCategorys;
         }
@@ -84,7 +84,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         if (objCategorys != null)
                         {
                             objCategorys.SubCatgDescription = param[1];
-                            _auditToolContext.subCategories.Update(objCategorys);
+                            _auditToolContext.SubCategories.Update(objCategorys);
                             _auditToolContext.SaveChanges();
                         }
                     }
@@ -106,7 +106,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 SubCategory objCategorys = new SubCategory();
                 objCategorys.CatgID = Convert.ToInt32(catgID); objCategorys.SubCatgDescription = subCategoryName;
-                _auditToolContext.subCategories.Add(objCategorys);
+                _auditToolContext.SubCategories.Add(objCategorys);
                 _auditToolContext.SaveChanges();
                 return RedirectToAction("Details");
             }
@@ -142,10 +142,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;
 
-                var query = _auditToolContext.subCategories
+                var query = _auditToolContext.SubCategories
 
                 .Join(
-        _auditToolContext.categories,
+        _auditToolContext.Categories,
         subCategories => subCategories.CatgID,
         categories => categories.CatgID,
         (subCategories, categories) => new
@@ -207,9 +207,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         List<CatSubCatJoinMast> GetDetails()
         {
-            var query = _auditToolContext.subCategories
+            var query = _auditToolContext.SubCategories
                 .Join(
-        _auditToolContext.categories,
+        _auditToolContext.Categories,
         subCategories => subCategories.CatgID,
         categories => categories.CatgID,
         (subCategories, categories) => new
@@ -230,9 +230,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         CatSubCatJoinMast GetDetail(int subcatid)
         {
-            var query = _auditToolContext.subCategories
+            var query = _auditToolContext.SubCategories
                 .Join(
-        _auditToolContext.categories,
+        _auditToolContext.Categories,
         subCategories => subCategories.CatgID,
         categories => categories.CatgID,
         (subCategories, categories) => new
@@ -258,14 +258,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = GetDetails().Where(a=>a.SubCatgID == id).SingleOrDefault();
             SubCategory objSubCategory = new SubCategory();
             objSubCategory.SubCatgID = id;
-            _auditToolContext.subCategories.Remove(objSubCategory);
+            _auditToolContext.SubCategories.Remove(objSubCategory);
             _auditToolContext.SaveChanges();
             return View("Details", GetDetails());
         }
 
         List<Categorys> GetCategoryDetails()
         {
-            var data = (from subCat in _auditToolContext.categories select subCat).ToList();
+            var data = (from subCat in _auditToolContext.Categories select subCat).ToList();
             return data;
         }
 
@@ -273,7 +273,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public ActionResult HasDeleteAccess(int id)
         {
             object response;
-            var data = (from cat in _auditToolContext.questionMasters select cat).ToList();
+            var data = (from cat in _auditToolContext.QuestionMasters select cat).ToList();
             QuestionMaster obj = data.Find(a => a.SubCatgID == id);
             response = obj == null ? "NoRecords" : "HasRecords";
             return Json(response);
