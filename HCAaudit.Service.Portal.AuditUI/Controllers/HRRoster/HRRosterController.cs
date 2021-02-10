@@ -33,12 +33,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
       //      _authService = authService;
         }
 
-        //private clstbHROCRosterList GetDetails()
-        //{
-        //    clstbHROCRosterList objclstbHROCRosterList = new clstbHROCRosterList();
-            
-        //    return objclstbHROCRosterList;
-        //}
 
         [HttpPost]
         public JsonResult GetDetailsById(EmployeeIdViewModel employeeIdViewModel)

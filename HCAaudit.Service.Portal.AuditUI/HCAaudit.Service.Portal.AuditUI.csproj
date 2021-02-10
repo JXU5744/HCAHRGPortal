@@ -110,4 +110,10 @@
     <Folder Include="wwwroot\assets\fonts\Glyphicons Halflings\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Models\AuditDispute.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
 </Project>

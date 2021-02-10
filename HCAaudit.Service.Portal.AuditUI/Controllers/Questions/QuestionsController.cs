@@ -51,7 +51,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
 
                 var objQuestion = _auditToolContext.QuestionMasters
-                    //.Where(a => a.QuestionMasterId == cquestionid ).FirstOrDefault();
+                //.Where(a => a.QuestionMasterId == cquestionid ).FirstOrDefault();
                 .Where(a => a.QuestionMasterId == cquestionid && a.IsActive == true).FirstOrDefault();
 
                 if (objQuestion != null)
@@ -107,9 +107,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         tblQuestionBank GetSingleQuestionByid(string id)
         {
-            var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true).ToList();
-            tblQuestionBank objQuestionBank = data.Find(category => category.QuestionID == Convert.ToInt32(id));
-            return objQuestionBank;
+            var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true && a.QuestionID == Convert.ToInt32(id)).FirstOrDefault();
+            return data;
         }
         [HttpPost]
         public ActionResult Edit(string id)
@@ -119,14 +118,28 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 string[] param = id.Split('$');
-                if (param.Count() > 0)
+                if (param.Count() > 0 && param.Count() == 3)
                 {
                     tblQuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
-                    //var data = GetDetails().Where(a => a.QuestionName.ToLower() == param[1].ToLower()).SingleOrDefault(); 
 
-                    if (objtblQuestionBank != null && objtblQuestionBank.QuestionName == param[1].ToLower())
-                    { responce = "1"; }
-                    if (string.IsNullOrEmpty(responce.ToString()))
+                    var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
+                    if (questionlist.Count > 0)
+                    {
+                        if (questionlist[0].QuestionID != objtblQuestionBank.QuestionID)
+                        {
+                            responce = "1";
+                        }
+                        else
+                        {
+                            objtblQuestionBank.QuestionName = param[1];
+                            objtblQuestionBank.QuestionDescription = param[2];
+                            _auditToolContext.QuestionBank.Update(objtblQuestionBank);
+                            _auditToolContext.SaveChanges();
+                            return Json(objtblQuestionBank);
+
+                        }
+                    }
+                    else
                     {
                         objtblQuestionBank.QuestionName = param[1];
                         objtblQuestionBank.QuestionDescription = param[2];

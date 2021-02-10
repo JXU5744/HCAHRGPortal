@@ -27,7 +27,7 @@
         font-family: inherit;
         font-size: initial;
         max-height: 125px;
-    }        
+    }
 </style>
 
 @model List<HCAaudit.Service.Portal.AuditUI.Models.tblQuestionBank>
@@ -62,7 +62,7 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label for="txtQuestion" class="neu-input__label">Question Text:</label>
-            <textarea id="txtQuestion" class="neu-input__field" type="text" rows = "5" cols = "50" style = "resize:none"></textarea>
+            <textarea id="txtQuestion" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"></textarea>
             <span id="errormsg" class="neu-button--danger"></span>
         </div>
     </div>
@@ -70,7 +70,7 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label for="txtdescription" class="neu-input__label">Question Description:</label>
-            <textarea id="txtdescription" class="neu-input__field"  rows = "5" cols = "50" style = "resize:none"></textarea>
+            <textarea id="txtdescription" class="neu-input__field" rows="5" cols="50" style="resize:none"></textarea>
             <span id="errordescriptionmsg" class="neu-button--danger"></span>
         </div>
     </div>
@@ -85,30 +85,32 @@
 </div>
 
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
-
-    <div class="row">
-        <div class="col-sm-12 neu-margin--bottom-16">
-            <label for="txtQuestionedit" class="neu-input__label">Question Text:</label>
-            <textarea id="txtQuestionedit" class="neu-input__field" type="text"  rows = "5" cols = "50" style = "resize:none"/>
-            <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
-        </div>
-        <div class="col-sm-12"><input id="hdnid" type="hidden" /></div>
-    </div>
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <label for="txtdescriptionedit" class="neu-input__label">Question Description:</label>
-            <textarea id="txtdescriptionedit" class="neu-input__field"  rows = "5" cols = "50" style = "resize:none"></textarea>
-            <span id="errordescriptionmsgedit" class="neu-button--danger"></span>
+            <label for="txtQuestionedit" class="neu-input__label">Question Text:</label>
+            <textarea id="txtQuestionedit" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"> </textarea>
+            <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
+            <input id="hdnid" type="hidden" />
         </div>
+        <div class="col-sm-12"></div>
     </div>
 
-    <div class="row">
-        <div class="col-sm-12 neu-text--align-center">
-            <button id="btnupdateQuestion" class="neu-button--primary neu-button neu-button--raised">Update</button>
-            <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <label for="txtdescriptionedit" class="neu-input__label">Question Description:</label>
+                <textarea id="txtdescriptionedit" class="neu-input__field"  rows = "5" cols = "50" style = "resize:none"></textarea>
+                <span id="errordescriptionmsgedit" class="neu-button--danger"></span>
+            </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btnupdateQuestion" class="neu-button--primary neu-button neu-button--raised">Update</button>
+                <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+            </div>
+        </div>
+
     </div>
-</div>
 
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
@@ -194,7 +196,7 @@
             });
         });
     });
- 
+
 
 
     $("#btnopenPopUp").click(function () {
@@ -405,7 +407,7 @@
 
     $("#btndeleteQuestion").click(function () {
         $("#popupcontentdelete").dialog('close');
-        var url = '@Url.Content("~/")' + "Questions/Delete";
+        var url = '@Url.Content("~/")' + "Questions/DeleteQuestionBank";
 
         $.post(url, { ID: $("#hdndeletecatid").val() }, function (data) {
             if (data) {

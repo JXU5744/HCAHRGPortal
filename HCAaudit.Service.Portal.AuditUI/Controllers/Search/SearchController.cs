@@ -99,7 +99,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 else
                 {
                     string environmentType = searchparameter.EnvironmentType != null ? searchparameter.EnvironmentType : "Production";
+
+
                     int categoryId = searchparameter.CategoryID;
+
+                    if (searchparameter.CategoryID <= 0 && searchparameter.SubcategoryID > 0)
+                    {
+                        categoryId = GetCaegoryID(searchparameter.SubcategoryID);
+                    }
+
                     int subCategoryId = searchparameter.SubcategoryID;
                     string resultType = searchparameter.ResultType != null ? searchparameter.ResultType : "Audit";
                     int ticketStatus = searchparameter.TicketStatus;
@@ -326,7 +334,49 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return objgriddata;
         }
 
-         public List<BindSearchGrid> GetSearchResult()
+
+        private int GetCaegoryID(int subcategoryid)
+        {
+            int categoryid= -1;
+
+            var catgObj = _auditToolContext.SubCategories.FirstOrDefault(x => x.SubCatgID == subcategoryid);
+
+            if (catgObj != null)
+            {
+                categoryid =  catgObj.CatgID;
+            }
+
+            return categoryid;
+        }
+
+
+        [HttpPost]
+        public JsonResult GetAllSubcategory()
+        {
+            _logger.LogInformation($"Request for AllSubCategoryList Category Identity");
+            var query = _auditToolContext.SubCategories
+            .Join(
+            _auditToolContext.Categories,
+            subCategories => subCategories.CatgID,
+            categories => categories.CatgID,
+            (subCategories, categories) => new
+            {
+                SubCatID = subCategories.SubCatgID,
+                CatgDescription = categories.CatgDescription,
+                SubCatgDescription = subCategories.SubCatgDescription
+            })
+            .Select(x => new CatSubCatJoinMast
+            {
+                SubCatgID = x.SubCatID,
+                SubCatgDescription = string.Format("{0} ({1})", x.SubCatgDescription, x.CatgDescription)
+            }
+            ).ToList();
+
+            _logger.LogInformation($"No of SubCategoryListrecords: {query.Count()}");
+            return Json(query);
+        }
+
+        public List<BindSearchGrid> GetSearchResult()
         {
             //isActiveFlag
 

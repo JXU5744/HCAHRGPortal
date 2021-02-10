@@ -30,10 +30,10 @@
         font-size: initial;
     }
 
-    .ui-autocomplete:hover{
-        color: #fff;
-        background-color: red;
-    }
+        .ui-autocomplete:hover {
+            color: #fff;
+            background-color: red;
+        }
 </style>
 
 
@@ -157,12 +157,18 @@
                 <div class="col-sm-4">
                     <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
                         <label class="neu-input__label" for="ResultCount" style="text-align:left;width:30%;">Result Count</label>
-                        <input name="ResultCount" id="ResultCount" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}" style="width:100%" />
+                        <input name="ResultCount" id="ResultCount" maxlength="4" value="All" class="neu-input__field" type="text"  style="width:100%" />
                     </div>
                 </div>
             </div>
-            <br />
-            <div class="row" style="text-align:center;width:100%;">
+
+            <div class="row neu-margin--bottom-16">
+                <div class="col-sm-12 d-flex justify-content-center">
+                    <span id="errormsgforcategory" class="neu-button--danger"></span>
+                </div>
+            </div>
+
+            <div cass="row" style="text-align:center;width:100%;">
                 <div class="col-12">
                     <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
                         &nbsp;Search
@@ -172,17 +178,10 @@
                     </button>
                 </div>
             </div>
-            <br />
-            <div class="row">
-                <div class="col-10">
-                    <span id="errormsgforcategory" class="neu-button--danger"></span>
-                </div>
-            </div>
         </form>
     </div>
 
     <div id="popupcontent" title="Mandate Fields" hidden="hidden" class="container">
-
         <div class="row">
             <div class="col-sm-2"> </div>
             <div class="col-sm-6">
@@ -281,7 +280,7 @@
                     $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.<br/>");
                 }
 
-                if (screentype == "Dispute" && categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId== "") {
+                if (screentype == "Dispute" && categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
                     $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Ticket Id field.<br/>");
                 }
 
@@ -356,6 +355,8 @@
                 }
             });
 
+
+
             $("#rbtdispute").change(function () {
                 if ($(this).val() != "Audit") {
                     $('#StatusList').prop('disabled', true);
@@ -365,6 +366,41 @@
             });
 
 
+            var catGId = $("#CatgID").val();
+            if (catGId == 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/search/GetAllSubcategory",
+                    //data: null,
+                    success: function (response) {
+                        $('#SubCatID').html('');
+                        var options = '';
+                        options += '<option value="0">Select Sub Category</option>';
+                        for (var i = 0; i < response.length; i++) {
+                            options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
+                        }
+                        $('#SubCatID').append(options);
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            }
+
+
+            $('#ResultCount').on('keypress', function (event) {
+                //alert(event.which);
+                if ((event.which == 65 || event.which == 76 || event.which == 97 || event.which == 108 || event.which == 37) || (event.which > 47 && event.which < 58)) {
+                    return true;
+                }
+                else {
+                    event.preventDefault();
+                    return false;
+                }
+            });
 
 
             $("#CatgID").change(function () {
