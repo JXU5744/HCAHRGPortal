@@ -35,9 +35,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int ticketId)
+        public IActionResult Index(int AuditMainId)
         {
-            var disp = _auditToolContext.AuditMain.Where(y => y.ID == (int)ticketId && 
+            var disp = _auditToolContext.AuditMain.Where(y => y.ID == (int)AuditMainId && 
                     y.isDisputed == true).FirstOrDefault();
 
             if (disp != null)
@@ -45,9 +45,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             var model = new DisputeModel();
             //need check for isDisputed
-            model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.ID == ticketId);
-            var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainID == ticketId && 
+            model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.ID == AuditMainId);
+            var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainID == AuditMainId && 
                 x.isNonCompliant == true).ToList();
+            var subcategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == model.AuditMain.SubcategoryID).FirstOrDefault();
+            var category = _auditToolContext.Categories.Where(x => x.CatgID == model.AuditMain.ServiceGroupID).FirstOrDefault();
+
+            model.ServiceDeliveryGroupName = category == null ? string.Empty : category.CatgDescription;
+            model.SubCategoryName = subcategory == null ? string.Empty : subcategory.SubCatgDescription;
+
             var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive).ToList();
 
             var gracePeriod = new List<SelectListItem>();
@@ -116,11 +122,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     dispute.Add(new AuditDispute()
                     {
                         TicketID = ques.TicketId,
+                        AuditMainID = auditMain.ID,
                         GracePeriodId = Convert.ToInt32(ques.GracePeriodId),
                         OverTurnId = Convert.ToInt32(ques.OverturnId),
                         QuestionId = Convert.ToInt32(ques.QuestionId),
                         QuestionRank = Convert.ToInt32(ques.QuestionRank),
-                        Comments = ques.Comment
+                        Comments = ques.Comment,
+                        CreatedOn = DateTime.Now
                     });
                 }
 

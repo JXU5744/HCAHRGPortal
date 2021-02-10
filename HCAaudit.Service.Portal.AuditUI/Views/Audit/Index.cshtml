@@ -4,19 +4,16 @@
 }
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
 
@@ -64,166 +61,237 @@
         resize: none; /* Remove this if you want the user to resize the textarea */
     }
 </style>
+
 <form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit">
-    <div>
+    
         <div class="card">
             <div class="row">
-                <div class="col">
-                    <label for="format-pdf" class="input-group">Ticket ID</label>
-                    @Html.TextBoxFor(m => m.TicketId, new { @disabled = true })
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Ticket ID</label>
+                    @Html.TextBoxFor(m => m.TicketId, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.TicketId)
                 </div>
-                <div class="col">
-                    <label for="format-pdf" class="input-group">Agent's 3-4 ID</label>
-                    @Html.TextBoxFor(m => m.Agent34Id, new { @disabled = true })
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Agent's 3-4 ID</label>
+                    @Html.TextBoxFor(m => m.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.Agent34Id)
                 </div>
-                <div class="col">
-                    <label for="format-pdf" class="input-group" ">Agent Name</label>
-                    @Html.TextBoxFor(m => m.AgentName, new { @disabled = true })
-                </div>
-                <div class="col">
-                    <label for="format-pdf" class="input-group" ">Date of Auditor</label>
-                    @Html.TextBoxFor(m => m.TicketDate, new { @disabled = true })
-                </div>
-               </div>
-                <div class="row">
-                    <div class="col">
-                        <label for="format-pdf" class="input-group" ">Supervisor</label>
-                        @Html.TextBoxFor(m => m.SupervisorName, new { @disabled = true })
-                    </div>
-                    <div class="col">
-                        <label for="format-pdf" class="input-group">Service Group</label>
-                        @Html.TextBoxFor(m => m.ServiceGroupName, new { @disabled = true })
-                    </div>
-                    <div class="col">
-                        <label for="format-pdf" class="input-group">Sub Group</label>
-                        @Html.TextBoxFor(m => m.SubCatName, new { @disabled = true })
-                    </div>
-                </div>
-                <div class="row"><hr /></div>
-                <div ">
-                    <table id="auditDetails" class="table table-striped table-bordered dt-responsive nowrap" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th style="width:5%">Question No</th>
-                                <th style="width:30%">Question Desc</th>
-                                <th style="width:40%">Action</th>
-                                <th style="width:10%">Correction Required</th>
-                                <th style="width:15%">Comment</th>
-                            </tr>
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Agent Name</label>
+                    @Html.TextBoxFor(m => m.AgentName, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.AgentName)
+                    @Html.HiddenFor(m => m.AuditorName)
+                    @Html.HiddenFor(m => m.EnvironmentType)
 
+                </div>
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Date of Auditor</label>
+                    @Html.TextBoxFor(m => m.TicketDate, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.TicketDate)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Supervisor</label>
+                    @Html.TextBoxFor(m => m.SupervisorName, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.SupervisorName)
+                </div>
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Service Group</label>
+                    @Html.TextBoxFor(m => m.ServiceGroupName, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.ServiceCatId)
+                </div>
+                <div class="col-sm-3">
+                    <label for="format-pdf" class="neu-input__label">Sub Group</label>
+                    @Html.TextBoxFor(m => m.SubCatName, new { @disabled = true, @class = "neu-input__field" })
+                    @Html.HiddenFor(m => m.SubCatId)
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="auditDetails" class="neu-table" width="100%" cellspacing="0">
+                        <thead class="neu-table__head">
+                            <tr class="neu-table__header neu-table__sort-icon">
+                                <th style="width:5%" rowspan="2">Question Sequence</th>
+                                <th style="width:40%" rowspan="2">Question Description</th>
+                                <th style="width:28%" colspan="3">Action</th>
+                                <th style="width:5%" rowspan="2">Correction Required</th>
+                                <th style="width:22%" rowspan="2">Comment</th>
+                            </tr>
+                            <tr>
+                                <th style="width:9%">Compliance</th>
+                                <th style="width:10%">Non Compliance</th>
+                                <th style="width:9%">Not Applicable</th>
+                            </tr>
                         </thead>
                         @for (int i = 0; i < Model.Question.Count; i++)
                         {
                             <tr>
-                                <td>
-                                    <div>
+                                <td style="width:5%">
+                                    <div align="center">
                                         @Model.Question[i].QuestionSequence
+                                        @Html.HiddenFor(m => m.Question[i].QuestionSequence)
                                         @Html.HiddenFor(m => m.Question[i].QuestionId)
                                         @Html.HiddenFor(m => m.Question[i].QuestionName)
                                     </div>
                                 </td>
-                                <td>
+                                <td style="width:40%">
                                     @Html.TextAreaFor(m => m.Question[i].QuestionName, new { style = "height:50%;width:100%", @disabled = true })
                                 </td>
-                                <td>
+                                <td style="width:28%">
                                     <div id="action">
-                                        <table width="100%">
+                                        <table id="actionTable">
                                             <tr style=" border: 1px solid #ddd">
-                                                <td style=" border-right: 1px solid #ddd">
+                                                <td style="border-right: 1px solid #ddd;width:9%" align="center" >
                                                     <div>
-                                                        @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" }) <label>Compliance</label>
+                                                        @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
                                                         @*<label style="white-space:nowrap"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.Compliance" name='@Model.Question[i].QuestionId-Action' @(Model.Question[i].Action.Compliance == true ? "checked" : "") />Compliance</label>*@
                                                     </div>
                                                 </td>
-                                                <td style=" border-right: 1px solid #ddd">
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" }) <label>Non Compliance</label>
+                                                <td style=" border-right: 1px solid #ddd;width:10%" align="center">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
                                                     @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
                                                     <br />
-                                                    <table width="100%" style="border: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
+                                                    <table width="100%" style="border: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance" align="center">
                                                         <tr>
-                                                            <td style=" border-right: 1px solid #ddd">
+                                                            <td style=" border-right: 1px solid #ddd;width:5%" align="center">
                                                                 @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
 
                                                             </td>
-                                                            <td>
+                                                            <td align="center" style="width:5%">
                                                                 @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
 
                                                             </td>
                                                         </tr>
                                                     </table>
                                                 </td>
-                                                <td>
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" }) <label>Not Applicable</label>
+                                                <td align="center" style="width:9%">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
                                                     @*<label style="white-space:nowrap;padding-right:3%"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.NotApplicable" name='@Model.Question[i].QuestionId-Action' />Not Applicable</label>*@
                                                 </td>
                                             </tr>
                                         </table>
                                     </div>
                                 </td>
-                                <td> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" /></td>
-                                <td>@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "height:50%" })</td>
+                                <td align="center" style="width:5%"> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
+                                <td style="width:22%">@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:80%;height:50%", disabled = "disabled" })</td>
 
                             </tr>
                         }
                     </table>
                 </div>
             </div>
+        </div>
 
         <div class="row"></div>
         <div class="form-group">
             <label for="auditnotes" class="text-primary">Audit Notes:</label>
 
-            @Html.TextAreaFor(m=>m.AuditNote, new { rows = "4", style = "width:100%" } )
-        <div class="row">
-            <div class="col">
-                @*<button id="btnAnswerNo" class="btn btn-primary">
-                    Return to Toolbox (Will NOT Submit Audit)
-                </button>*@
-            </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">
-                <button id="btnAnswerYes" class="btn btn-success">
-                    Submit Audit
-                </button>
-            </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">
+            @Html.TextAreaFor(m => m.AuditNote, new { rows = "4", style = "width:100%" })
+            <div class="row">
+                <div class="col">
+                    @*<button id="btnAnswerNo" class="btn btn-primary">
+                            Return to Toolbox (Will NOT Submit Audit)
+                        </button>*@
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col">
+                    <button id="btnAnswerYes" class="btn btn-success">
+                        Submit Audit
+                    </button>
+                </div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col">
 
+                </div>
             </div>
         </div>
-    </div>
 </form>
 
-    <!-- Script for the date range picker -->
-    <script type="text/javascript" src="~/js/daterangepicker.js"></script>
-    <link rel="stylesheet"
-          type="text/css"
-          href="~/css/daterangepicker.css" />
-    <!-- Script for the date range picker -->
+
+<!-- Script for the date range picker -->
+<script type="text/javascript" src="~/js/daterangepicker.js"></script>
+<link rel="stylesheet"
+      type="text/css"
+      href="~/css/daterangepicker.css" />
+<!-- Script for the date range picker -->
 <script type="text/javascript">
-    $('.actioncheck').click(function ()
-    {
-        debugger;
+    $('.actioncheck').click(function () {
+        var $this = $(this);
         var name = $(this).attr("id");
         var questionId = name.substring(0, name.indexOf("-"));
-        $('[title=' + questionId +'-action'+ ']').not(this).prop('checked', false);
-        if ($("#" + questionId + "-noncompliance").prop('checked') == true)
-        {
-            $("#" + questionId +"-tblNonCompliance").show();
+        $('[title=' + questionId + '-action' + ']').not(this).prop('checked', false);
+        if ($("#" + questionId + "-noncompliance").prop('checked') == true) {
+            $("#" + questionId + "-tblNonCompliance").show();
         }
-        else
-        {
+        else {
             $("#" + questionId + "-tblNonCompliance").hide();
             $("#" + questionId + "-Impact").prop('checked', false);
+        }
+
+        if (name.indexOf('noncompliance') > -1) {
+            if ($this.prop('checked')) {
+                $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").removeAttr("disabled");
+                $this.closest("tr:not(:has(>td>table))").find("[name$='Comments']").removeAttr("disabled");
+
+            }
+            else {
+                $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").attr("disabled", true);
+                $this.closest("tr:not(:has(>td>table))").find("[name$='Comments']").prop("disabled", true);
+            }
+        }
+        else {
+            $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").attr("disabled", true);
+            $this.closest("tr:not(:has(>td>table))").find("[name$='Comments']").prop("disabled", true);
         }
     });
     $('.chkimpact').click(function () {
         var name = $(this).attr("id");
         var questionId = name.substring(0, name.indexOf("-"));
         $('[title=' + questionId + '-Impact' + ']').not(this).prop('checked', false);
+
+    });
+
+    $('form').submit(function (e) {
+
+        var isActionSelected = false;
+        var isimpactChecked = false
+
+        $("table[id$='actionTable']").each(function () {
+
+            $this = $(this).find("tr");
+
+            var comp = $this.find("input[type=checkbox][name$='IsCompliance']");
+            var nonComp = $this.find("input[type=checkbox][name$='IsNonCompliance']");
+            var notApp = $this.find("input[type=checkbox][name$='IsNotApplicable']");
+
+            if (comp.prop("checked") == false && nonComp.prop("checked") == false && notApp.prop("checked") == false) {
+
+                isActionSelected = true;
+            }
+
+            if (nonComp.prop("checked")) {
+                var high = nonComp.closest("table tr").find("input[type=checkbox][name$='IsHighImpact']");
+                var low = nonComp.closest("table tr").find("input[type=checkbox][name$='IsLowImpact']");
+
+                if (high.prop("checked") == false && low.prop("checked") == false) {
+                    isimpactChecked = true;
+                }
+            }
+
+        });
+
+        if (isActionSelected) {
+            alert("Please select action for all questions.");
+            e.preventDefault();
+        }
+        else if (isimpactChecked) {
+            alert("Please select Impact for selected Non-Compliances.");
+            e.preventDefault();
+        }
 
     });
 </script>

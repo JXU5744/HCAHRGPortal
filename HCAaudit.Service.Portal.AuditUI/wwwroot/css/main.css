@@ -122,4 +122,96 @@ body {
 .neu-overflow--auto {
   overflow: auto; }
 
-/*# sourceMappingURL=main.css.map */
+.neu-fixed--top{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+}
+
+.neu-fixed--bottom {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+
+.ui-autocomplete {
+    /* these sets the height and width */
+    max-height: 200px;
+    min-width: calc(100% - 16px) !important;
+    /* these make it scroll for anything outside */
+    overflow-x: scroll;
+    overflow-y: scroll;
+    font-family: inherit;
+    font-size: initial;
+    min-width: calc(100% - 16px) !important;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    font-family: inherit;
+    font-size: initial;
+    max-height: 125px;
+} 
+/*Position CSS*/
+
+.neu-padding--top-90 {
+    padding-top: 90px;
+}
+
+.neu-padding--bottom-60 {
+    padding-bottom: 60px;
+}
+/*DataTable CSS*/
+.dataTables_wrapper {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+table.dataTable{
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
+    bottom: 16px !important;
+}
+
+/*Jquery UI CSS*/
+
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+    font-family: inherit;
+    font-size: initial;
+}
+.ui-dialog {
+    padding: 0;
+}
+
+.ui-dialog-titlebar {
+    border: none;
+    background: #03173e;
+    color: #fff;
+    padding: .5rem 1rem;
+    border-radius: 4px 4px 0 0;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+    padding: 1rem;
+    top: 32%;
+    background: transparent !important;
+    border: none !important;
+    color: #fff !important;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 1rem;
+}
+
+.ui-widget-content{
+    min-width: 500px;
+    max-width: 700px;
+}
+
+
+    /*# sourceMappingURL=main.css.map */

@@ -6,6 +6,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
     <link rel="stylesheet" type="text/css" href="~/css/neutron.css" />
     <link rel="stylesheet" type="text/css" href="~/css/main.css" />
     <link rel="stylesheet" type="text/css" href="~/css/pagination.css" />
@@ -14,12 +16,20 @@
 </head>
 
 <body>
-    <nav class="neu-topnav" role="navigation">
+    <nav class="neu-topnav neu-fixed--top" role="navigation">
         <div class="neu-topnav__compact">
-            <a asp-controller="search" asp-action="index" class="neu-margin--right-10"><i class="material-icons">home</i></a>
-            <p class="neu-text--product">HR Audit Tool</p>
+            <a asp-controller="search" asp-action="index" class="d-flex align-items-center flex-grow-1"><i class="material-icons neu-margin--right-10">home</i><p class="neu-text--product">HR Audit Tool</p></a>
+
+            <div style="z-index: 1;">
+                <a asp-controller="category" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Service Delivery Group</a>
+                <a asp-controller="subcategory" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Subcategory</a>
+                <a asp-controller="HRRoster" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">HR Professional</a>
+                <a asp-controller="Questions" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
+                <a asp-controller="Questions" asp-action="index" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
+            </div>
+
             <!-- User Controls -->
-            <div class="neu-user-controls neu-margin--left-auto">
+            <div class="neu-user-controls">
                 <div>
                     @*<p>@auth.LoggedInUserInfo().Result.LoggedInFullName</p>*@
                     <p></p>
@@ -33,22 +43,14 @@
         </div>
 
     </nav>
-    <div class="neu-topnav">
-        <div style="z-index: 1;" class="neu-topnav__large">
-            <a asp-controller="category" asp-action="index" class="neu-margin--right-20" style="text-decoration:none">Service Delivery Group</a>
-            <a asp-controller="subcategory" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Subcategory</a>
-            <a asp-controller="HRRoster" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">HR Professional</a>
-            <a asp-controller="Questions" asp-action="QuestionMaster" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
-            <a asp-controller="Questions" asp-action="QuestionMapping" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
-            <a asp-controller="Audit" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Audit</a>
-            <a asp-controller="Dispute" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Dispute</a>
-
-        </div>
-    </div>
+    @*<div class="neu-topnav">
+        </div>*@
 
 
-
+<main class="container-fluid neu-padding--top-90 neu-padding--bottom-60">
     @RenderBody()
+</main>
+    
 
     @*<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
         <script type="text/javascript" src="~/js/moment.min.js"></script>
@@ -66,24 +68,26 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>*@
 
-    @RenderSection("Scripts", required: false)
-        @*<footer class="neu-footer--compact neu-footer--compact__navy">
-            <div class="row" role="navigation" id="a11y-menu">
-                <div class="col-md-12 col-lg-4">
-                    <a href="#!">
-                        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/4296082/HCA-Horizontal-white.png"
-                             alt="hca healthcare logo"
-                             height="20px" />
-                    </a>
-                </div>
 
-                <div class="col-md-12 col-lg-4">
-                    <p class="neu-text--caption neu-margin--left-10 neu-footer--compact__right-elem">
-                        ©2020 HCA, Inc. or its affiliates
-                    </p>
-                </div>
-            </div>
-        </footer>*@
+<footer class="neu-footer--compact neu-footer--compact__navy mt-auto py-3 neu-fixed--bottom">
+    <div class="row" role="navigation" id="a11y-menu">
+        <div class="col-sm-6">
+            <a href="#!">
+                <img src="~/images/HCA-Horizontal-white.png"
+                     alt="hca healthcare logo"
+                     height="20px" />
+            </a>
+        </div>
+
+        <div class="col-sm-6">
+            <p class="neu-text--caption neu-margin--left-10 neu-footer--compact__right-elem">
+                ©2021 HCA, Inc. or its affiliates
+            </p>
+        </div>
+    </div>
+</footer>
+
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>

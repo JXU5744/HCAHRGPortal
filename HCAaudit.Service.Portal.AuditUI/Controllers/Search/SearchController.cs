@@ -41,9 +41,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public JsonResult GetCommaSeperated()
         {
 
-            var mydata = _auditToolContext.HrocAuditors.Select(a => a.Agent34ID);
+            var mydata = _auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID);
 
-            return Json(_auditToolContext.HrocAuditors.Select(a => a.Agent34ID));
+            return Json(_auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID));
         }
 
         [HttpGet]
@@ -108,19 +108,29 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     string assignedTo = !String.IsNullOrWhiteSpace(searchparameter.AssignedTo) ? searchparameter.AssignedTo : string.Empty;
                     string ticketSubStatus = !String.IsNullOrWhiteSpace(searchparameter.TicketSubStatus) ? searchparameter.TicketSubStatus : string.Empty;
                     string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
-                    string TicketId = String.IsNullOrWhiteSpace(searchparameter.TicketId) ? string.Empty : searchparameter.ResultCountCriteria;
+                    string TicketId = String.IsNullOrWhiteSpace(searchparameter.TicketId) ? string.Empty : searchparameter.TicketId;
 
                     if (resultType.Equals("Audit"))
                     {
-                        objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
-                                ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
+                        //objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                        //        ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
                     }
                     else
                     {
 
                     }
 
+                    objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                                ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
+
+                    // All
+                    // 1-100%
+                    // X RecCounts
+                    
+                    //objgriddata = objgriddata.OrderBy(x => Guid.NewGuid()).Take(20).ToList();
+
                     recordsTotal = objgriddata.Count();
+
                     //Paging   
                     var jsonData = objgriddata.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
@@ -259,7 +269,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         public List<AssignedTo> GetHRList()
         {
-            var query = (from hrdata in _auditToolContext.HrocMaster
+            var query = (from hrdata in _auditToolContext.HROCRoster
                          select new
                          {
                              HrThreeFourID = hrdata.EmployeethreefourID
@@ -321,7 +331,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             //isActiveFlag
 
             var ticketdata = (from ticket in _auditToolContext.SearchTicketDetail
-                              join hrdata in _auditToolContext.HrocMaster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
+                              join hrdata in _auditToolContext.HROCRoster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
                               join Category in _auditToolContext.Categories on hrdata.JobCDDesc equals Category.CatgDescription 
                               
                               select new

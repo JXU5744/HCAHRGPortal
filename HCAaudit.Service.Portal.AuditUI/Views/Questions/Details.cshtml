@@ -3,134 +3,135 @@
 }
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
-
 <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+@*<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />*@
 
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+<style type="text/css">
+    .ui-autocomplete {
+        /* these sets the height and width */
+        max-height: 200px;
+        min-width: calc(100% - 16px) !important;
+        /* these make it scroll for anything outside */
+        overflow-x: scroll;
+        overflow-y: scroll;
+        font-family: inherit;
+        font-size: initial;
+        min-width: calc(100% - 16px) !important;
+        overflow-x: scroll;
+        overflow-y: scroll;
+        font-family: inherit;
+        font-size: initial;
+        max-height: 125px;
+    }        
+</style>
 
 @model List<HCAaudit.Service.Portal.AuditUI.Models.tblQuestionBank>
-    <main class="container neu-margin--top-30">
-        <div class="jumbotron-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Question Master</h3>
-                </div>
-            </div>
 
-            <div class="container">
-                <br />
-                <div class="row">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-3"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Question</button> </div>
-                </div>
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Question Master</h3>
+    </div>
+</div>
 
-                <br />
-                <div style="width:90%; margin:0 auto;">
-                    <table id="example" class="neu-table" width="100%" cellspacing="0">
-                        <thead class="neu-table__header">
-                            <tr class="neu-table__row">
-                                <th>QuestionID</th>
-                                <th>Question Name</th>
-                                <th>Question Description</th>
-                                <th style="width:10%">Edit</th>
-                                <th style="width:10%">Delete</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12 neu-text--align-right"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Question</button> </div>
+</div>
 
-            <div id="popupcontent" title="Add Question" hidden="hidden" class="container">
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12">
+        <table id="example" class="neu-table" width="100%" cellspacing="0">
+            <thead class="neu-table__header">
+                <tr class="neu-table__row">
+                    <th>QuestionID</th>
+                    <th>Question Name</th>
+                    <th>Question Description</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:10%">Delete</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
 
-                <div class="row">
-                    <div class="col-sm-9">
-                        <label for="txtQuestion" class="neu-input__label">Question Text:</label>
-                        <input id="txtQuestion" class="neu-input__field" type="text" />
-                        <span id="errormsg" class="neu-button--danger"></span>
-                    </div>
-                    <div class="col-sm-3"></div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-9">
-                        <label for="txtdescription" class="neu-input__label">Question Short Description:</label>
-                        <textarea id="txtdescription" class="neu-input__field"></textarea>
-                        <span id="errordescriptionmsg" class="neu-button--danger"></span>
-                    </div>
-                    <div class="col-sm-3"></div>
-                </div>
-                <br />
-                <div class="row">
-                    <div class="col-sm-3">
-                    </div>
-                    <div class="col-sm-5">
-                        <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>&nbsp;
-                        <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
-
-                <div class="row">
-                    <div class="col-sm-8">
-                        <label for="format-pdf" class="neu-input__label">Question Text:</label>
-                        <input id="txtQuestionedit" class="neu-input__field"
-                               type="text" />
-                        <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
-                    </div>
-                    <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-9">
-                        <label for="txtdescriptionedit" class="neu-input__label">Question Short Description:</label>
-                        <textarea id="txtdescriptionedit" class="neu-input__field"></textarea>
-                        <span id="errordescriptionmsgedit" class="neu-button--danger"></span>
-                    </div>
-                    <div class="col-sm-3"></div>
-                </div>
-                <br />
-                <div class="row">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-5">
-                        <button id="btnupdateQuestion" class="neu-button--primary neu-button neu-button--raised">Update</button>&nbsp;
-                        <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
-
-                <div class="row">
-                    <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
-                </div>
-                <br />
-                <div class="row">
-                    <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
-                    <div class="col-sm-6">
-                        <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">Ok</button>&nbsp;
-                        <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
-                        <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
-
-                    </div>
-                </div>
-
-            </div>
+<div id="popupcontent" title="Add Question" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label for="txtQuestion" class="neu-input__label">Question Text:</label>
+            <textarea id="txtQuestion" class="neu-input__field" type="text" rows = "5" cols = "50" style = "resize:none"></textarea>
+            <span id="errormsg" class="neu-button--danger"></span>
         </div>
-    </main>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label for="txtdescription" class="neu-input__label">Question Description:</label>
+            <textarea id="txtdescription" class="neu-input__field"  rows = "5" cols = "50" style = "resize:none"></textarea>
+            <span id="errordescriptionmsg" class="neu-button--danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
+            <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
+
+    <div class="row">
+        <div class="col-sm-12 neu-margin--bottom-16">
+            <label for="txtQuestionedit" class="neu-input__label">Question Text:</label>
+            <textarea id="txtQuestionedit" class="neu-input__field" type="text"  rows = "5" cols = "50" style = "resize:none"/>
+            <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
+        </div>
+        <div class="col-sm-12"><input id="hdnid" type="hidden" /></div>
+    </div>
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label for="txtdescriptionedit" class="neu-input__label">Question Description:</label>
+            <textarea id="txtdescriptionedit" class="neu-input__field"  rows = "5" cols = "50" style = "resize:none"></textarea>
+            <span id="errordescriptionmsgedit" class="neu-button--danger"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btnupdateQuestion" class="neu-button--primary neu-button neu-button--raised">Update</button>
+            <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12"><input id="hdndeletecatid" type="hidden" /></div>
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>&nbsp;
+            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+            <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
+
+        </div>
+    </div>
+</div>
+
+
+
 <script>
 
     $(document).ready(function() {
         $("#example").DataTable({
+            //"ordering": false,
             "processing": true, // for show progress bar
             "serverSide": true, // for process server side
             "filter": true, // this is for disable filter (search box)
@@ -143,7 +144,7 @@
             "columnDefs": [{
                 "targets": [0],
                 "visible": false,
-                "searchable": true
+                "searchable": false
             }],
             "columns": [
                 { "data": "QuestionID", "name": "QuestionID", "autoWidth": true },
@@ -165,11 +166,13 @@
 
     $(function () {
         $("#popupcontent").dialog({
-            autoOpen: false
+            width: 'auto',
+            autoOpen: false,
         });
 
         $("#popupcontentedit").dialog({
-            autoOpen: false
+            width: 'auto',
+            autoOpen: false,
         });
 
         $("#btncancelpopup").click(function () {
@@ -191,10 +194,7 @@
             });
         });
     });
-
-    $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 500, width: 700 });
-
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 500, width: 700 });
+ 
 
 
     $("#btnopenPopUp").click(function () {
@@ -258,16 +258,11 @@
     $('#errormsgedit').hide();
 
 
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
-
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 500, width: 700 });
-
-
     function OpenEditpopup(CatgID) {
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
             type: "POST",
-            url: "/questions/GetQuestionByid",
+            url: "/Questions/GetQuestionByid",
             data: { "id": CatgID },
             success: function (response) {
                 if (response != null && response != "") {
@@ -292,7 +287,7 @@
         }
         $.ajax({
             type: "POST",
-            url: "/questions/Edit",
+            url: "/Questions/Edit",
             data: { "id": $('#hdnid').val() + "$" + $('#txtQuestionedit').val() + "$" + $('#txtdescriptionedit').val()},
             success: function (response) {
                 if (response == "1") {
@@ -319,6 +314,7 @@
 
         var questionName = $('#txtQuestion').val();
         var questionDesc = $('#txtdescription').val();
+
         if (questionName == "") { $("#errormsg").show(); $("#errormsg").text("Please Enter Question"); return false; }
         if (questionDesc == "") { $("#errordescriptionmsg").show(); $("#errordescriptionmsg").text("Please Enter Description"); return false; }
         $.ajax({
@@ -355,7 +351,9 @@
         });
     });
 
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+
+    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, width: 'auto' });
+
 
     $("#btncancelpopup").click(function () {
         $("#popupcontentdelete").dialog('close');
@@ -368,7 +366,7 @@
     function DeleteData(CatgID) {
         $.ajax({
             type: "POST",
-            url: "/questions/HasDeleteAccessforQB",
+            url: "/Questions/HasDeleteAccessforQB",
             data: { "id": CatgID },
             success: function (response) {
                 //alert(response);
@@ -381,7 +379,7 @@
                     $("#hdndeletecatid").val(CatgID);
                 }
                 else if (response == "HasRecords") {
-                    $("#lblcustomtextfor").text("First remove Subcategory mapping and then delete this Question");
+                    $("#lblcustomtextfor").text("Please remove Subcategory mapping and then delete this Question");
                     $("#popupcontentdelete").dialog('open');
                     $("#btndeleteCategoryok").show();
                     $("#btndeleteQuestion").hide();
@@ -399,7 +397,7 @@
         });
     }
 
-   
+
 
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
@@ -419,4 +417,4 @@
         });
     });
 
-            </script>
+</script>

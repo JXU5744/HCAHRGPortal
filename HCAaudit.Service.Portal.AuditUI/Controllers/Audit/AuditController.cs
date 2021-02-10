@@ -28,8 +28,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
 
-        
-
         public AuditController(ILogger<AuditController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
         {
             _auditToolContext = audittoolc;
@@ -126,17 +124,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return View();
         }
 
-        
+
         public IActionResult Index(String TicketId, String TicketStatus, String TicketDate,
             int ServiceCatId, int SubCatId, String EnvironmentType, String TicketSubStatus)
         {
             if (string.IsNullOrWhiteSpace(TicketId) ||
-                string.IsNullOrWhiteSpace(TicketStatus) || 
+                string.IsNullOrWhiteSpace(TicketStatus) ||
                 string.IsNullOrWhiteSpace(TicketDate) ||
                 ServiceCatId == 0 || SubCatId == 0)
                 return RedirectToAction("Index", "Search");
 
-            
+
             var ticketId = TicketId;
             var ticketStatus = TicketStatus;
             var ticketSubStatus = TicketSubStatus;
@@ -177,7 +175,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CloseUserId) ? "" : ssisTicket.CloseUserId.Substring(0, 7);
 
-                    var hrProff = _auditToolContext.HrocMaster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
+                    var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
                     var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
 
 
@@ -186,7 +184,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     auditViewModel.EnvironmentType = environmentType;
                     auditViewModel.ServiceCatId = serviceCategory;
                     auditViewModel.SubCatName = subCategoryDescription;
-                    auditViewModel.SupervisorName = hrProff != null? hrProff.EmployeeFullName:String.Empty;
+                    auditViewModel.SupervisorName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
                     auditViewModel.ServiceGroupName = categoryDescription;
                     auditViewModel.SubCatId = subCategory;
                     auditViewModel.AgentName = hrProffName;
@@ -213,7 +211,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             QuestionName = x.QuestionName,
                             QuestionDescription = x.QuestionDescription,
                             QuestionSeqNumber = x.SeqNumber
-                        }).OrderBy(c=>c.QuestionSeqNumber).ToList();
+                        }).OrderBy(c => c.QuestionSeqNumber).ToList();
 
                     List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question> lstQuestionList = new List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question>();
                     foreach (var item in query)
@@ -253,7 +251,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CreatorUserId) ? "" : ssisTicket.CreatorUserId.Substring(0, 7);
 
-                    var hrProff = _auditToolContext.HrocMaster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
+                    var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
                     var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
 
 
@@ -322,7 +320,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public IActionResult SaveAudit(AuditViewModel audit)
         {
-            if (audit != null) {
+            if (audit != null)
+            {
                 AuditMain main = new AuditMain();
                 main.TicketID = audit.TicketId;
                 main.Agent34ID = audit.Agent34Id;
@@ -345,6 +344,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     obj.QuestionId = item.QuestionId;
                     //Audit Main ID to be set in AuditMainresponse
+                    obj.AuditMainID = main.ID;
                     obj.QuestionRank = item.QuestionSequence;
                     obj.TicketID = main.TicketID;
                     obj.isCompliant = item.Action.IsCompliance;
@@ -354,14 +354,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     obj.isNA = item.Action.IsNotApplicable;
                     obj.isNonCompliant = item.Action.IsNonCompliance;
                     obj.NonComplianceComments = item.Comments;
-                    obj.ModifiedDate = DateTime.Now.ToShortDateString();
+                    obj.ModifiedDate = DateTime.Now;
                     _auditToolContext.AuditMainResponse.Add(obj);
                     _auditToolContext.SaveChanges();
                 }
             }
-            return View(audit);
+            return RedirectToAction("Index","Search");
         }
-            [HttpPost]
+        [HttpPost]
         public JsonResult BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
@@ -413,26 +413,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             return RedirectToAction("Details");
         }
-       
-        //[HttpPost]
-        //public ActionResult GetTicketDetails()
-        //{
-        //    var data = (from config in _auditToolContext.questionMasters
-        //                join question in _auditToolContext.questionBank
-        //                on config.QuestionId equals question.QuestionID
-        //                select question).ToList();
-        //    CategoryMast objCategoryMast = new CategoryMast();
-        //    objCategoryMast._categoryList = new List<Category>();
-        //    List<QuestionMapping> lstQuestionList = new List<QuestionMapping>();
-        //    foreach (var item in data)
-        //    {
-        //        QuestionMapping objQUestionmapping = new QuestionMapping();
-        //        objQUestionmapping.QuestionId = item.QuestionID;
-        //        objQUestionmapping.QuestionDescription = item.QuestionName;
-        //        lstQuestionList.Add(objQUestionmapping);
-        //    }
-        //    return Json(lstQuestionList);
-     //   }
+
     }
 }
 

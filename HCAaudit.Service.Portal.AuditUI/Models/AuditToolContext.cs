@@ -12,11 +12,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public DbSet<Categorys> Categories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<QuestionMaster> QuestionMasters { get; set; }
-        public DbSet<clstbHROCRoster> HrocMaster { get; set; }
-
+        
         public DbSet<tblQuestionBank> QuestionBank { get; set; }
-
-        public DbSet<clstbHROCAuditor> HrocAuditors { get; set; }
 
         public DbSet<TicketsViaSSIS> SearchTicketDetail { get; set; }
 
@@ -27,6 +24,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         public DbSet<AuditDispute> AuditDispute { get; set; }
         public DbSet<ListOfValues> ListOfValues { get; set; }
+
+        public DbSet<HROCRoster> HROCRoster { get; set; }
 
     }
     
