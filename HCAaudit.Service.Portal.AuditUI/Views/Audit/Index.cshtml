@@ -119,22 +119,22 @@
                 <table id="auditDetails" class="neu-table" width="100%" cellspacing="0">
                     <thead class="neu-table__head">
                         <tr class="neu-table__header neu-table__sort-icon">
-                            <th style="width:5%" rowspan="2">Question Sequence</th>
-                            <th style="width:40%" rowspan="2">Question Description</th>
-                            <th style="width:28%" colspan="3">Action</th>
-                            <th style="width:5%" rowspan="2">Correction Required</th>
-                            <th style="width:22%" rowspan="2">Comment</th>
+                            <th @*style="width:5%"*@ rowspan="2">Question Sequence</th>
+                            <th @*style="width:40%"*@ rowspan="2">Question Description</th>
+                            <th @*style="width:28%"*@ colspan="3">Action</th>
+                            <th @*style="width:5%"*@ rowspan="2">Correction Required</th>
+                            <th @*style="width:22%"*@ rowspan="2">Comment</th>
                         </tr>
                         <tr>
-                            <th style="width:9%">Compliance</th>
-                            <th style="width:10%">Non Compliance</th>
-                            <th style="width:9%">Not Applicable</th>
+                            <th @*style="width:9%"*@>Compliance</th>
+                            <th @*style="width:10%"*@>Non Compliance</th>
+                            <th @*style="width:9%"*@>Not Applicable</th>
                         </tr>
                     </thead>
                     @for (int i = 0; i < Model.Question.Count; i++)
                     {
                         <tr>
-                            <td style="width:5%">
+                            <td @*style="width:5%"*@>
                                 <div align="center">
                                     @Model.Question[i].QuestionSequence
                                     @Html.HiddenFor(m => m.Question[i].QuestionSequence)
@@ -142,46 +142,37 @@
                                     @Html.HiddenFor(m => m.Question[i].QuestionName)
                                 </div>
                             </td>
-                            <td style="width:40%">
+                            <td @*style="width:40%"*@>
                                 @Html.TextAreaFor(m => m.Question[i].QuestionName, new { style = "height:50%;width:100%", @disabled = true })
                             </td>
-                            <td style="width:28%">
+                            <td @*style="width:28%"*@ colspan="3">
                                 <div id="action">
-                                    <table id="actionTable">
-                                        <tr style=" border: 1px solid #ddd">
-                                            <td style="border-right: 1px solid #ddd;width:9%" align="center">
-                                                <div>
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                                    @*<label style="white-space:nowrap"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.Compliance" name='@Model.Question[i].QuestionId-Action' @(Model.Question[i].Action.Compliance == true ? "checked" : "") />Compliance</label>*@
-                                                </div>
-                                            </td>
-                                            <td style=" border-right: 1px solid #ddd;width:10%" align="center">
-                                                @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                                @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
-                                                <br />
-                                                <table width="100%" style="border: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance" align="center">
-                                                    <tr>
-                                                        <td style=" border-right: 1px solid #ddd;width:5%" align="center">
-                                                            @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
-
-                                                        </td>
-                                                        <td align="center" style="width:5%">
-                                                            @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
-
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                            <td align="center" style="width:9%">
-                                                @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                                @*<label style="white-space:nowrap;padding-right:3%"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.NotApplicable" name='@Model.Question[i].QuestionId-Action' />Not Applicable</label>*@
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <div id="actionTable" class="row">
+                                        <div class="col-sm-4 neu-text--align-center">
+                                            @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
+                                            @*<label style="white-space:nowrap"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.Compliance" name='@Model.Question[i].QuestionId-Action' @(Model.Question[i].Action.Compliance == true ? "checked" : "") />Compliance</label>*@
+                                        </div>
+                                        <div class="col-sm-4 neu-text--align-center">
+                                            @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
+                                            @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
+                                            <div class="row neu-padding--top-10" style="border-top: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
+                                                    <div class="col-sm-6">
+                                                        @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 neu-text--align-center">
+                                            @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
+                                            @*<label style="white-space:nowrap;padding-right:3%"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.NotApplicable" name='@Model.Question[i].QuestionId-Action' />Not Applicable</label>*@
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
-                            <td align="center" style="width:5%"> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
-                            <td style="width:22%">@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:80%;height:50%", disabled = "disabled" })</td>
+                            <td @*align="center" style="width:5%"*@> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
+                            <td @*style="width:22%"*@>@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:80%;height:50%", disabled = "disabled" })</td>
 
                         </tr>
                     }
@@ -270,6 +261,16 @@
         $('[title=' + questionId + '-Impact' + ']').not(this).prop('checked', false);
 
     });
+
+    //$("#ddlcategory").change(function () {
+    //    var catgID = $('#ddlcategory').val();
+    //    if (catgID != "0") { $('#errormsgcategory').hide(); }
+    //});
+
+    //$("#ddlcategory").change(function () {
+    //    var catgID = $('#ddlcategory').val();
+    //    if (catgID != "0") { $('#errormsgcategory').hide(); }
+    //});
 
     $('form').submit(function (e) {
 

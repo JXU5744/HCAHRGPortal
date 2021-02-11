@@ -77,7 +77,7 @@
                         <div tabindex="-1" aria-checked="false">
                             <label class="neu-input__label required">Employee Number</label>
                             <input name="txtEmployeeNumber" id="txtEmployeeNumber" class="neu-input__field" type="text" />
-                            <span id="errorMessageEmployeeNumber" class="neu-button--danger neu-button--small"></span>
+                            <span id="errorMessageEmployeeNumber" class="neu-button--danger"></span>
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -153,7 +153,7 @@
 
                 <div id="divSuccessMessage" name="divSuccessMessage" class="row neu-margin--bottom-16" style="display:none">
                     <div class="col-sm-12 neu-text--align-center">
-                        <i class="material-icons neu-text--dusty-green">check_circle</i>  
+                        <i class="material-icons neu-text--dusty-green">check_circle</i>
                         <label id="headingSuccessMessage" name="headingSuccessMessage" class="neu-input__label">
                         </label>
                     </div>
@@ -164,24 +164,18 @@
                     </div>
                 </div>
 
-                <div id="divFailureMessage" name="divFailureMessage" class="neu-padding--0" style="display:none">
-                    <div class="row">
-                        <div class="col-sm-auto">
-                            <i class="material-icons neu-text--american-rose neu-margin--left-10">close</i>
-                        </div>
-                        <div class="col-sm-4">
-                            <h4 id="headingFailureMessage" name="headingFailureMessage" class="neu-text--bold text-danger">
-                            </h4>
-                        </div>
-                        <br>
-                        <div class="col-sm-4">
-                            <button asp-controller="Save" id="btnOkFailure" name="btnOkFailure" asp-action="Details" class="neu-button--success neu-button neu-button--raised neu-button--large">
-                                OK
-                            </button>
-                        </div>
+                <div id="divFailureMessage" name="divFailureMessage" class="row neu-margin--bottom-16" style="display:none">
+                    <div class="col-sm-12 neu-text--align-center">
+                        <i class="material-icons neu-text--american-rose">close</i>
+                        <label id="headingFailureMessage" name="headingFailureMessage" class="neu-input__label">
+                        </label>
+                    </div>
+                    <div class="col-12 neu-text--align-center">
+                        <button asp-controller="Save" id="btnOkFailure" name="btnOkFailure" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
+                            OK
+                        </button>
                     </div>
                 </div>
-
             </div>
         </fieldset>
     </div>
