@@ -39,19 +39,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 return Json(response);
             }
-
             return Json(GetSingleQuestionByid(id));
         }
 
         [HttpPost]
         public ActionResult EditQuestionSequence(int newquestionId, int newsequenceno, int cquestionid, int csequenceno)
         {
-
             try
             {
-
                 var objQuestion = _auditToolContext.QuestionMasters
-                    //.Where(a => a.QuestionMasterId == cquestionid ).FirstOrDefault();
+                //.Where(a => a.QuestionMasterId == cquestionid ).FirstOrDefault();
                 .Where(a => a.QuestionMasterId == cquestionid && a.IsActive == true).FirstOrDefault();
 
                 if (objQuestion != null)
@@ -60,7 +57,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.QuestionMasters.Update(objQuestion);
                     _auditToolContext.SaveChanges();
                 }
-
                 else
                 {
                     return Json("Error Udating new sequence number");
@@ -76,7 +72,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.SaveChanges();
                 }
                 else
-
                 {
                     return Json("Error Udating Current sequence number");
                 }
@@ -96,20 +91,45 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult GetQuestionSeqByid(int id, int subcatid, int actionQid)
         {
-            var data = _auditToolContext.QuestionMasters
-                .Where(a => a.SubCatgID == subcatid
-                && a.IsActive == true)
-                .Select(a => new { a.QuestionMasterId, a.SeqNumber })
-                .Distinct();
+            var query = _auditToolContext.QuestionMasters
+             .Join(
+                 _auditToolContext.QuestionBank,
+                 questionMaster => questionMaster.QuestionId,
+                 questionBank => questionBank.QuestionID,
+                 (questionMaster, questionBank) => new
+                 {
+                     QuestionId = questionMaster.QuestionId,
+                     SequenceNo = questionMaster.SeqNumber,
+                     QuestionText = questionBank.QuestionName,
+                     QuestionDes = questionBank.QuestionDescription,
+                     SubCatId = questionMaster.SubCatgID,
+                     QuestionMasterId = questionMaster.QuestionMasterId,
+                     IsActive = questionMaster.IsActive
+                 })
+                  .Select(x => new QuesBankMasterJoinMast
+                  {
+                      QuestionId = x.QuestionId,
+                      SequenceNo = x.SequenceNo,
+                      QuestionText = x.QuestionText,
+                      QuestionDesc = x.QuestionDes,
+                      SubCatID = x.SubCatId,
+                      QuestionMasterId = x.QuestionMasterId,
+                      isActive = x.IsActive
+                  }
+                 )
+                  .Where(a => a.SubCatID == subcatid && a.isActive == true)
+                 .OrderBy(a => a.SequenceNo)
+                 .ToList();
 
-            return Json(data);
+
+
+            return Json(query);
         }
 
         tblQuestionBank GetSingleQuestionByid(string id)
         {
-            var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true).ToList();
-            tblQuestionBank objQuestionBank = data.Find(category => category.QuestionID == Convert.ToInt32(id));
-            return objQuestionBank;
+            var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true && a.QuestionID == Convert.ToInt32(id)).FirstOrDefault();
+            return data;
         }
         [HttpPost]
         public ActionResult Edit(string id)
@@ -119,14 +139,28 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             if (!string.IsNullOrEmpty(id))
             {
                 string[] param = id.Split('$');
-                if (param.Count() > 0)
+                if (param.Count() > 0 && param.Count() == 3)
                 {
                     tblQuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
-                    //var data = GetDetails().Where(a => a.QuestionName.ToLower() == param[1].ToLower()).SingleOrDefault(); 
 
-                    if (objtblQuestionBank != null && objtblQuestionBank.QuestionName == param[1].ToLower())
-                    { responce = "1"; }
-                    if (string.IsNullOrEmpty(responce.ToString()))
+                    var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
+                    if (questionlist.Count > 0)
+                    {
+                        if (questionlist[0].QuestionID != objtblQuestionBank.QuestionID)
+                        {
+                            responce = "1";
+                        }
+                        else
+                        {
+                            objtblQuestionBank.QuestionName = param[1];
+                            objtblQuestionBank.QuestionDescription = param[2];
+                            _auditToolContext.QuestionBank.Update(objtblQuestionBank);
+                            _auditToolContext.SaveChanges();
+                            return Json(objtblQuestionBank);
+
+                        }
+                    }
+                    else
                     {
                         objtblQuestionBank.QuestionName = param[1];
                         objtblQuestionBank.QuestionDescription = param[2];
@@ -169,11 +203,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     {
                         object response = "";
 
-                        var questionbankdata = _auditToolContext.QuestionBank.Where(x => x.QuestionName.Trim() == data[1].ToString().Trim())
-                                  .Select(a => new { a.QuestionID, a.QuestionName }).SingleOrDefault();
+                        var questionbankdata = _auditToolContext.QuestionBank.Where(x => x.QuestionName.Trim() == data[1].ToString().Trim() &&
+                            x.IsActive == true).FirstOrDefault();
                         if (questionbankdata == null)//condition to restrict questions which is not available in questionBank table
                         {
-                            return Json(response = "2");
+                            tblQuestionBank objNewQuestion = new tblQuestionBank();
+                            objNewQuestion.QuestionName = data[1].ToString().Trim();
+                            objNewQuestion.QuestionDescription = data[2].ToString().Trim();
+                            objNewQuestion.IsActive = true;
+                            _auditToolContext.QuestionBank.Add(objNewQuestion);
+                            _auditToolContext.SaveChanges();
+                            questionbankdata = objNewQuestion;
                         }
                         QuestionMaster objtbQuestionMaster = new QuestionMaster();
                         objtbQuestionMaster.QuestionId = questionbankdata.QuestionID;

@@ -18,32 +18,32 @@
 <script type="text/javascript" src="~/js/numeric.js"></script>
 
 
-        <div class="row neu-margin--bottom-16">
-            <div class="col-12">
-                <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">HR Professional</h3>
-            </div>
-        </div>
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">HR Professional</h3>
+    </div>
+</div>
 
-        <div class="row neu-margin--bottom-16 d-flex align-items-end">
-            <div class="col-sm-4" tabindex="-1" aria-checked="false">
-                    <label class="neu-input__label required" style="text-align:left;width:30%;">Enter Employee (by 3-4 ID)</label>
-                    <input name="txtSearch34Id" id="txtSearch34Id" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}"/>
-                    <input name="hiddenHROCRosterId" id="hiddenHROCRosterId" class="neu-input__field" type="hidden" />
-                    <span id="errorMessage" class="neu-button--danger"></span>
-            </div>
-            <div class="col-sm-4">
-                <div tabindex="-1" aria-checked="false">
-                    <button id="btnAddEmployee" name="btnAddEmployee" class="neu-button--primary neu-button neu-button--raised" style="display:none">
-                        Add Employee
-                    </button>
-                </div>
-                <div tabindex="-1" aria-checked="false">
-                    <button id="btnSearchEmployee" name="btnSearchEmployee" class="neu-button--primary neu-button neu-button--raised">
-                        Search
-                    </button>
-                </div>
-            </div>
+<div class="row neu-margin--bottom-16 d-flex align-items-end">
+    <div class="col-sm-4" tabindex="-1" aria-checked="false">
+        <label class="neu-input__label required" style="text-align:left;width:30%;">Enter Employee (by 3-4 ID)</label>
+        <input name="txtSearch34Id" id="txtSearch34Id" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}" />
+        <input name="hiddenHROCRosterId" id="hiddenHROCRosterId" class="neu-input__field" type="hidden" />
+        <span id="errorMessage" class="neu-button--danger"></span>
+    </div>
+    <div class="col-sm-4">
+        <div tabindex="-1" aria-checked="false">
+            <button id="btnAddEmployee" name="btnAddEmployee" class="neu-button--primary neu-button neu-button--raised" style="display:none">
+                Add Employee
+            </button>
         </div>
+        <div tabindex="-1" aria-checked="false">
+            <button id="btnSearchEmployee" name="btnSearchEmployee" class="neu-button--primary neu-button neu-button--raised">
+                Search
+            </button>
+        </div>
+    </div>
+</div>
 <div class="row">
     <div class="col-sm-12">
         <fieldset id="fieldsetEmployeeForm" name="fieldsetEmployeeForm" class="neu-padding--0" disabled>
@@ -77,7 +77,7 @@
                         <div tabindex="-1" aria-checked="false">
                             <label class="neu-input__label required">Employee Number</label>
                             <input name="txtEmployeeNumber" id="txtEmployeeNumber" class="neu-input__field" type="text" />
-                            <span id="errorMessageEmployeeNumber" class="neu-button--danger neu-button--small"></span>
+                            <span id="errorMessageEmployeeNumber" class="neu-button--danger"></span>
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -151,46 +151,36 @@
                     </div>
                 </div>
 
-                <div id="divSuccessMessage" name="divSuccessMessage" class="neu-padding--0" style="display:none">
-                    <div class="row">
-                        <div class="col-sm-auto">
-                            <i class="material-icons neu-text--dusty-green">check_circle</i>
-                        </div>
-                        <div class="col-sm-4">
-                            <h4 id="headingSuccessMessage" name="headingSuccessMessage" class="neu-text--bold text-success">
-                            </h4>
-                        </div>
+                <div id="divSuccessMessage" name="divSuccessMessage" class="row neu-margin--bottom-16" style="display:none">
+                    <div class="col-sm-12 neu-text--align-center">
+                        <i class="material-icons neu-text--dusty-green">check_circle</i>
+                        <label id="headingSuccessMessage" name="headingSuccessMessage" class="neu-input__label">
+                        </label>
                     </div>
-                    <br />
-                    <div class="col-sm-auto">
-                        <button asp-controller="Save" id="btnOkSuccess" name="btnOkSuccess" asp-action="Details" class="neu-button--success neu-button neu-button--raised neu-button--large">
+                    <div class="col-12 neu-text--align-center">
+                        <button asp-controller="Save" id="btnOkSuccess" name="btnOkSuccess" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
                             OK
                         </button>
                     </div>
                 </div>
-                <div id="divFailureMessage" name="divFailureMessage" class="neu-padding--0" style="display:none">
-                    <div class="row">
-                        <div class="col-sm-auto">
-                            <i class="material-icons neu-text--american-rose neu-margin--left-10">close</i>
-                        </div>
-                        <div class="col-sm-4">
-                            <h4 id="headingFailureMessage" name="headingFailureMessage" class="neu-text--bold text-danger">
-                            </h4>
-                        </div>
-                        <br>
-                        <div class="col-sm-4">
-                            <button asp-controller="Save" id="btnOkFailure" name="btnOkFailure" asp-action="Details" class="neu-button--success neu-button neu-button--raised neu-button--large">
-                                OK
-                            </button>
-                        </div>
+
+                <div id="divFailureMessage" name="divFailureMessage" class="row neu-margin--bottom-16" style="display:none">
+                    <div class="col-sm-12 neu-text--align-center">
+                        <i class="material-icons neu-text--american-rose">close</i>
+                        <label id="headingFailureMessage" name="headingFailureMessage" class="neu-input__label">
+                        </label>
+                    </div>
+                    <div class="col-12 neu-text--align-center">
+                        <button asp-controller="Save" id="btnOkFailure" name="btnOkFailure" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
+                            OK
+                        </button>
                     </div>
                 </div>
-               
             </div>
         </fieldset>
     </div>
 </div>
-        
+
 
 
 @section Scripts
@@ -340,39 +330,33 @@
             });
 
 
-            $('#txtDateHired').on('keydown keyup change input', function ()
-            {
+            $('#txtDateHired').on('keydown keyup change input', function () {
 
                 var currentDate = new Date();
-                if (new Date(moment(currentDate).format("MM/DD/YYYY")) < new Date($("#txtDateHired").val()))
-                {
+                if (new Date(moment(currentDate).format("MM/DD/YYYY")) < new Date($("#txtDateHired").val())) {
                     $('#errorMessageDateHired').text('Date Hired cannot be future date');
                 }
-                else
-                {
+                else {
                     $('#errorMessageDateHired').text('');
                 }
             });
 
-            $('#txtSearch34Id').on('keydown keyup change input', function ()
-            {
+            $('#txtSearch34Id').on('keydown keyup change input', function () {
                 if ($("#txtSearch34Id").val() != "") {
                     $("#errorMessage").text("");
                 }
                 var maxLength = 7;
                 var char = $(this).val();
                 var charLength = $(this).val().length;
-                if (charLength > maxLength)
-                {
+                if (charLength > maxLength) {
                     $(this).val(char.substring(0, maxLength));
-                } 
+                }
 
             });
 
             $("#btnSearchEmployee").click(function () {
 
-                if ($("#txtSearch34Id").val().trim().length > 0)
-                {
+                if ($("#txtSearch34Id").val().trim().length > 0) {
                     var inputVal = $("#txtSearch34Id").val().trim();
                     var inputRegx = $("#txtSearch34Id").attr("pattern");;
 
@@ -409,8 +393,7 @@
                                 $("#btnAddEmployee").hide();
 
                             }
-                            else
-                            {
+                            else {
                                 $("#errorMessage").text("Data not available for 3-4 Id : " + $("#txtSearch34Id").val());
                                 //$("#btnAddEmployee").show();
                             }
@@ -427,7 +410,7 @@
                     $("#errorMessage").text("Employee 3-4 ID Required");
                     $("#btnAddEmployee").hide();
                 }
-               
+
             });
 
             $("#btnAddEmployee").click(function () {
@@ -479,7 +462,7 @@
                             if (response == "Success") {
                                 $("#divSuccessMessage").show();
                                 $("#divButtonCollection").hide();
-                                $("#headingSuccessMessage").text("Data Saved Successful.");
+                                $("#headingSuccessMessage").text("Data Saved Successfully.");
                             }
                             else {
                                 $("#divFailureMessage").show();
@@ -502,8 +485,7 @@
 
                 var isValid = ValidateHROCRosterViewModel();
 
-                if (isValid)
-                {
+                if (isValid) {
                     var HROCRosterViewModel =
                     {
                         "HROCRosterId": $("#hiddenHROCRosterId").val(),
@@ -556,12 +538,10 @@
                 }
             }
 
-            function ValidateHROCRosterViewModel()
-            {
+            function ValidateHROCRosterViewModel() {
                 var isValid = true;
 
-                if ($("#txtSearch34Id").val().trim().length == 0)
-                {
+                if ($("#txtSearch34Id").val().trim().length == 0) {
                     $('#errorMessage').text('Employee 3-4 ID Required');
                     isValid = false;
                 }
@@ -571,8 +551,7 @@
                     isValid = false;
                 }
 
-                if ($("#txtEmployeeFirstName").val().trim().length == 0)
-                {
+                if ($("#txtEmployeeFirstName").val().trim().length == 0) {
                     $('#errorMessageFirstName').text('First Name Required');
                     isValid = false;
                 }
@@ -634,7 +613,7 @@
                 }
 
                 return isValid;
-             }
+            }
             //$("#example").DataTable({
             //    "processing": true, // for show progress bar
             //    "serverSide": true, // for process server side
