@@ -621,7 +621,10 @@
 
     function OpenEditpopup(CatgID) {
         var subCategoryID = $('#SubCatID').val();
-        //$('#errormsgedit').hide();
+        var subCategoryname = $("#SubCatID option:selected").text();
+        var categoryname = $("#CatgID option:selected").text();
+        $('#txtcategoryEdit').val(categoryname);
+        $('#txtsubcategoryEdit').val(subCategoryname);
         $("#hdnid").val("");
         $("#hdnid").val(CatgID);
         $("#hdnSubCatId").val(subCategoryID);
@@ -636,13 +639,13 @@
                     $('#ddlQuestionsqedit').html(''); //$("#ShowQuestions").hide();
                     var options = ''; var index = 0;
                     for (var i = 0; i < response.length; i++) {
-                        //alert(response[i].QuestionMasterId); alert(response[i].SeqNumber);
-                        options += '<option value="' + response[i].QuestionMasterId + '">' + response[i].SeqNumber + '</option>';
+                        //alert(response[i].QuestionMasterId); alert(response[i].SequenceNo);
+                        options += '<option value="' + response[i].QuestionMasterId + '">' + response[i].SequenceNo + '</option>';
                         if (response[i].QuestionMasterId == CatgID) {
-                            index = response[i].SeqNumber;
-                            $("#lblQuestionedit").text(response[i].SeqNumber);
-                            //var cseqno = response[i].SeqNumber;
-                            //alert(cseqno);
+                            index = response[i].SequenceNo;
+                            $("#txtquestionEdit").val(response[i].QuestionText);
+                            $("#txtquestionDescriptionEdit").val(response[i].QuestionDesc);
+                            $("#lblQuestionedit").val(response[i].SequenceNo);
                         }
                     }
                     $('#ddlQuestionsqedit').append(options);

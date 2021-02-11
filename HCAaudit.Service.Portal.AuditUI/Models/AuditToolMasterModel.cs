@@ -87,6 +87,19 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
     }
 
+    public class QuesBankMasterJoinMast
+    {
+        public int QuestionId { get; set; }
+        public int SequenceNo { get; set; }
+        public string QuestionText { get; set; }
+        public string QuestionDesc { get; set; }
+        public string QuestionPercentage { get; set; }
+        public int SubCatID { get; set; }
+        public int QuestionMasterId { get; set; }
+        public bool isActive { get; set; }
+        
+    }
+
     public class CatSubCatJoinMast
     {
         public int CatgID { get; set; }
@@ -256,7 +269,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     {
         [Key]
         public int QuestionMasterId { get; set; }
-
         public int QuestionId { get; set; }
         public int SeqNumber { get; set; }
         public int SubCatgID { get; set; }
@@ -271,11 +283,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         [Key]
         public int QuestionID { get; set; }
         public string QuestionName { get; set; }
-
         public string QuestionDescription { get; set; }
-
         public bool IsActive { get; set; }
-
         public int status { get; set; }
     }
 

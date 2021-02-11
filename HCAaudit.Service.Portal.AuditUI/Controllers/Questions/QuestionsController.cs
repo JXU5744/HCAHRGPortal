@@ -39,17 +39,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 return Json(response);
             }
-
             return Json(GetSingleQuestionByid(id));
         }
 
         [HttpPost]
         public ActionResult EditQuestionSequence(int newquestionId, int newsequenceno, int cquestionid, int csequenceno)
         {
-
             try
             {
-
                 var objQuestion = _auditToolContext.QuestionMasters
                 //.Where(a => a.QuestionMasterId == cquestionid ).FirstOrDefault();
                 .Where(a => a.QuestionMasterId == cquestionid && a.IsActive == true).FirstOrDefault();
@@ -60,7 +57,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.QuestionMasters.Update(objQuestion);
                     _auditToolContext.SaveChanges();
                 }
-
                 else
                 {
                     return Json("Error Udating new sequence number");
@@ -76,7 +72,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.SaveChanges();
                 }
                 else
-
                 {
                     return Json("Error Udating Current sequence number");
                 }
@@ -96,13 +91,39 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult GetQuestionSeqByid(int id, int subcatid, int actionQid)
         {
-            var data = _auditToolContext.QuestionMasters
-                .Where(a => a.SubCatgID == subcatid
-                && a.IsActive == true)
-                .Select(a => new { a.QuestionMasterId, a.SeqNumber })
-                .Distinct();
+            var query = _auditToolContext.QuestionMasters
+             .Join(
+                 _auditToolContext.QuestionBank,
+                 questionMaster => questionMaster.QuestionId,
+                 questionBank => questionBank.QuestionID,
+                 (questionMaster, questionBank) => new
+                 {
+                     QuestionId = questionMaster.QuestionId,
+                     SequenceNo = questionMaster.SeqNumber,
+                     QuestionText = questionBank.QuestionName,
+                     QuestionDes = questionBank.QuestionDescription,
+                     SubCatId = questionMaster.SubCatgID,
+                     QuestionMasterId = questionMaster.QuestionMasterId,
+                     IsActive = questionMaster.IsActive
+                 })
+                  .Select(x => new QuesBankMasterJoinMast
+                  {
+                      QuestionId = x.QuestionId,
+                      SequenceNo = x.SequenceNo,
+                      QuestionText = x.QuestionText,
+                      QuestionDesc = x.QuestionDes,
+                      SubCatID = x.SubCatId,
+                      QuestionMasterId = x.QuestionMasterId,
+                      isActive = x.IsActive
+                  }
+                 )
+                  .Where(a => a.SubCatID == subcatid && a.isActive == true)
+                 .OrderBy(a => a.SequenceNo)
+                 .ToList();
 
-            return Json(data);
+
+
+            return Json(query);
         }
 
         tblQuestionBank GetSingleQuestionByid(string id)
