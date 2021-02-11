@@ -259,8 +259,10 @@
 
             $("#btnsearch").click(function () {
                 $("#errormsgforcategory").text("");
-                debugger
+
                 var environmenttype = $("input[name='EnvironmentType']:checked").val();
+
+                var resultcount = $("#ResultCount").val();
 
                 var screentype = $("input[name='ResultType']:checked").val();
 
@@ -277,11 +279,30 @@
                 var enddate = $("#enddate").val();
 
                 if (screentype == "Audit" && categoryID == "0" && subcategoryID == "0" && assignedTo == "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.<br/>");
+                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.");
                 }
 
                 if (screentype == "Dispute" && categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Ticket Id field.<br/>");
+                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Ticket Id field.");
+                }
+
+                if ($("#errormsgforcategory").text() == "") {
+                    if (resultcount != "" && resultcount.toLowerCase() != "all") {
+                        if (resultcount.indexOf('%') > -1) {
+                            if (resultcount.length == resultcount.indexOf('%') + 1) {
+                                var resultcount = resultcount.substr(0, resultcount.length - 1)
+                                if (!$.isNumeric(resultcount) || parseInt(resultcount) < 1 || parseInt(resultcount) > 100) {
+                                    $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 100.")
+                                }
+                            } else {
+                                $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 100.")
+                            }
+                        } else {
+                            if (!$.isNumeric(resultcount) || parseInt(resultcount) < 1 || parseInt(resultcount) > 1000) {
+                                $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 100.")
+                            }
+                        }
+                    }
                 }
 
                 if ($("#errormsgforcategory").text() != "") {

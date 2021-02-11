@@ -30,17 +30,18 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private IAuthService _authService;
         List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
-        public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
+        private bool isAuthorized = false;
+        public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc)/*, IAuthService authService)*/
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
+            //isAuthorized = authService.CheckUserGroups().Result;
         }
 
         [HttpPost]
         public JsonResult GetCommaSeperated()
         {
-
             var mydata = _auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID);
 
             return Json(_auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID));
@@ -118,22 +119,32 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
                     string TicketId = String.IsNullOrWhiteSpace(searchparameter.TicketId) ? string.Empty : searchparameter.TicketId;
 
-                    if (resultType.Equals("Audit"))
-                    {
-                        //objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
-                        //        ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
-                    }
-                    else
-                    {
-
-                    }
-
                     objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
                                 ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
 
                     // All
                     // 1-100%
                     // X RecCounts
+                    int count = 0;
+
+                    if (!resultCountCriteria.ToLower().Equals("all"))
+                    {
+                        if (int.TryParse(resultCountCriteria, out count))
+                        {
+                            count = count > 1000 ? 1000 : count;
+                            objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                        }
+                        else
+                        {
+                            resultCountCriteria = resultCountCriteria.Replace("%25", "%");
+                            if (resultCountCriteria.Contains("%") && int.TryParse(resultCountCriteria.Replace("%",""), out count))
+                            {
+                                count = count > 100 ? 100 : count;
+                                count = (objgriddata.Count() * count) / 100;
+                                objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                            }
+                        }
+                    }
                     
                     //objgriddata = objgriddata.OrderBy(x => Guid.NewGuid()).Take(20).ToList();
 

@@ -86,6 +86,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         private async Task<JwtSecurityToken> GetIdToken()
         {
             var token_string = await contextAccessor.HttpContext.GetTokenAsync("id_token");
+            var token_stng = await contextAccessor.HttpContext.GetTokenAsync("access_token");
             return new JwtSecurityTokenHandler().ReadJwtToken(token_string);
         }
         #endregion

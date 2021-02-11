@@ -182,11 +182,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     {
                         object response = "";
 
-                        var questionbankdata = _auditToolContext.QuestionBank.Where(x => x.QuestionName.Trim() == data[1].ToString().Trim())
-                                  .Select(a => new { a.QuestionID, a.QuestionName }).SingleOrDefault();
+                        var questionbankdata = _auditToolContext.QuestionBank.Where(x => x.QuestionName.Trim() == data[1].ToString().Trim() &&
+                            x.IsActive == true).FirstOrDefault();
                         if (questionbankdata == null)//condition to restrict questions which is not available in questionBank table
                         {
-                            return Json(response = "2");
+                            tblQuestionBank objNewQuestion = new tblQuestionBank();
+                            objNewQuestion.QuestionName = data[1].ToString().Trim();
+                            objNewQuestion.QuestionDescription = data[2].ToString().Trim();
+                            objNewQuestion.IsActive = true;
+                            _auditToolContext.QuestionBank.Add(objNewQuestion);
+                            _auditToolContext.SaveChanges();
+                            questionbankdata = objNewQuestion;
                         }
                         QuestionMaster objtbQuestionMaster = new QuestionMaster();
                         objtbQuestionMaster.QuestionId = questionbankdata.QuestionID;
