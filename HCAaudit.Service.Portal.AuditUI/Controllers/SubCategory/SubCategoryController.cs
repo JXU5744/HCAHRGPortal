@@ -254,26 +254,25 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         [HttpPost]
         public IActionResult delete(int id)
-        {
+        {                                     //IaActive is already checked
             var data = GetDetails().Where(a=>a.SubCatgID == id).SingleOrDefault();
             SubCategory objSubCategory = new SubCategory();
-            objSubCategory.SubCatgID = id;
-            _auditToolContext.SubCategories.Remove(objSubCategory);
+            objSubCategory.SubCatgID = id;objSubCategory.IsActive = false;
+            _auditToolContext.SubCategories.Update(objSubCategory);
             _auditToolContext.SaveChanges();
             return View("Details", GetDetails());
         }
 
         List<Categorys> GetCategoryDetails()
         {
-            var data = (from subCat in _auditToolContext.Categories select subCat).ToList();
-            return data;
+            return (from subCat in _auditToolContext.Categories.Where(a=>a.IsActive == true) select subCat).ToList();
         }
 
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
             object response;
-            var data = (from cat in _auditToolContext.QuestionMasters select cat).ToList();
+            var data = (from cat in _auditToolContext.QuestionMasters.Where(a=>a.IsActive == true) select cat).ToList();
             QuestionMaster obj = data.Find(a => a.SubCatgID == id);
             response = obj == null ? "NoRecords" : "HasRecords";
             return Json(response);
