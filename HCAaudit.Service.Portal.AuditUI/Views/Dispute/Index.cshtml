@@ -218,16 +218,28 @@
                 var AuditNonComplianceModel = [];
                 AuditNonComplianceModel.length = 0;
 
+                var isSelected = false;
+
                 $.each($("#disputeDataTable tbody tr"), function () {
+
+                    var GracePeriodId = $(this).find('[id$="GracePeriodId"]').val();
+                    var OverturnId = $(this).find('[id$="OverturnId"]').val();
+                    if (GracePeriodId > 0 || OverturnId > 0) { isSelected = true; }
+                    
                     AuditNonComplianceModel.push({
                         QuestionId: $(this).find('[id$="QuestionId"]:hidden').val(),
                         QuestionRank: $(this).find('[id$="QuestionRank"]:hidden').val(),
-                        TicketId: $('[id$="TicketId"]:hidden').val(),
+                        TicketId: $('[id$="AuditMain_TicketID"]:hidden').val(),
                         GracePeriodId: $(this).find('[id$="GracePeriodId"]').val(),
                         OverturnId: $(this).find('[id$="OverturnId"]').val(),
                         Comment: $(this).find('[id$="Comment"]').val()
                     });
                 });
+
+                if (!isSelected) {
+                    alert('SElect  option for 1 row');
+                    e.preventDefault();
+                }
 
                 $.ajax({
                     url: '/Dispute/GetData',

@@ -58,9 +58,9 @@
     </div>
 </div>
 
-<div id="popupcontent" title="Add Question" hidden="hidden" class="container">
+<div id="popupcontent" title="Add Question" hidden="hidden" class="neu-container">
     <div class="row neu-margin--bottom-16">
-        <div class="col-sm-12">
+        <div class="col-md-12">
             <label for="txtQuestion" class="neu-input__label">Question Text:</label>
             <textarea id="txtQuestion" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"></textarea>
             <span id="errormsg" class="neu-button--danger"></span>
@@ -152,7 +152,7 @@
                 { "data": "QuestionName", "name": "QuestionName", "autoWidth": true },
                 { "data": "QuestionDescription", "name": "QuestionDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="#" onclick=OpenEditpopup(' + full.QuestionID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="javascript:void(0)" onclick=OpenEditpopup(' + full.QuestionID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
