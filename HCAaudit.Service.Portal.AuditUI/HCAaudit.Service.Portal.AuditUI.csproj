@@ -105,6 +105,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Evaluation\" />
+    <Folder Include="DataBase\" />
     <Folder Include="wwwroot\assets\fonts\Glyphicons Halflings\" />
   </ItemGroup>
 

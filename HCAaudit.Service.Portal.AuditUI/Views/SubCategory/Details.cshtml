@@ -242,7 +242,9 @@
 
 
     $("#popupcontentdelete").dialog({
-        autoOpen: false
+        autoOpen: false,
+        draggable: false,
+        resizable: false
     });
 
 
@@ -252,7 +254,9 @@
         });
     });
 
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, width: 'auto' });
+    $("#popupcontentdelete").dialog({
+        autoOpen: false, modal: true, width: 'auto', draggable: false,
+        resizable: false });
 
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
@@ -317,14 +321,18 @@
     $('#errormsgedit').hide();
 
     $("#popupcontentedit").dialog({
-        autoOpen: false
+        autoOpen: false,
+        draggable: false,
+        resizable: false
     });
 
     $("#btncancelpopupedit").click(function () {
         $("#popupcontentedit").dialog('close');
     });
 
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, width: 'auto' });
+    $("#popupcontentedit").dialog({
+        autoOpen: false, modal: true, width: 'auto', draggable: false,
+        resizable: false});
 
     $('#txtsubcategoryedit').on('keypress', function (event) {
         $('#errormsgedit').hide();
@@ -368,7 +376,9 @@
     });
 
     $("#popupcontentedit").dialog({
-        position: 'bottom'
+        position: 'bottom',
+        draggable: false,
+        resizable: false
     });
 
 

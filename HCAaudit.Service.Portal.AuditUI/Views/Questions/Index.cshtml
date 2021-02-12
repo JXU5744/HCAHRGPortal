@@ -159,38 +159,6 @@
 </div>
 
 
-@*<div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
-
-        <div class="row">
-            <div class="col-sm-3"> <label for="lblQuestionedit" class="input-group">Sequence:</label></div>
-            <div class="col-sm-3">
-                <label id="lblQuestionedit" class="input-group"></label>
-            </div>
-            <div class="col-sm-6"><input id="hdnid" type="hidden" /></div>
-            <div class="col-sm-6"><input id="hdnSubCatId" type="hidden" /></div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-2"> <label for="ddlQuestionsqedit" class="input-group">Question Sequence:</label></div>
-            <div class="col-sm-7">
-                <select name="ddlQuestionsqedit" id="ddlQuestionsqedit" class="form-control">
-                </select>
-                <span id="errormsgsqedit" style="color:red">Please choose the Sequence</span>
-            </div>
-            <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
-        </div>
-        <br />
-        <div class="row">
-            <div class="col-sm-4"></div>
-            <div class="col-sm-3"></div>
-            <div class="col-sm-5">
-                <button id="btnupdateQuestion" class="btn btn-primary">Update</button>&nbsp;
-                <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
-            </div>
-        </div>
-
-    </div>*@
-
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
@@ -213,29 +181,28 @@
             $("#popupcontent").dialog({
                 width: 'auto',
                 autoOpen: false,
+                draggable: false,
+                resizable: false
             });
             $("#btncancelpopup").click(function () {
                 $("#popupcontent").dialog('close');
             });
             $("#btnopenPopUp").click(function () {
                 $("#popupcontent").dialog({
-                    position: 'bottom'
+                    position: 'bottom',
+
                 });
             });
             $("#popupcontentedit").dialog({
                 width: 'auto',
                 autoOpen: false,
+                draggable: false,
+                resizable: false
             });
             $("#btncancelpopupedit").click(function () {
                 $("#popupcontentedit").dialog('close');
             });
         });
-
-
-
-
-
-
 
         //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
 
@@ -438,30 +405,7 @@
 
         });
 
-        //$("#txtquestionvolumn").keypress(function (e) {
-        //    //if the letter is not digit then display error and don't type anything
-        //    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-        //        //display error message
-        //        $('#errormsg').html("Digits Only").show().fadeOut("slow");
-        //        return false;
-        //    } else { $("#errormsg").hide(); }
-        //});
-
-        //$("#txtquestionseq").keypress(function (e) {
-        //    var data = $("#txtquestionseq").val();
-        //    alert(data.length);
-        //    //if the letter is not digit then display error and don't type anything
-        //    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-        //        $('#errormsgqseq').html("Digits Only").show().fadeOut("slow");
-        //        return false;
-        //    }
-        //    else if (data.length > 0 && (e.which > 48 || e.which < 57)) {
-        //        $("#errormsgqseq").html("Seq can'nt exide 10").show().fadeOut("slow");
-        //    }
-        //    else {
-        //        $("#errormsgqseq").hide();
-        //    }
-        //});
+       
 
         $("#chkblanksubcat").change(function () {
             if (this.checked) {
@@ -519,23 +463,36 @@
         });
 
         $("#popupcontentdelete").dialog({
-            autoOpen: false
+            autoOpen: false,
+            draggable: false,
+            resizable: false
         });
+
+
+        $("#btncancelpopupdelete").click(function () {
+            $("#popupcontentdelete").dialog('close');
+        });
+
 
         $("#btndeleteQuestion").click(function () {
             $("#popupcontentdelete").dialog({
-                position: 'bottom'
+                position: 'bottom',
+                draggable: false,
+                resizable: false
             });
         });
 
-        $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, width: 'auto' });
+        $("#popupcontentdelete").dialog({
+            autoOpen: false, modal: true, width: 'auto' , draggable: false,
+            resizable: false});
 
         $("#btncancelpopup").click(function () {
             $("#popupcontentdelete").dialog('close');
         });
 
         $("#popupcontentedit").dialog({
-            autoOpen: false
+            autoOpen: false, draggable: false,
+            resizable: false
         });
 
         $("#btnupdateQuestion").click(function () {

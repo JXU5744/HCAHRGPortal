@@ -171,11 +171,15 @@
         $("#popupcontent").dialog({
             width: 'auto',
             autoOpen: false,
+            draggable: false,
+            resizable: false
         });
 
         $("#popupcontentedit").dialog({
             width: 'auto',
             autoOpen: false,
+            draggable: false,
+            resizable: false
         });
 
         $("#btncancelpopup").click(function () {
@@ -344,18 +348,28 @@
     });
 
     $("#popupcontentdelete").dialog({
-        autoOpen: false
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
     });
 
 
     $("#btndeleteQuestion").click(function () {
         $("#popupcontentdelete").dialog({
-            position: 'bottom'
+            position: 'bottom',
+            draggable: false,
+            resizable: false,
         });
     });
 
 
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, width: 'auto' });
+    $("#popupcontentdelete").dialog({
+        autoOpen: false,
+        modal: true,
+        width: 'auto',
+        draggable: false,
+        resizable: false
+    });
 
 
     $("#btncancelpopup").click(function () {

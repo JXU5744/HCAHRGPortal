@@ -36,161 +36,158 @@
         }
 </style>
 
-
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<main class="container neu-margin--top-16">
-    <div class="jumbotron-fluid">
-        <form class="form-inline">
-            <div class="row neu-margin--bottom-16" >
-                <div class="col-12">
-                    <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Tickets For Audit/Dispute</h3>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-4">
-                    <label class="neu-input__label">Environment</label>
-                    <label>&nbsp;&nbsp;</label>
-                    <input type="radio" name="EnvironmentType" checked="checked"
-                           value="Production"
-                           tabindex="0"
-                           required class="radio-success" />
-                    <label class="neu-input__label">Production</label>
-                    <label>&nbsp;</label>
-                    <input type="radio" name="EnvironmentType"
-                           value="Training"
-                           tabindex="0"
-                           required />
-                    <label class="neu-input__label">Training</label>
-                </div>
-                <div class="col-4">
-                    <div class="cols" tabindex="-1">
-                        <label class="neu-input__label">Audit/Dispute</label>
-                        <label>&nbsp;&nbsp;</label>
-                        <input type="radio" name="ResultType" id="rbtaudit" checked="checked"
-                               value="Audit"
-                               tabindex="0"
-                               required class="radio-success" />
-                        <label class="neu-input__label">Audit</label>&nbsp;
-                        <label>&nbsp;</label>
-                        <input type="radio" name="ResultType" id="rbtdispute"
-                               value="Dispute"
-                               tabindex="0"
-                               required class="radio-success" />
-                        <label class="neu-input__label">Dispute</label>
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label required" for="CatgID" style="text-align:left;width:50%">Service Delivery Group</label>
-                        <select name="CatgID" id="CatgID" class="neu-select" title="select"
-                                asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
-                        </select>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label required" for="SubCatID" style="text-align:left;width:25%;">Sub Category</label>
-                        <select name="SubCatID" id="SubCatID" class="neu-select">
-                            <option value="0">Select Sub Category</option>
-                        </select>
-
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;">
-                        <label class="neu-input__label required" for="txtassignedto" style="text-align:left;width:25%;">Assigned To</label>
-                        <input name="AssignedTo" id="txtassignedto" class="neu-input__field" type="text" style="width:100%" />
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label" for="StatusList" style="text-align:left;width:30%;">Ticket Status</label>
-                        <select name="TicketStatus" id="StatusList" class="neu-select">
-                            <option value="0">Closed</option>
-                            <option value="1">Pending</option>
-                        </select>
-
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label" for="TicketSubStatus" style="text-align:left;width:30%;">Ticket Sub Status</label>
-                        <select name="TicketSubStatus" id="TicketSubStatus" class="neu-select">
-                            <option>Select Substatus</option>
-                            <option value="InProgress">In Progress</option>
-                            <option value="Pending">Pending</option>
-                            <option value="UnAssigned">UnAssigned</option>
-                        </select>
-
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label" for="TicketId" style="text-align:left;width:30%;">Ticket Id</label>
-                        <input name="TicketId" id="TicketId" class="neu-input__field" type="text" style="width:100%" />
-                    </div>
-                </div>
-            </div>
-            <br />
-            <div class="row">
-                <div class="neu-input col-4">
-                    <div aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label">Start Date</label>
-                        <input class="neu-input__field" id="startdate" name="startdate" type="text" aria-disabled="false">
-                    </div>
-                </div>
-                <div class="neu-input col-4">
-                    <div aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label">To Date</label>
-                        <input class="neu-input__field" id="enddate" name="enddate" type="text" aria-disabled="false">
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                        <label class="neu-input__label" for="ResultCount" style="text-align:left;width:30%;">Result Count</label>
-                        <input name="ResultCount" id="ResultCount" maxlength="4" value="All" class="neu-input__field" type="text"  style="width:100%" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="row neu-margin--bottom-16">
-                <div class="col-sm-12 d-flex justify-content-center">
-                    <span id="errormsgforcategory" class="neu-button--danger"></span>
-                </div>
-            </div>
-
-            <div cass="row" style="text-align:center;width:100%;">
-                <div class="col-12">
-                    <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
-                        &nbsp;Search
-                    </button>
-                    <button asp-controller="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
-                        &nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;
-                    </button>
-                </div>
-            </div>
-        </form>
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Tickets For Audit/Dispute</h3>
     </div>
+</div>
 
-    <div id="popupcontent" title="Mandate Fields" hidden="hidden" class="container">
-        <div class="row">
-            <div class="col-sm-2"> </div>
-            <div class="col-sm-6">
-                <span id="errormsg" style="color:red"></span>
+<form class="form-inline neu-margin--bottom-16">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-4">
+            <label class="neu-input__label">Environment</label>
+            <label>&nbsp;&nbsp;</label>
+            <input type="radio" name="EnvironmentType" checked="checked"
+                   value="Production"
+                   tabindex="0"
+                   required class="radio-success" />
+            <label class="neu-input__label">Production</label>
+            <label>&nbsp;</label>
+            <input type="radio" name="EnvironmentType"
+                   value="Training"
+                   tabindex="0"
+                   required />
+            <label class="neu-input__label">Training</label>
+        </div>
+        <div class="col-sm-4">
+            <div class="cols" tabindex="-1">
+                <label class="neu-input__label">Audit/Dispute</label>
+                <label>&nbsp;&nbsp;</label>
+                <input type="radio" name="ResultType" id="rbtaudit" checked="checked"
+                       value="Audit"
+                       tabindex="0"
+                       required class="radio-success" />
+                <label class="neu-input__label">Audit</label>&nbsp;
+                <label>&nbsp;</label>
+                <input type="radio" name="ResultType" id="rbtdispute"
+                       value="Dispute"
+                       tabindex="0"
+                       required class="radio-success" />
+                <label class="neu-input__label">Dispute</label>
             </div>
-            <div class="col-sm-4"><button id="btncancelpopup" class="btn btn-danger">Cancel</button></div>
         </div>
     </div>
-</main>
+
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                <label class="neu-input__label required" for="CatgID" style="text-align:left;width:50%">Service Delivery Group</label>
+                <select name="CatgID" id="CatgID" class="neu-select" title="select"
+                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                <label class="neu-input__label required" for="SubCatID" style="text-align:left;width:25%;">Sub Category</label>
+                <select name="SubCatID" id="SubCatID" class="neu-select">
+                    <option value="0">Select Sub Category</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;">
+                <label class="neu-input__label required" for="txtassignedto" style="text-align:left;width:25%;">Assigned To</label>
+                <input name="AssignedTo" id="txtassignedto" class="neu-input__field" type="text" style="width:100%" />
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                <label class="neu-input__label" for="StatusList" style="text-align:left;width:30%;">Ticket Status</label>
+                <select name="TicketStatus" id="StatusList" class="neu-select">
+                    <option value="0">Closed</option>
+                    <option value="1">Pending</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                <label class="neu-input__label" for="TicketSubStatus" style="text-align:left;width:30%;">Ticket Sub Status</label>
+                <select name="TicketSubStatus" id="TicketSubStatus" class="neu-select">
+                    <option>Select Substatus</option>
+                    <option value="InProgress">In Progress</option>
+                    <option value="Pending">Pending</option>
+                    <option value="UnAssigned">UnAssigned</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                <label class="neu-input__label" for="TicketId" style="text-align:left;width:30%;">Ticket Id</label>
+                <input name="TicketId" id="TicketId" class="neu-input__field" type="text" style="width:100%" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="neu-input col-4">
+            <div aria-checked="false" style="text-align:left;width:100%;">
+                <label class="neu-input__label">Start Date</label>
+                <input class="neu-input__field" id="startdate" name="startdate" type="text" aria-disabled="false">
+            </div>
+        </div>
+        <div class="neu-input col-4">
+            <div aria-checked="false" style="text-align:left;width:100%;">
+                <label class="neu-input__label">To Date</label>
+                <input class="neu-input__field" id="enddate" name="enddate" type="text" aria-disabled="false">
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
+                <label class="neu-input__label" for="ResultCount" style="text-align:left;width:30%;">Result Count</label>
+                <input name="ResultCount" id="ResultCount" maxlength="4" value="All" class="neu-input__field" type="text" style="width:100%" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12 d-flex justify-content-center">
+            <span id="errormsgforcategory" class="neu-button--danger"></span>
+        </div>
+    </div>
+
+    <div cass="row" style="text-align:center;width:100%;">
+        <div class="col-12">
+            <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
+                &nbsp;Search
+            </button>
+            <button asp-controller="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
+                &nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;
+            </button>
+        </div>
+    </div>
+</form>
+
+<div id="popupcontent" title="Mandate Fields" hidden="hidden" class="container">
+    <div class="row">
+        <div class="col-sm-2"> </div>
+        <div class="col-sm-6">
+            <span id="errormsg" style="color:red"></span>
+        </div>
+        <div class="col-sm-4"><button id="btncancelpopup" class="btn btn-danger">Cancel</button></div>
+    </div>
+</div>
+
 
 @section Scripts
     {

@@ -63,13 +63,15 @@
     }
 </style>
 
-<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit">
-
-    <div class="row neu-margin--bottom-16">
-        <div class="col-12">
-            <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Audit</h3>
-        </div>
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Audit</h3>
     </div>
+</div>
+
+<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit" class="form-inline neu-margin--bottom-16">
+
+
 
     <div class="card">
         <div class="row">
@@ -156,12 +158,12 @@
                                             @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
                                             @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
                                             <div class="row neu-padding--top-10" style="border-top: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
-                                                    <div class="col-sm-6">
-                                                        @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
-                                                    </div>
-                                                    <div class="col-sm-6">
-                                                        @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
-                                                    </div>
+                                                <div class="col-sm-6">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-4 neu-text--align-center">
