@@ -101,7 +101,10 @@
                         { "data": "SubCategory", "name": "SubCategory", "autoWidth": true },
                         { "data": "ServiceDeliveryGroup", "name": "ServiceGroup", "autowidth": true },
                         { "data": "Agent34ID", "name": "AssignedTo", "autowidth": true },
-                    ]
+                    ],
+                    "createdRow": function (row, data, dataIndex) {
+                        $(row).addClass('neu-table__row--small');
+                    }
                 });
             });
         </script>

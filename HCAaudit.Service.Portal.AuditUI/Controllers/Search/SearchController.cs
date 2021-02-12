@@ -31,12 +31,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
         private bool isAuthorized = false;
-        public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc)/*, IAuthService authService)*/
+        public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
-            //isAuthorized = authService.CheckUserGroups().Result;
+            _authService = authService;
         }
 
         [HttpPost]
@@ -272,7 +272,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            var subCategoryList = _auditToolContext.SubCategories.ToList();
+            var subCategoryList = _auditToolContext.SubCategories.Where(x=>x.IsActive == true).ToList();
             var filteredSubCategoryList = subCategoryList
                                          .Where(x => x.CatgID == Convert.ToInt32(categoryID))
                                          .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
@@ -282,7 +282,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         List<Categorys> GetCategoryDetails()
         {
-            var data = (from subCat in _auditToolContext.Categories select subCat).ToList();
+            var data = (from subCat in _auditToolContext.Categories.Where(x=>x.IsActive == true) select subCat).ToList();
             return data;
         }
 
@@ -350,7 +350,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             int categoryid= -1;
 
-            var catgObj = _auditToolContext.SubCategories.FirstOrDefault(x => x.SubCatgID == subcategoryid);
+            var catgObj = _auditToolContext.SubCategories.Where(y => y.IsActive == true &&
+            y.SubCatgID == subcategoryid).FirstOrDefault();
 
             if (catgObj != null)
             {
@@ -365,9 +366,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public JsonResult GetAllSubcategory()
         {
             _logger.LogInformation($"Request for AllSubCategoryList Category Identity");
-            var query = _auditToolContext.SubCategories
+            var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
             .Join(
-            _auditToolContext.Categories,
+            _auditToolContext.Categories.Where(x => x.IsActive == true),
             subCategories => subCategories.CatgID,
             categories => categories.CatgID,
             (subCategories, categories) => new
@@ -381,7 +382,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 SubCatgID = x.SubCatID,
                 SubCatgDescription = string.Format("{0} ({1})", x.SubCatgDescription, x.CatgDescription)
             }
-            ).ToList();
+            ).ToList().OrderBy(y => y.SubCatgDescription);
 
             _logger.LogInformation($"No of SubCategoryListrecords: {query.Count()}");
             return Json(query);

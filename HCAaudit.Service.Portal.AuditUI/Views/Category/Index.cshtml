@@ -115,7 +115,7 @@
             "columnDefs": [{
                 "targets": [0],
                 "visible": false,
-                "searchable":true
+                "searchable": true
             }],
             "columns": [
                 { "data": "CatgID", "name": "CatgID", "autoWidth": true },
@@ -125,12 +125,14 @@
                 },
                 {
                     data: null,
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.CatgID + "'); >Delete</a>";
                     }
                 },
-            ]
-
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('neu-table__row--small');
+            }
         });
     });
 

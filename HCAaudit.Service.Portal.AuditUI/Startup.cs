@@ -13,7 +13,6 @@ using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Owin.Security.OpenIdConnect;
 using HCAaudit.Service.Portal.AuditUI.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json; 

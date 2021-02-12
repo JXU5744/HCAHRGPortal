@@ -57,7 +57,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         SubCategory GetSingleCategoryByid(string id)
         {
-            var data = (from cat in _auditToolContext.SubCategories select cat).ToList();
+            var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
             SubCategory objCategorys = data.Find(category => category.SubCatgID == Convert.ToInt32(id));
             return objCategorys;
         }
@@ -142,7 +142,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;
 
-                var query = _auditToolContext.SubCategories
+                var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
 
                 .Join(
         _auditToolContext.Categories,
@@ -207,7 +207,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         List<CatSubCatJoinMast> GetDetails()
         {
-            var query = _auditToolContext.SubCategories
+            var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
                 .Join(
         _auditToolContext.Categories,
         subCategories => subCategories.CatgID,
@@ -230,7 +230,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         CatSubCatJoinMast GetDetail(int subcatid)
         {
-            var query = _auditToolContext.SubCategories
+            var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
                 .Join(
         _auditToolContext.Categories,
         subCategories => subCategories.CatgID,
