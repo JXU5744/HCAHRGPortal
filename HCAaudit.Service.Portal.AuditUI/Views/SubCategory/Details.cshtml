@@ -132,8 +132,10 @@
                         return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.SubCatgID + "'); >Delete</a>";
                     }
                 }
-            ]
-
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('neu-table__row--small');
+            }
         });
     });
 

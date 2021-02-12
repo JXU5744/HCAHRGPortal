@@ -375,7 +375,11 @@
                                                 render: function (data, type, row) {
                                                     return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
                                                 }
-                                            },]
+                                                },
+                                            ],
+                                            "createdRow": function (row, data, dataIndex) {
+                                                $(row).addClass('neu-table__row--small');
+                                            }
                                         });
                                 },
                                 failure: function (response) {
@@ -504,7 +508,11 @@
                                 render: function (data, type, row) {
                                     return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
                                 }
-                            },]
+                                },
+                            ],
+                            "createdRow": function (row, data, dataIndex) {
+                                $(row).addClass('neu-table__row--small');
+                            }
                         });
                 },
             });
@@ -603,7 +611,10 @@
                                                 render: function (data, type, row) {
                                                     return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
                                                 }
-                                            },]
+                                                },],
+                                            "createdRow": function (row, data, dataIndex) {
+                                                $(row).addClass('neu-table__row--small');
+                                            }
                                         });
                                 },
                                 failure: function (response) {

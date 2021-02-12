@@ -45,9 +45,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         Categorys GetSingleCategoryByid(string id)
         {
-            var data = (from cat in _auditToolContext.Categories select cat).ToList();
-            Categorys objCategorys = data.Find(category => category.CatgID == Convert.ToInt32(id));
-            return objCategorys;
+            var data = (from cat in _auditToolContext.Categories.Where(
+                category => category.CatgID == Convert.ToInt32(id) && 
+                category.IsActive == true) select cat).FirstOrDefault();
+            
+            return data;
         }
         [HttpPost]
         public ActionResult Edit(string id)
@@ -107,14 +109,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         List<Categorys> GetDetails()
         {
-            var data = _auditToolContext.Categories.ToList();
+            var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
             return data;
         }
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
             object response;
-            var data = (from cat in _auditToolContext.SubCategories select cat).ToList();
+            var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
             SubCategory obj = data.Find(a => a.CatgID ==  id);
             response = obj == null ? "HasecOrds" : "NoRecOrds";
             return Json(response);
@@ -155,7 +157,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int recordsTotal = 0;                              
 
-                var data = (from cat in _auditToolContext.Categories select cat).ToList();
+                var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
                 objCategoryMast = new CategoryMast();
                 objCategoryMast._categoryList = new List<Category>();
                 foreach (var item in data)
