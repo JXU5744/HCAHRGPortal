@@ -128,7 +128,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         tblQuestionBank GetSingleQuestionByid(string id)
         {
-            var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true && a.QuestionID == Convert.ToInt32(id)).FirstOrDefault();
+            var data = _auditToolContext.QuestionBank.Where(a => a.QuestionID == Convert.ToInt32(id) && a.IsActive == true).FirstOrDefault();
             return data;
         }
         [HttpPost]
@@ -173,19 +173,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return Json(responce);
         }
 
-        public IActionResult BindControls()
-        {
-            Category objCategory = new Category();
-            return View(objCategory);
-        }
-
         [HttpPost]
         public JsonResult BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            var subCategoryList = _auditToolContext.SubCategories.ToList();
-            var filteredSubCategoryList = subCategoryList
-                                         .Where(x => x.CatgID == Convert.ToInt32(categoryID))
+            
+            var filteredSubCategoryList = _auditToolContext.SubCategories
+                                         .Where(x => x.CatgID == Convert.ToInt32(categoryID) && x.IsActive == true)
                                          .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
             _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
             return Json(filteredSubCategoryList);
@@ -253,8 +247,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             _logger.LogInformation($"Request for BindQuestions with subCategoryID: {subCategoryID}");
 
-            var questionList = _auditToolContext.QuestionMasters.Where(a => a.IsActive == true).OrderBy(a => a.SeqNumber).ToList();
-            var data = questionList.Where(x => x.SubCatgID == Convert.ToInt32(subCategoryID))
+            var data = _auditToolContext.QuestionMasters.Where(x => x.SubCatgID == Convert.ToInt32(subCategoryID) && x.IsActive == true)
+                                   .OrderBy(a => a.SeqNumber)
                                    .Select(x => new { x.QuestionId, x.QuestionText })
                                    .ToList();
             return Json(data);
@@ -263,7 +257,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         public IActionResult Index()
         {
-            var categoryList = _auditToolContext.Categories.ToList();
+            var categoryList = _auditToolContext.Categories
+                               .Where(x => x.IsActive == true)
+                               .ToList();
             _logger.LogInformation($"No of records: {categoryList.Count()}");
             categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
             ViewBag.ListOfCategory = categoryList;
@@ -274,12 +270,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public IActionResult BindGrid(string subCategoryID)
         {
             var data = _auditToolContext.QuestionMasters
-                                    .Where(x => x.SubCatgID == Convert.ToInt32(subCategoryID))
-                                    .Where(a => a.IsActive == true)
-                                    .OrderBy(y => y.SeqNumber)
-                                    .Select(a => new { a.QuestionMasterId, a.SeqNumber, a.QuestionText })
-                                    .ToList();
-
+                        .Where(x => x.SubCatgID == Convert.ToInt32(subCategoryID) && x.IsActive == true)
+                        .OrderBy(y => y.SeqNumber)
+                        .Select(a => new { a.QuestionMasterId, a.SeqNumber, a.QuestionText })
+                        .ToList();
             return Json(data);
         }
 
@@ -297,15 +291,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public JsonResult GetIndexCommaSeperated(string subCategoryID)
         {
             var dataMaster = _auditToolContext.QuestionMasters
-                       .Where(a => a.SubCatgID == Convert.ToInt32(subCategoryID))
-                       .Where(a => a.IsActive == true)
-                       .ToList();
+                             .Where(a => a.SubCatgID == Convert.ToInt32(subCategoryID) && a.IsActive == true)
+                             .ToList();
             var dataBank = GetDetails();
             if (dataMaster.Count() > 0)
             {
                 foreach (var item in dataMaster)
                 {
-
                     tblQuestionBank objtblQuestionBank = new tblQuestionBank();
                     objtblQuestionBank = dataBank.Where(a => a.QuestionID == item.QuestionId).SingleOrDefault();
                     if (objtblQuestionBank != null)
@@ -386,10 +378,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         public IActionResult DeleteQuestionBank(int id)
         {
-            var data = _auditToolContext.QuestionBank
-                       .Where(a => a.IsActive == true)
-                       .ToList();
-            tblQuestionBank objtblQuestionBank = data.Find(a => a.QuestionID == id);
+            tblQuestionBank objtblQuestionBank = _auditToolContext.QuestionBank
+                                         .Where(a => a.QuestionID == id && a.IsActive == true)
+                                         .FirstOrDefault();
             objtblQuestionBank.IsActive = false;
             _auditToolContext.QuestionBank.Update(objtblQuestionBank); _auditToolContext.SaveChanges();
             return View("Details", GetDetails());
@@ -398,7 +389,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public IActionResult DeleteQuestionMaster(int id, int SubCatId)
         {
             var data = _auditToolContext.QuestionMasters
-                        .Where(a => a.QuestionMasterId == id)
+                        .Where(a => a.QuestionMasterId == id && a.IsActive == true)
                         .FirstOrDefault();
             if (data != null)
             {
@@ -425,7 +416,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpGet]
         public ViewResult Edit(int id)
         {
-            var data = (from Q in _auditToolContext.QuestionBank select Q).ToList();
+            var data = (from Q in _auditToolContext.QuestionBank.Where(a => a.IsActive == true) select Q).ToList();
             var filterData = data.Find(a => a.QuestionID == id);
             return View("Edit", filterData);
         }
