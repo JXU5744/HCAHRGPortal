@@ -449,8 +449,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             object response;
             var obj = _auditToolContext.QuestionMasters
-                                      .Where(a => a.IsActive == true
-                                      && a.QuestionId == id)
+                                      .Where(a => a.QuestionId == id
+                                       && a.IsActive == true)
                                       .FirstOrDefault();
             response = obj == null ? "NoRecords" : "HasRecords";
             return Json(response);

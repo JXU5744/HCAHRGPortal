@@ -92,7 +92,7 @@
             <span id="errormsgquestionDescription" class="neu-button--danger">Enter Question Description</span>
         </div>
     </div>
-
+    <br/>
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
@@ -308,11 +308,19 @@
         });
 
 
-        $("#txtquestionDescription").keypress(function (e) {
-
+        $("#txtquestionDescription").click(function (e) {
+            $("#txtquestionDescription").val($("#txtquestion").val());
+            $("#txtquestionDescription").prop("disabled", true);
+            $("#txtquestion").prop("disabled", true);
             $("#errormsgquestionDescription").hide();
         });
 
+        $("#btnresetpopup").click(function () {
+            $("#txtquestionDescription").val("");
+            $("#txtquestion").val("");
+            $("#txtquestionDescription").prop("disabled", false);
+            $("#txtquestion").prop("disabled", false);
+        });
 
         $("#btnaddQuestion").click(function () {
 
@@ -404,12 +412,7 @@
                     //alert(response.responseText);
                 }
             });
-
         });
-
-
-
-
 
         $("#CatgID").change(function () {
             var categoryID = $('#CatgID').val();
@@ -665,6 +668,7 @@
             });
             location.reload();
         });
+
     });
 
     function DeleteData(CatgID) {
@@ -715,10 +719,5 @@
             }
         });
     }
-
-    $("#ddlQuestionsqedit").change(function () {
-
-    });
-
 </script>
 
