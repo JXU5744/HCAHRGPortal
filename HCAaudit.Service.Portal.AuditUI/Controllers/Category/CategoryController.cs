@@ -48,7 +48,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = (from cat in _auditToolContext.Categories.Where(
                 category => category.CatgID == Convert.ToInt32(id) && 
                 category.IsActive == true) select cat).FirstOrDefault();
-            
             return data;
         }
         [HttpPost]
@@ -103,7 +102,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             var data = (from cat in _auditToolContext.Categories select cat).ToList();
             Categorys objCategorys = data.Find(category => category.CatgID == id);
-            _auditToolContext.Categories.Remove(objCategorys); _auditToolContext.SaveChanges();
+            objCategorys.IsActive = false; _auditToolContext.Categories.Update(objCategorys);
+             _auditToolContext.SaveChanges();
             return RedirectToAction("Index",GetDetails());
         }
 
