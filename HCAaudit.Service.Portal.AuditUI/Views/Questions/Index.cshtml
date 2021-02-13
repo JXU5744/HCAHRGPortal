@@ -91,8 +91,9 @@
         <div class="col-sm-2">
             <label for="txtquestionseq" class="neu-input__label">Sequence</label>
             <input id="txtquestionseq" class="neu-input__label" type="text" disabled="disabled" />
+            <input id="hdnAddSubCatId" type="hidden" />
         </div>
-        <input id="hdnAddSubCatId" type="hidden" />
+        
     </div>
 
 
@@ -266,8 +267,6 @@
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
         });
-
-
 
 
         $("#btnopenPopUp").hide();

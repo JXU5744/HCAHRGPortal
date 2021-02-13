@@ -63,9 +63,9 @@
 <div id="popupcontent" title="Add Question" hidden="hidden" class="neu-container">
     <div class="row neu-margin--bottom-16">
         <div class="col-md-12">
-            <label for="txtQuestion" class="neu-input__label">Question Text:</label>
+            <label for="txtQuestion" class="neu-input__label">Question Name:</label>
             <textarea id="txtQuestion" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errormsg" class="neu-button--danger"></span>
+            <span id="errormsg" class="neu-button--danger">Please Enter or Select Question</span>
         </div>
     </div>
 
@@ -73,7 +73,7 @@
         <div class="col-sm-12">
             <label for="txtdescription" class="neu-input__label">Question Description:</label>
             <textarea id="txtdescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errordescriptionmsg" class="neu-button--danger"></span>
+            <span id="errordescriptionmsg" class="neu-button--danger">Please enter Question Description</span>
         </div>
     </div>
 
@@ -89,9 +89,9 @@
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <label for="txtQuestionedit" class="neu-input__label">Question Text:</label>
+            <label for="txtQuestionedit" class="neu-input__label">Question Name:</label>
             <textarea id="txtQuestionedit" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errormsgedit" class="neu-button--danger">Please Enter Question</span>
+            <span id="errormsgedit" class="neu-button--danger">Please Enter or Select Question</span>
             <input id="hdnid" type="hidden" />
         </div>
         <div class="col-sm-12"></div>
@@ -101,7 +101,7 @@
         <div class="col-sm-12">
             <label for="txtdescriptionedit" class="neu-input__label">Question Description:</label>
             <textarea id="txtdescriptionedit" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errordescriptionmsgedit" class="neu-button--danger"></span>
+            <span id="errordescriptionmsgedit" class="neu-button--danger">Please enter Question Description</span>
         </div>
     </div>
 
@@ -116,14 +116,16 @@
 
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
-        <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
+        <div class="col-sm-12">
+            <label id="lblcustomtextfor"></label>
+        </div>
     </div>
     <div class="row">
-        <div class="col-sm-12"><input id="hdndeletecatid" type="hidden" /></div>
         <div class="col-sm-12 neu-text--align-center">
-            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>&nbsp;
-            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>
+            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>
             <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
+            <input id="hdndeletecatid" type="hidden" />
         </div>
     </div>
 </div>
@@ -207,8 +209,8 @@
         });
 
         $("#btnupdateQuestion").click(function () {
-            $('#errormsgedit').hide();
-            $('#errordescriptionmsgedit').hide();
+            //$('#errormsgedit').hide();
+            //$('#errordescriptionmsgedit').hide();
 
             $("#popupcontentedit").dialog({
                 position: 'bottom'
@@ -256,12 +258,13 @@
                     alert(response.responseText);
                 }
             });
-
-            $("#errormsgedit").show(); $("#errormsgedit").text("Please Enter Question");
+            $("#popupcontentedit").dialog('open');
+            //$("#errormsgedit").show();
+            //$("#errormsgedit").text("Please Enter Question");
         }
-        else {
-            $("#errormsgedit").hide();
-        }
+        //else {
+        //    $("#errormsgedit").hide();
+        //}
     });
 
     //$("#errormsg").hide();
@@ -298,10 +301,10 @@
                 $("#popupcontentedit").dialog('open');
             },
             failure: function (response) {
-                // alert(response.responseText);
+                 alert(response.responseText);
             },
             error: function (response) {
-                //  alert(response.responseText);
+                  alert(response.responseText);
             }
         });
     }
@@ -311,8 +314,8 @@
         var questionName = $('#txtQuestionedit').val();
         var questionDesc = $('#txtdescriptionedit').val();
 
-        if (questionName == "") { $("#errormsgedit").show(); $("#errormsgedit").text("Please Enter Question"); return false; }
-        if (questionDesc == "") { $("#errordescriptionmsgedit").show(); $("#errordescriptionmsgedit").text("Please Enter Description"); return false; }
+        if (questionName == "") { $("#errormsgedit").show(); $("#errormsgedit").text("Please Select or Enter Question"); return false; }
+        if (questionDesc == "") { $("#errordescriptionmsgedit").show(); $("#errordescriptionmsgedit").text("Please Enter Question Description"); return false; }
 
         $.ajax({
             type: "POST",
@@ -368,12 +371,6 @@
         });
 
     });
-
-    //$("#popupcontentdelete").dialog({
-    //    autoOpen: false,
-    //    draggable: false,
-    //    resizable: false,
-    //});
 
 
     $("#btndeleteQuestion").click(function () {
