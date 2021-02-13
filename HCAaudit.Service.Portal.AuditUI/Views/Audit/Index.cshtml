@@ -97,6 +97,7 @@
                 @Html.HiddenFor(m => m.TicketDate)
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-3">
                 <label for="format-pdf" class="neu-input__label">Supervisor</label>
@@ -114,28 +115,29 @@
                 @Html.HiddenFor(m => m.SubCatId)
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <table id="auditDetails" class="neu-table" width="100%" cellspacing="0">
-                    <thead class="neu-table__head" >
+                    <thead class="neu-table__head">
                         <tr class="neu-table__header neu-table__sort-icon" style="text-align:center">
-                            <th style="width:5%;text-align:center" rowspan="2" >Question Sequence</th>
+                            <th style="width:5%;text-align:center" rowspan="2">Question Sequence</th>
                             <th style="width:40%;text-align:center" rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Question Description</th>
                             <th style="width:28%;text-align:center" colspan="3">Action</th>
                             <th style="width:5%;text-align:center" rowspan="2">Correction Required</th>
                             <th style="width:22%;text-align:center" rowspan="2">Comment</th>
                         </tr>
                         <tr>
-                            <th @*style="width:9%"*@>Compliance</th>
-                            <th @*style="width:10%"*@>Non Compliance</th>
-                            <th @*style="width:9%"*@>Not Applicable</th>
+                            <th>Compliance</th>
+                            <th>Non Compliance</th>
+                            <th>Not Applicable</th>
                         </tr>
                     </thead>
                     @for (int i = 0; i < Model.Question.Count; i++)
                     {
                         <tr class="neu-table__row--large neu-table__row--striped">
 
-                            <td @*style="width:5%"*@>
+                            <td>
                                 <div align="center">
                                     @Model.Question[i].QuestionSequence
                                     @Html.HiddenFor(m => m.Question[i].QuestionSequence)
@@ -143,19 +145,17 @@
                                     @Html.HiddenFor(m => m.Question[i].QuestionName)
                                 </div>
                             </td>
-                            <td @*style="width:40%"*@>
+                            <td>
                                 @Html.TextAreaFor(m => m.Question[i].QuestionName, new { style = "height:50%;width:100%", @disabled = true })
                             </td>
-                            <td @*style="width:28%"*@ colspan="3">
+                            <td colspan="3">
                                 <div id="action">
                                     <div id="actionTable" class="row">
                                         <div class="col-sm-4 neu-text--align-center">
                                             @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                            @*<label style="white-space:nowrap"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.Compliance" name='@Model.Question[i].QuestionId-Action' @(Model.Question[i].Action.Compliance == true ? "checked" : "") />Compliance</label>*@
                                         </div>
                                         <div class="col-sm-4 neu-text--align-center">
                                             @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                            @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
                                             <div class="row neu-padding--top-10" style="border-top: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
                                                 <div class="col-sm-6">
                                                     @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
@@ -167,19 +167,19 @@
                                         </div>
                                         <div class="col-sm-4 neu-text--align-center">
                                             @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                            @*<label style="white-space:nowrap;padding-right:3%"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.NotApplicable" name='@Model.Question[i].QuestionId-Action' />Not Applicable</label>*@
                                         </div>
                                     </div>
                                 </div>
                             </td>
-                            <td @*align="center" style="width:5%"*@> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
-                            <td @*style="width:22%"*@>@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:100%;height:50%", disabled = "disabled" })</td>
+                            <td> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
+                            <td>@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:100%;height:50%", disabled = "disabled" })</td>
 
                         </tr>
                     }
                 </table>
             </div>
         </div>
+    
     </div>
 
     <div class="form-group">
@@ -189,7 +189,6 @@
 
         <div class="row">
             <div class="col-sm-12 neu-text--align-center">
-
                 <button id="btnAnswerYes" class="neu-button--primary neu-button neu-button--raised">Save</button>
                 <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
             </div>
