@@ -1,0 +1,286 @@
+﻿@model HCAaudit.Service.Portal.AuditUI.ViewModel.DisputeModel
+@{
+    ViewData["Title"] = "Dispute Page";
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+    /** {
+        box-sizing: border-box;
+    }
+
+    #myInput {
+        background-image: url('/css/searchicon.png');
+        background-position: 10px 12px;
+        background-repeat: no-repeat;
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        margin-bottom: 12px;
+    }
+
+    #myUL {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        #myUL li a {
+            border: 1px solid #ddd;
+            margin-top: -1px;*/ /* Prevent double borders */
+    /*background-color: #f6f6f6;
+            padding: 12px;
+            text-decoration: none;
+            font-size: 18px;
+            color: black;
+            display: block
+        }
+
+            #myUL li a:hover:not(.header) {
+                background-color: #eee;
+            }
+
+    textarea {
+        overflow-y: scroll;
+        height: 100px;
+        resize: none;*/ /* Remove this if you want the user to resize the textarea */
+    /*}*/
+
+    th {
+        text-align: center;
+    }
+
+    label {
+        font-weight: normal !important;
+    }
+</style>
+
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Dispute</h3>
+    </div>
+</div>
+
+
+@if (Model.AuditNonComplianceModel.Count() > 0 && Model.AuditMain != null)
+{
+
+    @Html.HiddenFor(x => Model.AuditMain.TicketID)
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label><strong>Audit Details for Ticket : @Model.AuditMain.TicketID</strong></label>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6"><strong>Agent Name: </strong></div>
+                <div class="col-sm-6">@Model.AuditMain.AgentName</div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6"><strong>Agent 3/4 ID: </strong> </div>
+                <div class="col-sm-6">@Model.AuditMain.Agent34ID</div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6"><strong>Auditor Name: </strong></div>
+                <div class="col-sm-6">@Model.AuditMain.AuditorName </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6"><strong>Audit Date: </strong></div>
+                <div class="col-sm-6">@Model.AuditMain.SubmitDT</div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6"><strong>Service Group Name: </strong></div>
+                <div class="col-sm-6">@Model.ServiceDeliveryGroupName</div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6"><strong>Sub Category Name: </strong></div>
+                <div class="col-sm-6">@Model.SubCategoryName</div>
+            </div>
+        </div>
+    </div>
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <table class="neu-table" id="disputeDataTable">
+                <thead class="neu-table__head neu-text--align-center">
+                    <tr class="neu-table__header neu-table__sort-icon">
+                        <th class="text-center" style="display:none;">Question ID</th>
+                        <th style="width:5%">Rank</th>
+                        <th style="width:25%">Question</th>
+                        <th style="width:5%">Correction Required</th>
+                        <th style="width:25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comments</th>
+                        <th style="width:10%">Grace Period</th>
+                        <th style="width:10%">Overturn</th>
+                        <th style="width:20%">Dispute Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @for (int i = 0; i < Model.AuditNonComplianceModel.Count; i++)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @Html.HiddenFor(x => x.AuditNonComplianceModel[i].QuestionId)
+                                @Html.HiddenFor(x => x.AuditNonComplianceModel[i].QuestionRank)
+                                @Html.DisplayFor(x => x.AuditNonComplianceModel[i].QuestionRank)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Question, 2, 3, new { @class = "neu-input__textarea", @disabled = "disabled", rows = "5", cols = "50", style = "resize:none" })
+                            </td>
+                            <td class="text-center">
+                                @Html.Label((Model.AuditNonComplianceModel[i].IsCorrectionRequired == true ? "Yes" : "No"))
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].NonComplianceComments, 2, 3, new { @class = "neu-input__textarea", @disabled = "disabled", rows = "5", cols = "50", style = "resize:none" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].GracePeriodId, Model.GracePeriod, new { @class = "neu-select" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].OverturnId, Model.Overturn, new { @class = "neu-select" })
+                            </td>
+                            <td style="width:20%">
+                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Comment, 2, 3, new { @class = "neu-input__textarea", rows = "5", cols = "50", style = "resize:none" })
+                            </td>
+
+                        </tr>
+
+                    }
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+}
+
+
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12 neu-text--align-center">
+        <span id="errorMessage" class="neu-button--danger"></span>
+    </div>
+    <div class="col-sm-12 neu-text--align-center">
+        <button id="btnSave" class="neu-button--primary neu-button neu-button--raised">Save</button>
+        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+    </div>
+</div>
+
+
+
+@section Scripts
+    {
+    <!-- Script for the date range picker -->
+    <script type="text/javascript" src="~/js/daterangepicker.js"></script>
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/css/daterangepicker.css" />
+
+    <!-- Script for the date range picker -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#btnSave").click(function (e) {
+                e.preventDefault();
+                var AuditNonComplianceModel = [];
+                AuditNonComplianceModel.length = 0;
+
+                $.each($("#disputeDataTable tbody tr"), function () {
+                    AuditNonComplianceModel.push({
+                        QuestionId: $(this).find('[id$="QuestionId"]:hidden').val(),
+                        QuestionRank: $(this).find('[id$="QuestionRank"]:hidden').val(),
+                        TicketId: $('[id$="TicketId"]:hidden').val(),
+                        GracePeriodId: $(this).find('[id$="GracePeriodId"]').val(),
+                        OverturnId: $(this).find('[id$="OverturnId"]').val(),
+                        Comment: $(this).find('[id$="Comment"]').val()
+                    });
+                });
+
+                $.ajax({
+                    url: '/Dispute/GetData',
+                    type: "POST",
+                    dataType: "json",
+                    data: JSON.stringify(AuditNonComplianceModel),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (result) {
+                        if (confirm("Dispute Submitted Sucessfully")) {
+                            window.location.href = "/Search/Index"
+                        }
+                    },
+
+                    error: function (err) {
+                        alert("Error Saving" + err.statusText);
+                        $("#errorMessage").text("Please select action for all questions.");
+                    }
+                });
+
+            });
+
+
+            //$("#ddlcategory").change(function () {
+            //    var catgID = $('#ddlcategory').val();
+            //    if (catgID != "0") { $('#errormsgcategory').hide(); }
+            //});
+
+            //$("#ddlcategory").change(function () {
+            //    var catgID = $('#ddlcategory').val();
+            //    if (catgID != "0") { $('#errormsgcategory').hide(); }
+            //});
+
+
+            $('[id$="GracePeriodId"]').on("change", function () {
+                var $this = $(this);
+                if ($this.val() > 0) {
+                    $this.closest("tr").find('[id$="OverturnId"]').prop("disabled", true);
+                }
+                else {
+                    $this.closest("tr").find('[id$="OverturnId"]').prop("disabled", false);
+                }
+            });
+
+            $('[id$="OverturnId"]').on("change", function () {
+                var $this = $(this);
+                if ($this.val() > 0) {
+                    $this.closest("tr").find('[id$="GracePeriodId"]').prop("disabled", true);
+                }
+                else {
+                    $this.closest("tr").find('[id$="GracePeriodId"]').prop("disabled", false);
+                }
+            });
+        });
+
+    </script>
+}
