@@ -23,11 +23,22 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
 
         #region
 
-        public async Task<bool> CheckUserGroups()
+        public async Task<bool> CheckAdminUserGroup()
         {
             var token = await GetIdToken();
-            var group = token.Claims.FirstOrDefault(claim => claim.Type == "group").Value.ToLower();
-            if (group.ToLower().Equals("corp_hr_hraudit_admin") || group.ToLower().Equals("corp_hr_hraudit_user"))
+            var group = token.Claims.FirstOrDefault(claim => claim.Type == "group") != null? token.Claims.FirstOrDefault(claim => claim.Type == "group").Value.ToLower():"";
+            if (group.ToLower().Equals("corp_hr_hraudit_admin"))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> CheckAuditorUserGroup()
+        {
+            var token = await GetIdToken();
+            var group = token.Claims.FirstOrDefault(claim => claim.Type == "group") != null ? token.Claims.FirstOrDefault(claim => claim.Type == "group").Value.ToLower() : "";
+            if (group.ToLower().Equals("corp_hr_hraudit_user"))
             {
                 return true;
             }

@@ -22,7 +22,7 @@ using Microsoft.Data.SqlClient;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class SearchController : Controller
     {
         private readonly ILogger<SearchController> _logger;
@@ -31,6 +31,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
         private bool isAuthorized = false;
+
         public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;

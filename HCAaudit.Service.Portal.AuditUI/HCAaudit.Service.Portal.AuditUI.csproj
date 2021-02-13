@@ -110,6 +110,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Home\Home.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Models\AuditDispute.cs">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Compile>

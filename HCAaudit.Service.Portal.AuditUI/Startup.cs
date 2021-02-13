@@ -32,17 +32,6 @@ namespace HCAaudit.Service.Portal.AuditUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                    .AddJsonOptions(jsonOptions =>
-                    {
-                        jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
-                    });
-            services.AddControllers().AddNewtonsoftJson( options =>
-            {
-                options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-            });
-            services.AddMvc(options => options.EnableEndpointRouting = false);
-
             services.AddLogging();
             services.AddDbContext<AuditToolContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:HRAuditDatabase"]));
             services.AddDistributedMemoryCache();
@@ -143,6 +132,17 @@ namespace HCAaudit.Service.Portal.AuditUI
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddMvc()
+                    .AddJsonOptions(jsonOptions =>
+                    {
+                        jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+                    });
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+            });
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
@@ -166,17 +166,17 @@ namespace HCAaudit.Service.Portal.AuditUI
             }
             app.UseStaticFiles();
             app.UseRouting();
-            //app.UseSession();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
-            //app.UseHttpsRedirection();
-            //app.UseCookiePolicy();
+            app.UseSession();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseHttpsRedirection();
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Search}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
 

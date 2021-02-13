@@ -9,7 +9,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
 {
     public interface IAuthService
     {
-        public Task<bool> CheckUserGroups();
+        public Task<bool> CheckAdminUserGroup();
+        public Task<bool> CheckAuditorUserGroup();
 
         public Task<LoggedInUserDetails> LoggedInUserInfo();
     }
