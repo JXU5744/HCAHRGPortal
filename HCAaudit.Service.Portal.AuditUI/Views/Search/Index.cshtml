@@ -289,14 +289,14 @@
                             if (resultcount.length == resultcount.indexOf('%') + 1) {
                                 var resultcount = resultcount.substr(0, resultcount.length - 1)
                                 if (!$.isNumeric(resultcount) || parseInt(resultcount) < 1 || parseInt(resultcount) > 100) {
-                                    $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 100.")
+                                    $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 1000.")
                                 }
                             } else {
-                                $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 100.")
+                                $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 1000.")
                             }
                         } else {
                             if (!$.isNumeric(resultcount) || parseInt(resultcount) < 1 || parseInt(resultcount) > 1000) {
-                                $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 100.")
+                                $("#errormsgforcategory").append("Result Field can have value as All or value between 1 - 100% or count between 1 - 1000.")
                             }
                         }
                     }
@@ -306,35 +306,7 @@
                     return false;
                 }
 
-                //var searchparameter = {
-                //    "EnvironmentType": environmenttype,
-                //    "ResultType": screentype,
-                //    "CategoryID": categoryID,
-                //    "SubcategoryID": subcategoryID,
-                //    "AssignedTo": assignedTo,
-                //    "TicketStatus": ticketStatus,
-                //    "FromDate": startdate,
-                //    "EndDate": enddate
-                //};
-
-                //$.ajax({
-                //    type: "POST",
-                //    url: "/search/GetSearchDetails",
-
-                //    data: { searchparameter: searchparameter },
-
-                //    success: function (response)
-                //    {
-                //        alert(response.length);
-
-                //    },
-                //    failure: function (response) {
-                //        alert(response.responseText);
-                //    },
-                //    error: function (response) {
-                //        alert(response.responseText);
-                //    }
-                //});
+                
             });
 
             $('#StatusList').change(function () {
