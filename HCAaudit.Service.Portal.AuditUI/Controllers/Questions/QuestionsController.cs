@@ -141,7 +141,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return Json(query);
         }
 
-        tblQuestionBank GetSingleQuestionByid(string id)
+        QuestionBank GetSingleQuestionByid(string id)
         {
             var data = _auditToolContext.QuestionBank.Where(a => a.QuestionID == Convert.ToInt32(id) && a.IsActive == true).FirstOrDefault();
             return data;
@@ -156,7 +156,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 string[] param = id.Split('$');
                 if (param.Count() > 0 && param.Count() == 3)
                 {
-                    tblQuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
+                    QuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
 
                     var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
                     if (questionlist.Count > 0)
@@ -216,7 +216,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             x.IsActive == true).FirstOrDefault();
                         if (questionbankdata == null)//condition to restrict questions which is not available in questionBank table
                         {
-                            tblQuestionBank objNewQuestion = new tblQuestionBank();
+                            QuestionBank objNewQuestion = new QuestionBank();
                             objNewQuestion.QuestionName = data[1].ToString().Trim();
                             objNewQuestion.QuestionDescription = data[2].ToString().Trim();
                             objNewQuestion.IsActive = true;
@@ -245,12 +245,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
+                throw ex;
                 _logger.LogError($"Error in insert question while typecasting and database insert.");
             }
 
             return Json("");
         }
-        List<tblQuestionBank> GetDetails()
+        List<QuestionBank> GetDetails()
         {
             var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true).ToList();
             return data;
@@ -313,7 +314,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 foreach (var item in dataMaster)
                 {
-                    tblQuestionBank objtblQuestionBank = new tblQuestionBank();
+                    QuestionBank objtblQuestionBank = new QuestionBank();
                     objtblQuestionBank = dataBank.Where(a => a.QuestionID == item.QuestionId).SingleOrDefault();
                     if (objtblQuestionBank != null)
                     {
@@ -326,7 +327,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Details(tblQuestionBank objCategoryMast)
+        public IActionResult Details(QuestionBank objCategoryMast)
         {
             try
             {
@@ -393,7 +394,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         public IActionResult DeleteQuestionBank(int id)
         {
-            tblQuestionBank objtblQuestionBank = _auditToolContext.QuestionBank
+            QuestionBank objtblQuestionBank = _auditToolContext.QuestionBank
                                          .Where(a => a.QuestionID == id && a.IsActive == true)
                                          .FirstOrDefault();
             objtblQuestionBank.IsActive = false;
@@ -446,7 +447,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             if (string.IsNullOrEmpty(responce.ToString()) && !string.IsNullOrEmpty(questionname) && !string.IsNullOrEmpty(questiondesc))
             {
-                tblQuestionBank objtblQuestionBank = new tblQuestionBank();
+                QuestionBank objtblQuestionBank = new QuestionBank();
                 objtblQuestionBank.QuestionName = questionname;
                 objtblQuestionBank.status = 1;
                 objtblQuestionBank.IsActive = true;

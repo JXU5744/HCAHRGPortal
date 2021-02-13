@@ -361,16 +361,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             return RedirectToAction("Index","Search");
         }
-        [HttpPost]
-        public JsonResult BindSubCategory(string categoryID)
-        {
-            _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            var filteredSubCategoryList = SubCategoryList.GetSubCategory()
-                                         .Where(x => x.CatgID == Convert.ToInt32(categoryID))
-                                         .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
-            _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
-            return Json(filteredSubCategoryList);
-        }
+        //[HttpPost]
+        //public JsonResult BindSubCategory(string categoryID)
+        //{
+        //    _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
+        //    var filteredSubCategoryList = SubCategoryList.GetSubCategory()
+        //                                 .Where(x => x.CatgID == Convert.ToInt32(categoryID))
+        //                                 .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
+        //    _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
+        //    return Json(filteredSubCategoryList);
+        //}
 
         List<Categorys> GetCategoryDetails()
         {

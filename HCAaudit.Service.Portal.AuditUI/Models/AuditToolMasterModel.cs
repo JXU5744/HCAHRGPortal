@@ -277,8 +277,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public bool IsActive { get; set; }
     }
 
-    [Table("tblQuestionBank")]
-    public class tblQuestionBank
+    [Table("QuestionBank")]
+    public class QuestionBank
     {
         [Key]
         public int QuestionID { get; set; }
@@ -287,96 +287,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public bool IsActive { get; set; }
         public int status { get; set; }
     }
-
-    public static class CategoryList
-    {
-        internal static List<Category> GetCategory()
-        {
-            List<Category> objCategory = new List<Category> {
-        new Category{ CatgID=1,CatgDescription="CSR"},
-        new Category{ CatgID=2,CatgDescription="OA"},
-        new Category{ CatgID=3,CatgDescription="RA"},
-        new Category{ CatgID=4,CatgDescription="WFA"}
-        //,new Category{ CatgID=5,CatgDescription="OA"},
-        //new Category{ CatgID=6,CatgDescription="RA"},
-        //new Category{ CatgID=7,CatgDescription="WFA"},
-        //new Category{ CatgID=8,CatgDescription="OA"},
-        //new Category{ CatgID=9,CatgDescription="RA"},
-        //new Category{ CatgID=10,CatgDescription="WFA"},
-        //new Category{ CatgID=11,CatgDescription="OA"},
-        //new Category{ CatgID=12,CatgDescription="RA"},
-        //new Category{ CatgID=13,CatgDescription="WFA"},
-        //new Category{ CatgID=14,CatgDescription="OA"},
-        //new Category{ CatgID=15,CatgDescription="RA"},
-        //new Category{ CatgID=16,CatgDescription="WFA"}
-        };
-            return objCategory;
-        }
-    }
-    public static class SubCategoryList
-    {
-        internal static List<SubCategory> GetSubCategory()
-        {
-            List<SubCategory> objSubCategory = new List<SubCategory> {
-        new SubCategory{ SubCatgID =1 ,CatgID=1,  SubCatgDescription="Art Galleries: Receptions"},
-        new SubCategory{ SubCatgID=2,CatgID=1,SubCatgDescription="Art Galleries: Shows"},
-        new SubCategory{ SubCatgID=3 ,CatgID=2,SubCatgDescription="Classes: Acting"},
-        new SubCategory{ SubCatgID=4 ,CatgID=2,SubCatgDescription="Classes: Adults"},
-        new SubCategory{ SubCatgID =5 ,CatgID=2,SubCatgDescription="Classes: Campus"},
-        new SubCategory{ SubCatgID=6,CatgID=2,SubCatgDescription="Classes: Dance"},
-        new SubCategory{ SubCatgID=7 ,CatgID=2,SubCatgDescription="Classes: PhotoGraphy and Film"},
-        new SubCategory{ SubCatgID=8 ,CatgID=2,SubCatgDescription="Classes: Visual Arts"},
-        new SubCategory{ SubCatgID =9 ,CatgID=3,SubCatgDescription="	Dance Performances: Ballet / Modern / Contemporary"},
-        new SubCategory{ SubCatgID=10,CatgID=3,SubCatgDescription="Dance Performances: Global"},
-        new SubCategory{ SubCatgID=11 ,CatgID=3,SubCatgDescription="Dance Performances: Hip Hop / Tap / Jazz"},
-        new SubCategory{ SubCatgID=12 ,CatgID=4,SubCatgDescription="Family Events: Museums"},
-        new SubCategory{ SubCatgID=13 ,CatgID=4,SubCatgDescription="Family Events: Music"},
-        new SubCategory{ SubCatgID=14 ,CatgID=4,SubCatgDescription="Family Events: Theatre"}
-        };
-            return objSubCategory;
-        }
-    }
-    public static class QuestionList
-    {
-        //internal static List<QuestionMaster> GetQestion()
-        //{
-        //    List<QuestionMaster> objQuestionMaster = new List<QuestionMaster> {
-        //new QuestionMaster{ QuestionId=1, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=2, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=3, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=4, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=5, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=6, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=7, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=8, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=9, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=10, SubCatgID= 1, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=11, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=12, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=13, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=14, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=15, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=16, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=17, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=18, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=19, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=20, SubCatgID= 2, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=21, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=22, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=23, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=24, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=25, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=26, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=27, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=28, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=29, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=30, SubCatgID= 3, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=31, SubCatgID= 4, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1},
-        //new QuestionMaster{ QuestionId=32, SubCatgID= 4, QuestionText="#1. Subject - Captured Issue/Grammatically Correct", Status=1}
-        //};
-        //    return objQuestionMaster;
-        //}
-    }
+     
     [Table("HROCRoster")]
     public class HROCRoster
     {

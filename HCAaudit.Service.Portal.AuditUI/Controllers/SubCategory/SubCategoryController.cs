@@ -30,10 +30,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
-      //      _authService = authService;
+            //      _authService = authService;
         }
 
-        
+
         //[Route("category/method")]
         public IActionResult GetCategory()
         {
@@ -55,11 +55,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = GetDetail(id);
             return Json(data);
         }
-        SubCategory GetSingleCategoryByid(string id)
+
+
+        SubCategory GetSubCategoryDetailsByID(int id)
         {
-            var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
-            SubCategory objCategorys = data.Find(category => category.SubCatgID == Convert.ToInt32(id));
-            return objCategorys;
+            SubCategory data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgID == id && x.IsActive == true)
+                                select subcat).FirstOrDefault();
+            return data;
         }
 
         [HttpPost]
@@ -72,7 +74,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (param.Count() > 0)
                 {
 
-                    var collection = GetDetails(); 
+                    var collection = GetDetails();
                     foreach (var item in collection)
                     {
                         if (item.SubCatgDescription.ToLower() == param[1].ToLower().Trim())
@@ -80,7 +82,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     if (string.IsNullOrEmpty(responce.ToString()))
                     {
-                        SubCategory objCategorys = GetSingleCategoryByid(param[0]);
+                        SubCategory objCategorys = GetSubCategoryDetailsByID(Int32.Parse(param[0]));
                         if (objCategorys != null)
                         {
                             objCategorys.SubCatgDescription = param[1];
@@ -96,16 +98,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult Insert(string catgID, string subCategoryName)
         {
-            var collection = GetDetails(); object responce = "";
-            foreach (var item in collection)
-            {
-          if (item.CatgID == Convert.ToInt32(catgID.Trim()) && item.SubCatgDescription == subCategoryName.Trim())
-                { responce = "1"; break; }
-            }
-            if (string.IsNullOrEmpty(responce.ToString()))
+            object responce = "";
+
+            if (isSubcategoryNameExists(Int32.Parse(catgID), subCategoryName)) { responce = "1"; }
+            else
             {
                 SubCategory objCategorys = new SubCategory();
-                objCategorys.CatgID = Convert.ToInt32(catgID); objCategorys.SubCatgDescription = subCategoryName;
+                objCategorys.CatgID = Convert.ToInt32(catgID); objCategorys.SubCatgDescription = subCategoryName; objCategorys.IsActive = true;
                 _auditToolContext.SubCategories.Add(objCategorys);
                 _auditToolContext.SaveChanges();
                 return RedirectToAction("Details");
@@ -197,12 +196,24 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 throw;
             }
         }
-        
+
         [HttpGet]
         public IActionResult Details()
         {
             return View("Details", GetDetails());
         }
+
+        bool isSubcategoryNameExists(int categoryid, string subcategoryname)
+        {
+            bool result = false;
+            var data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgDescription.ToLower() == subcategoryname.ToLower()
+                         && x.CatgID == categoryid && x.IsActive == true)
+                        select subcat).FirstOrDefault();
+            if (data != null) result = true;
+            return result;
+        }
+
+
 
 
         List<CatSubCatJoinMast> GetDetails()
@@ -219,9 +230,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             CatgDescription = categories.CatgDescription,
             SubCatgDescription = subCategories.SubCatgDescription
         })
-         .Select( x => new CatSubCatJoinMast { CatgID = x.CatgID,
-         SubCatgID = x.SubCatID, CatgDescription = x.CatgDescription
-         ,SubCatgDescription = x.SubCatgDescription
+         .Select(x => new CatSubCatJoinMast
+         {
+             CatgID = x.CatgID,
+             SubCatgID = x.SubCatID,
+             CatgDescription = x.CatgDescription
+        ,
+             SubCatgDescription = x.SubCatgDescription
          }
         ).ToList();
 
@@ -254,25 +269,36 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         [HttpPost]
         public IActionResult delete(int id)
-        {                                     //IaActive is already checked
-            var data = GetDetails().Where(a=>a.SubCatgID == id).SingleOrDefault();
+        {
             SubCategory objSubCategory = new SubCategory();
-            objSubCategory.SubCatgID = id;objSubCategory.IsActive = false;
-            _auditToolContext.SubCategories.Update(objSubCategory);
-            _auditToolContext.SaveChanges();
+            try
+            {
+                objSubCategory = GetSubCategoryDetailsByID(id);
+
+                objSubCategory.SubCatgID = id; objSubCategory.IsActive = false;
+                _auditToolContext.SubCategories.Update(objSubCategory);
+                _auditToolContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
             return View("Details", GetDetails());
+
         }
 
         List<Categorys> GetCategoryDetails()
         {
-            return (from subCat in _auditToolContext.Categories.Where(a=>a.IsActive == true) select subCat).ToList();
+            return (from subCat in _auditToolContext.Categories.Where(a => a.IsActive == true) select subCat).ToList();
         }
 
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
             object response;
-            var data = (from cat in _auditToolContext.QuestionMasters.Where(a=>a.IsActive == true) select cat).ToList();
+            var data = (from cat in _auditToolContext.QuestionMasters.Where(a => a.IsActive == true) select cat).ToList();
             QuestionMaster obj = data.Find(a => a.SubCatgID == id);
             response = obj == null ? "NoRecords" : "HasRecords";
             return Json(response);

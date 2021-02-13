@@ -30,7 +30,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
-      //      _authService = authService;
+            //      _authService = authService;
         }
 
         [HttpPost]
@@ -46,8 +46,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         Categorys GetSingleCategoryByid(string id)
         {
             var data = (from cat in _auditToolContext.Categories.Where(
-                category => category.CatgID == Convert.ToInt32(id) && 
-                category.IsActive == true) select cat).FirstOrDefault();
+                category => category.CatgID == Convert.ToInt32(id) &&
+                category.IsActive == true)
+                        select cat).FirstOrDefault();
             return data;
         }
         [HttpPost]
@@ -59,7 +60,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 string[] param = id.Split('$');
                 if (param.Count() > 0)
                 {
-                    var collection = GetDetails(); 
+                    var collection = GetDetails();
                     foreach (var item in collection)
                     {
                         if (item.CatgDescription.ToLower() == param[1].ToLower().Trim())
@@ -81,30 +82,38 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpGet]
         public ActionResult Insert(string CategoryName)
         {
-            var collection = GetDetails(); object responce = "";
-            foreach (var item in collection)
+            object responce = "";
+            if (isCategoryNameExists(CategoryName)) { responce = "1"; }
+            else
             {
-                if (item.CatgDescription.ToLower() == CategoryName.ToLower().Trim())
-                { responce = "1"; break; }
-            }
-            if (string.IsNullOrEmpty(responce.ToString()))
-            {
-                Categorys objCategorys = new Categorys(); objCategorys.CatgDescription = CategoryName;
+                Categorys objCategorys = new Categorys();
+                objCategorys.CatgDescription = CategoryName;
+                objCategorys.IsActive = true;
                 _auditToolContext.Categories.Add(objCategorys);
                 _auditToolContext.SaveChanges();
                 return RedirectToAction("index");
             }
             return Json(responce);
         }
-       
+
         [HttpPost]
         public IActionResult Delete(int id)
         {
             var data = (from cat in _auditToolContext.Categories select cat).ToList();
             Categorys objCategorys = data.Find(category => category.CatgID == id);
             objCategorys.IsActive = false; _auditToolContext.Categories.Update(objCategorys);
-             _auditToolContext.SaveChanges();
-            return RedirectToAction("Index",GetDetails());
+            _auditToolContext.SaveChanges();
+            return RedirectToAction("Index", GetDetails());
+        }
+
+        bool isCategoryNameExists(string inputcategoryname)
+        {
+            bool result = false;
+            var data = (from cat in _auditToolContext.Categories.Where(x => x.CatgDescription.ToLower() == inputcategoryname.ToLower()
+                        && x.IsActive == true)
+                        select cat).FirstOrDefault();
+            if (data != null) result = true;
+            return result;
         }
 
         List<Categorys> GetDetails()
@@ -117,7 +126,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             object response;
             var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
-            SubCategory obj = data.Find(a => a.CatgID ==  id);
+            SubCategory obj = data.Find(a => a.CatgID == id);
             response = obj == null ? "HasecOrds" : "NoRecOrds";
             return Json(response);
         }
@@ -155,7 +164,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
-                int recordsTotal = 0;                              
+                int recordsTotal = 0;
 
                 var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
                 objCategoryMast = new CategoryMast();
@@ -208,6 +217,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
         }
     }
-   
+
 }
 
