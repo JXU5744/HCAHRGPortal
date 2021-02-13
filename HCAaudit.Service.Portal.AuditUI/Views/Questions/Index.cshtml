@@ -33,10 +33,30 @@
                 <select name="teams" id="SubCatID" class="neu-select">
                 </select>
             </div>
-            <div class="col-sm-4"><button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button> </div>
+            <div class="col-sm-4">
+                <button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button>
+            </div>
         </div>
     </form>
 </div>
+
+
+@*<div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <table id="example" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+                <thead>
+                    <tr class="neu-table__row--large">
+                        <th>SubCatID</th>
+                        <th style="width:15%">Service Delivery Group</th>
+                        <th style="width:65%">Sub Category Name</th>
+                        <th style="width:10%">Edit</th>
+                        <th style="width:10%">Delete</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>*@
+
 
 
 <div class="row neu-margin--bottom-16">
@@ -46,9 +66,9 @@
                 <tr class="neu-table__row--large">
                     <th>Question Master ID</th>
                     <th style="width:10%">Question Sequence</th>
-                    <th style="width:60%">Question Name</th>
-                    <th style="width:15%">Edit</th>
-                    <th style="width:15%">Delete</th>
+                    <th style="width:70%">Question Name</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:10%">Delete</th>
                 </tr>
             </thead>
         </table>
@@ -91,7 +111,7 @@
             <span id="errormsgquestionDescription" class="neu-button--danger">Enter Question Description</span>
         </div>
     </div>
-    <br/>
+    <br />
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
@@ -248,7 +268,7 @@
         });
 
 
-      
+
 
         $("#btnopenPopUp").hide();
         $('#errormsg').hide();
@@ -269,8 +289,8 @@
 
 
         $("#txtquestion").keypress(function (e) {
-             
-            $("#errormsgquestion").hide();  
+
+            $("#errormsgquestion").hide();
         });
         $("#txtquestionDescription").keypress(function (e) {
             $("#errormsgquestionDescription").hide();
@@ -426,7 +446,7 @@
 
         });
 
-       
+
 
         $("#chkblanksubcat").change(function () {
             if (this.checked) {
