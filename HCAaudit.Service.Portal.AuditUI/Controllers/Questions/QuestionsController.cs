@@ -87,8 +87,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         }
 
-
         [HttpPost]
+        public ActionResult GetDesbyQuesText(string questionText)
+        {
+            var responce = ""; 
+            
+          responce =  _auditToolContext.QuestionBank
+                      .Where(a => a.QuestionName == questionText && a.IsActive == true)
+                      .Select(a=>a.QuestionDescription)
+                      .FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(responce))
+            {
+                return Json(responce = "nd");
+            }
+            return Json(responce);
+        }
+
+            [HttpPost]
         public ActionResult GetQuestionSeqByid(int id, int subcatid, int actionQid)
         {
             var query = _auditToolContext.QuestionMasters

@@ -272,13 +272,32 @@
              
             $("#errormsgquestion").hide();  
         });
-
+        $("#txtquestionDescription").keypress(function (e) {
+            $("#errormsgquestionDescription").hide();
+        });
 
         $("#txtquestionDescription").click(function (e) {
-            $("#txtquestionDescription").val($("#txtquestion").val());
-            $("#txtquestionDescription").prop("disabled", true);
-            $("#txtquestion").prop("disabled", true);
-            $("#errormsgquestionDescription").hide();
+            $.ajax({
+                type: "POST",
+                url: "/Questions/GetDesbyQuesText",
+                data: { "questionText": $("#txtquestion").val() },
+                success: function (response) {
+                    if (response == "nd") {
+                        $("#txtquestionDescription").val("");
+                        $("#txtquestionDescription").prop("disabled", false);
+                        $("#txtquestion").prop("disabled", false);
+                    } else {
+                        $("#txtquestionDescription").val(response);
+                        $("#txtquestionDescription").prop("disabled", true);
+                        $("#txtquestion").prop("disabled", true);
+
+                    }
+                }
+            });
+            //$("#txtquestionDescription").val($("#txtquestion").val());
+            //$("#txtquestionDescription").prop("disabled", true);
+            //$("#txtquestion").prop("disabled", true);
+            //$("#errormsgquestionDescription").hide();
         });
 
         $("#btnresetpopup").click(function () {
