@@ -18,5 +18,10 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
         public string? EmployeeStatusDesc { get; set; }
         public DateTime? DateHired { get; set; }
 
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
+
     }
 }

@@ -67,11 +67,11 @@
 
 <div id="popupcontentedit" title="Edit Subcategory" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
-        <div class="col-sm-6">
+        <div class="col-sm-5">
             <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
             <input name="teams" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled" />
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-7">
             <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
             <input id="txtsubcategoryedit" class="neu-input__field" maxlength="50"
                    type="text" />
@@ -146,7 +146,7 @@
 
     $(function () {
         $("#popupcontent").dialog({
-            width: 700,
+            width: 800,
             autoOpen: false,
             draggable: false,
             resizable: false,
@@ -326,18 +326,19 @@
     $('#errormsgedit').hide();
 
     $("#popupcontentedit").dialog({
+        width: 800,
         autoOpen: false,
         draggable: false,
-        resizable: false
+        resizable: false,
     });
 
     $("#btncancelpopupedit").click(function () {
         $("#popupcontentedit").dialog('close');
     });
 
-    $("#popupcontentedit").dialog({
-        autoOpen: false, modal: true, width: 'auto', draggable: false,
-        resizable: false});
+    //$("#popupcontentedit").dialog({
+    //    autoOpen: false, modal: true, width: 'auto', draggable: false,
+    //    resizable: false});
 
     $('#txtsubcategoryedit').on('keypress', function (event) {
         $('#errormsgedit').hide();
@@ -380,11 +381,11 @@
 
     });
 
-    $("#popupcontentedit").dialog({
-        position: 'bottom',
-        draggable: false,
-        resizable: false
-    });
+    //$("#popupcontentedit").dialog({
+    //    position: 'bottom',
+    //    draggable: false,
+    //    resizable: false
+    //});
 
 
 

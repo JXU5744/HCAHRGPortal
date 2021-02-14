@@ -49,7 +49,7 @@
         <table id="example" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
             <thead>
                 <tr class="neu-table__row--large">
-                    <th>QuestionID</th>
+                    <th>QuestionId</th>
                     <th style="width:40%">Question Name</th>
                     <th style="width:40%">Question Description</th>
                     <th style="width:10%">Edit</th>
@@ -64,10 +64,13 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-md-12">
             <label for="txtQuestion" class="neu-input__label">Question Name:</label>
-            <textarea id="txtQuestion" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"></textarea>
+            <textarea id="txtQuestion" class="neu-input__field" rows="2" cols="50" style="resize:none"></textarea>
+            @*<textarea id="txtQuestion" class="form-control" rows="2" cols="50" style="resize:none"></textarea>*@
             <span id="errormsg" class="neu-button--danger">Please Enter or Select Question</span>
+            @*<textarea name="textarea" style="width:250px;height:150px;"></textarea>*@
         </div>
     </div>
+
 
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
@@ -150,16 +153,16 @@
                 "searchable": false
             }],
             "columns": [
-                { "data": "QuestionID", "name": "QuestionID", "autoWidth": true },
+                { "data": "QuestionId", "name": "QuestionId", "autoWidth": true },
                 { "data": "QuestionName", "name": "QuestionName", "autoWidth": true },
                 { "data": "QuestionDescription", "name": "QuestionDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="javascript:void(0)" onclick=OpenEditpopup(' + full.QuestionID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="javascript:void(0)" onclick=OpenEditpopup(' + full.QuestionId + ');>Edit</a>'; }
                 },
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return "<a href='#' class='neu-button--danger neu-button--small neu-button--flat' onclick=DeleteData('" + row.QuestionID + "'); >Delete</a>";
+                        return "<a href='#' class='neu-button--danger neu-button--small neu-button--flat' onclick=DeleteData('" + row.QuestionId + "'); >Delete</a>";
                     }
                 },
             ],
@@ -173,7 +176,7 @@
 
         $("#popupcontent").dialog({
             width: 'auto',
-            height: 425,
+            height: 500,
             autoOpen: false,
             draggable: false,
             resizable: false,

@@ -30,7 +30,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
-      //      _authService = authService;
+            //      _authService = authService;
         }
 
 
@@ -39,9 +39,25 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             var data = (from hroc in _auditToolContext.HROCRoster select hroc).ToList();
             var objclstbHROCRoster = data.Where(x => x.EmployeethreefourID.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
-                                    .Select(x => new { x.HROCRosterId, x.EmployeeFullName, x.EmployeeLastName, x.EmployeeFirstName, 
-                                                       x.EmployeethreefourID, x.EmployeeNumber, x.SupervisorLastName,x.SupervisorFirstName,
-                                                       x.DateHired, x.JobCDDesc, x.PositionDesc, x.EmployeeStatus, x.EmployeeStatusDesc
+                                    .Select(x => new
+                                    {
+                                        x.HROCRosterId,
+                                        x.EmployeeFullName,
+                                        x.EmployeeLastName,
+                                        x.EmployeeFirstName,
+                                        x.EmployeethreefourID,
+                                        x.EmployeeNumber,
+                                        x.SupervisorLastName,
+                                        x.SupervisorFirstName,
+                                        x.DateHired,
+                                        x.JobCDDesc,
+                                        x.PositionDesc,
+                                        x.EmployeeStatus,
+                                        x.EmployeeStatusDesc,
+                                        x.CreatedDate,
+                                        x.CreatedBy,
+                                        x.ModifiedBy,
+                                        x.ModifiedDate
                                     }).ToList();
 
             return Json(objclstbHROCRoster);
@@ -167,29 +183,34 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (hROCRosterViewModel.HROCRosterId > 0)
                 {
-                    if (string.IsNullOrEmpty(resp.ToString()))
+                    //if (string.IsNullOrEmpty(resp.ToString()))
+                    //{
+                    HROCRoster objHROCRoster = new HROCRoster
                     {
-                        HROCRoster objHROCRoster = new HROCRoster
-                        {
-                            //objCategorys = GetSingleCategoryByid(param[0]);
-                            EmployeeNumber = hROCRosterViewModel.EmployeeNumber,
-                            EmployeeFullName = hROCRosterViewModel.EmployeeFullName,
-                            EmployeeLastName = hROCRosterViewModel.EmployeeLastName,
-                            EmployeeFirstName = hROCRosterViewModel.EmployeeFirstName,
-                            SupervisorLastName = hROCRosterViewModel.SupervisorLastName,
-                            SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName,
-                            EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower(),
-                            EmployeeStatus = hROCRosterViewModel.EmployeeStatus,
-                            PositionDesc = hROCRosterViewModel.PositionDesc,
-                            JobCDDesc = hROCRosterViewModel.JobCDDesc,
-                            EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
-                            DateHired = hROCRosterViewModel.DateHired
-                        };
-                        _auditToolContext.HROCRoster.Update(objHROCRoster);
-                        _auditToolContext.SaveChanges();
-                        
-                        resp = "Success";
-                    }
+                        //objCategorys = GetSingleCategoryByid(param[0]);
+                        HROCRosterId = hROCRosterViewModel.HROCRosterId,
+                        EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower(),
+                        EmployeeFirstName = hROCRosterViewModel.EmployeeFirstName,
+                        EmployeeLastName = hROCRosterViewModel.EmployeeLastName,
+                        EmployeeFullName = hROCRosterViewModel.EmployeeFullName,
+                        EmployeeNumber = hROCRosterViewModel.EmployeeNumber,
+                        SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName,
+                        SupervisorLastName = hROCRosterViewModel.SupervisorLastName,
+                        JobCDDesc = hROCRosterViewModel.JobCDDesc,
+                        PositionDesc = hROCRosterViewModel.PositionDesc,
+                        EmployeeStatus = hROCRosterViewModel.EmployeeStatus,
+                        EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
+                        DateHired = hROCRosterViewModel.DateHired,
+                        CreatedBy = hROCRosterViewModel.CreatedBy,
+                        CreatedDate = hROCRosterViewModel.CreatedDate,
+                        ModifiedBy = Environment.UserName,
+                        ModifiedDate = DateTime.Now
+                    };
+                    _auditToolContext.HROCRoster.Update(objHROCRoster);
+                    _auditToolContext.SaveChanges();
+
+                    resp = "Success";
+                    //}
                 }
             }
             catch (Exception ex)
@@ -206,8 +227,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             object resp = "";
             try
             {
-                    if (string.IsNullOrEmpty(resp.ToString()))
-                    {
+                if (string.IsNullOrEmpty(resp.ToString()))
+                {
                     HROCRoster objHROCRoster = new HROCRoster
                     {
                         HROCRosterId = 0,
@@ -222,13 +243,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         PositionDesc = hROCRosterViewModel.PositionDesc,
                         JobCDDesc = hROCRosterViewModel.JobCDDesc,
                         EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
-                        DateHired = hROCRosterViewModel.DateHired
+                        DateHired = hROCRosterViewModel.DateHired,
+                        CreatedBy = Environment.UserName,
+                        CreatedDate = DateTime.Now
                     };
                     _auditToolContext.HROCRoster.Add(objHROCRoster);
-                        _auditToolContext.SaveChanges();
+                    _auditToolContext.SaveChanges();
 
-                        resp = "Success";
-                    }
+                    resp = "Success";
+                }
             }
             catch (Exception ex)
             {

@@ -82,11 +82,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     if (string.IsNullOrEmpty(responce.ToString()))
                     {
-                        SubCategory objCategorys = GetSubCategoryDetailsByID(Int32.Parse(param[0]));
-                        if (objCategorys != null)
+                        SubCategory objSubCategory = GetSubCategoryDetailsByID(Int32.Parse(param[0]));
+                        if (objSubCategory != null)
                         {
-                            objCategorys.SubCatgDescription = param[1];
-                            _auditToolContext.SubCategories.Update(objCategorys);
+                            objSubCategory.SubCatgDescription = param[1];
+                            objSubCategory.ModifiedBy = Environment.UserName;
+                            objSubCategory.ModifiedDate = DateTime.Now;
+                            _auditToolContext.SubCategories.Update(objSubCategory);
                             _auditToolContext.SaveChanges();
                         }
                     }
@@ -103,9 +105,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             if (isSubcategoryNameExists(Int32.Parse(catgID), subCategoryName)) { responce = "1"; }
             else
             {
-                SubCategory objCategorys = new SubCategory();
-                objCategorys.CatgID = Convert.ToInt32(catgID); objCategorys.SubCatgDescription = subCategoryName; objCategorys.IsActive = true;
-                _auditToolContext.SubCategories.Add(objCategorys);
+                SubCategory objSubCategory = new SubCategory();
+                objSubCategory.CatgID = Convert.ToInt32(catgID); objSubCategory.SubCatgDescription = subCategoryName; objSubCategory.IsActive = true;
+                objSubCategory.CreatedBy = Environment.UserName; 
+                objSubCategory.CreatedDate = DateTime.Now;
+                _auditToolContext.SubCategories.Add(objSubCategory);
                 _auditToolContext.SaveChanges();
                 return RedirectToAction("Details");
             }
@@ -276,6 +280,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 objSubCategory = GetSubCategoryDetailsByID(id);
 
                 objSubCategory.SubCatgID = id; objSubCategory.IsActive = false;
+                objSubCategory.ModifiedBy = Environment.UserName;
+                objSubCategory.ModifiedDate = DateTime.Now;
                 _auditToolContext.SubCategories.Update(objSubCategory);
                 _auditToolContext.SaveChanges();
 
@@ -298,8 +304,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public ActionResult HasDeleteAccess(int id)
         {
             object response;
-            var data = (from cat in _auditToolContext.QuestionMasters.Where(a => a.IsActive == true) select cat).ToList();
-            QuestionMaster obj = data.Find(a => a.SubCatgID == id);
+            var data = (from cat in _auditToolContext.QuestionMapping.Where(a => a.IsActive == true) select cat).ToList();
+            QuestionMapping obj = data.Find(a => a.SubCatgId == id);
             response = obj == null ? "NoRecords" : "HasRecords";
             return Json(response);
         }

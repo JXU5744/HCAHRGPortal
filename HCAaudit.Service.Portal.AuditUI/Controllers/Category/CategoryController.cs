@@ -71,6 +71,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         Categorys objCategorys = new Categorys();
                         objCategorys = GetSingleCategoryByid(param[0]);
                         objCategorys.CatgDescription = param[1];
+                        objCategorys.ModifiedBy = Environment.UserName;
+                        objCategorys.ModifiedDate = DateTime.Now;
                         _auditToolContext.Categories.Update(objCategorys);
                         _auditToolContext.SaveChanges();
                     }
@@ -83,15 +85,29 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public ActionResult Insert(string CategoryName)
         {
             object responce = "";
-            if (isCategoryNameExists(CategoryName)) { responce = "1"; }
-            else
+
+            try
             {
-                Categorys objCategorys = new Categorys();
-                objCategorys.CatgDescription = CategoryName;
-                objCategorys.IsActive = true;
-                _auditToolContext.Categories.Add(objCategorys);
-                _auditToolContext.SaveChanges();
-                return RedirectToAction("index");
+
+
+                if (isCategoryNameExists(CategoryName)) { responce = "1"; }
+                else
+                {
+                    Categorys objCategorys = new Categorys();
+                    objCategorys.CatgDescription = CategoryName;
+                    objCategorys.IsActive = true;
+                    objCategorys.CreatedBy = Environment.UserName;
+                    objCategorys.CreatedDate = DateTime.Now;
+                    _auditToolContext.Categories.Add(objCategorys);
+                    _auditToolContext.SaveChanges();
+                    return RedirectToAction("index");
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
             return Json(responce);
         }
@@ -101,7 +117,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             var data = (from cat in _auditToolContext.Categories select cat).ToList();
             Categorys objCategorys = data.Find(category => category.CatgID == id);
-            objCategorys.IsActive = false; _auditToolContext.Categories.Update(objCategorys);
+            objCategorys.IsActive = false;
+            objCategorys.ModifiedBy = Environment.UserName;
+            objCategorys.ModifiedDate = DateTime.Now;
+            _auditToolContext.Categories.Update(objCategorys);
             _auditToolContext.SaveChanges();
             return RedirectToAction("Index", GetDetails());
         }

@@ -11,7 +11,7 @@
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 
-@model List<HCAaudit.Service.Portal.AuditUI.Models.QuestionMaster>
+@model List<HCAaudit.Service.Portal.AuditUI.Models.QuestionMapping>
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -40,25 +40,6 @@
     </form>
 </div>
 
-
-@*<div class="row neu-margin--bottom-16">
-        <div class="col-sm-12">
-            <table id="example" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
-                <thead>
-                    <tr class="neu-table__row--large">
-                        <th>SubCatID</th>
-                        <th style="width:15%">Service Delivery Group</th>
-                        <th style="width:65%">Sub Category Name</th>
-                        <th style="width:10%">Edit</th>
-                        <th style="width:10%">Delete</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-    </div>*@
-
-
-
 <div class="row neu-margin--bottom-16">
     <div class="col-sm-12">
         <table id="tblquestions" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
@@ -76,10 +57,11 @@
 </div>
 
 <div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
+
     <div class="row">
         <div class="col-sm-6">
             <label for="txtcategory" class="neu-input__label">Service Delivery Group</label>
-            <input id="txtcategory" class="neu-input__label" maxlength="4" type="text" disabled="disabled" />
+            <input id="txtcategory" class="neu-input__label" type="text" disabled="disabled" />
         </div>
         <div class="col-sm-6">
             <label for="txtsubcategory" class="neu-input__label">Sub Category</label>
@@ -87,32 +69,40 @@
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-24">
-        <div class="col-sm-2">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
             <label for="txtquestionseq" class="neu-input__label">Sequence</label>
             <input id="txtquestionseq" class="neu-input__label" type="text" disabled="disabled" />
             <input id="hdnAddSubCatId" type="hidden" />
         </div>
-        
+
     </div>
 
+    <div class="row neu-margin--bottom-16">
+        <div class="col-md-12">
+            <label for="txtQuestion" class="neu-input__label">Question Name:</label>
+            <textarea id="txtQuestion" class="neu-input__field" rows="2" cols="50" style="resize:none"></textarea>
+            <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
 
-    <div class="row neu-margin--bottom-24">
-        <div class="col-sm-12">
-            <label for="txtquestion" class="neu-input__label">Question Name:</label>
-            <textarea id="txtquestion" class="neu-input__field" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errormsgquestion" class="neu-button--danger">Select Appropiate Question Name</span>
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-24">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label for="txtquestionDescription" class="neu-input__label">Question Description:</label>
+            <textarea id="txtquestionDescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
+            <span id="errormsgquestionDescription" class="neu-button--danger">Please enter Question Description</span>
+        </div>
+    </div>
+
+    @*<div class="row neu-margin--bottom-24">
         <div class="col-sm-12">
             <label for="txtquestionDescription" class="neu-input__label">Question Description:</label>
             <textarea id="txtquestionDescription" class="neu-input__field" rows="5" cols="50" style="resize:none"></textarea>
             <span id="errormsgquestionDescription" class="neu-button--danger">Enter Question Description</span>
         </div>
-    </div>
-    <br />
+    </div>*@
+
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
@@ -120,6 +110,7 @@
             <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset Question</button>
         </div>
     </div>
+
 </div>
 
 
@@ -376,16 +367,16 @@
                                                 "searchable": false
                                             }],
 
-                                            columns: [{ 'data': 'QuestionMasterId' },
-                                                { 'data': 'SeqNumber' },
+                                            columns: [{ 'data': 'QuestionMappingId' },
+                                                { 'data': 'SequenceNumber' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMasterId + '">Edit</a>'; }
+                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
-                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
+                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
                                                 },
                                             ],
@@ -481,16 +472,16 @@
                                 "searchable": false
                             }],
 
-                            columns: [{ 'data': 'QuestionMasterId' },
-                                { 'data': 'SeqNumber' },
+                            columns: [{ 'data': 'QuestionMappingId' },
+                                { 'data': 'SequenceNumber' },
                                 { 'data': 'QuestionText' },
                             {
-                                "render": function (data, type, full, meta) { return "<a href='#' class='btn btn-info'  onclick=OpenEditpopup('" + full.QuestionMasterId + "');>Edit</a>"; }
+                                "render": function (data, type, full, meta) { return "<a href='#' class='btn btn-info'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                             },
                             {
                                 data: null,
                                 render: function (data, type, row) {
-                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
+                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                 }
                                 },
                             ],
@@ -597,16 +588,16 @@
                                             }],
 
                                             columns: [
-                                                { 'data': 'QuestionMasterId' },
+                                                { 'data': 'QuestionMappingId' },
                                                 { 'data': 'SeqNumber' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMasterId + '">Edit</a>'; }
+                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
-                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
+                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
                                                 },],
                                             "createdRow": function (row, data, dataIndex) {
@@ -691,9 +682,9 @@
                     $('#ddlQuestionsqedit').html(''); //$("#ShowQuestions").hide();
                     var options = ''; var index = 0;
                     for (var i = 0; i < response.length; i++) {
-                        //alert(response[i].QuestionMasterId); alert(response[i].SequenceNo);
-                        options += '<option value="' + response[i].QuestionMasterId + '">' + response[i].SequenceNo + '</option>';
-                        if (response[i].QuestionMasterId == CatgID) {
+                        //alert(response[i].QuestionMappingId); alert(response[i].SequenceNo);
+                        options += '<option value="' + response[i].QuestionMappingId + '">' + response[i].SequenceNo + '</option>';
+                        if (response[i].QuestionMappingId == CatgID) {
                             index = response[i].SequenceNo;
                             $("#txtquestionEdit").val(response[i].QuestionText);
                             $("#txtquestionDescriptionEdit").val(response[i].QuestionDesc);
