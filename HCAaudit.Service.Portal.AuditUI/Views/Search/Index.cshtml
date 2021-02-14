@@ -184,7 +184,9 @@
         <div class="col-sm-6">
             <span id="errormsg" style="color:red"></span>
         </div>
-        <div class="col-sm-4"><button id="btncancelpopup" class="btn btn-danger">Cancel</button></div>
+        <div class="col-sm-4">
+            <button id="btncancelpopup" class="btn btn-danger">Cancel</button>
+        </div>
     </div>
 </div>
 
@@ -256,14 +258,9 @@
 
             $("#btnsearch").click(function () {
                 $("#errormsgforcategory").text("");
-
                 var environmenttype = $("input[name='EnvironmentType']:checked").val();
-
                 var resultcount = $("#ResultCount").val();
-
                 var screentype = $("input[name='ResultType']:checked").val();
-
-
                 var categoryID = $("#CatgID").val();
                 var subcategoryID = $("#SubCatID").val();
                 var assignedTo = $("#txtassignedto").val();
@@ -306,7 +303,7 @@
                     return false;
                 }
 
-                
+
             });
 
             $('#StatusList').change(function () {

@@ -15,99 +15,90 @@
 
 @model HCAaudit.Service.Portal.AuditUI.Models.BindSearchGrid
 
-    <div class="row neu-margin--bottom-16">
-        <div class="col-12">
-            <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Results</h3>
-        </div>
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Results</h3>
     </div>
+</div>
 
-
-    <div class="container">
-
-
-        <div style="width:100%; margin:0 auto;">
-            <table id="example" class="neu-table" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Ticket Number</th>
-                        <th>Created Date</th>
-                        <th>Subject</th>
-                        <th>Sub Category</th>
-                        <th>Service Group</th>
-                        <th>Assigned To</th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12">
+        <table id="example" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+            <thead>
+                <tr class="neu-table__row--large">
+                    <th>Ticket Number</th>
+                    <th>Created Date</th>
+                    <th>Subject</th>
+                    <th>Sub Category</th>
+                    <th>Service Group</th>
+                    <th>Assigned To</th>
+                </tr>
+            </thead>
+        </table>
     </div>
+</div>
 
-    @*</main>*@
-    <script>
-        $(document).ready(function () {
 
-            function getUrlVars() {
-                var vars = [], hash;
-                var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-                for (var i = 0; i < hashes.length; i++) {
-                    hash = hashes[i].split('=');
-                    vars.push(hash[0]);
-                    vars[hash[0]] = hash[1];
-                }
-                return vars;
+<script>
+    $(document).ready(function () {
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
             }
+            return vars;
+        }
 
-            var searchparameter = {
-                "EnvironmentType": getUrlVars()["EnvironmentType"],
-                "ResultType": getUrlVars()["ResultType"],
-                "CategoryID": getUrlVars()["CatgID"],
-                "SubcategoryID": getUrlVars()["SubCatID"],
-                "AssignedTo": getUrlVars()["AssignedTo"],
-                "TicketStatus": getUrlVars()["TicketStatus"],
-                "TicketSubStatus": getUrlVars()["TicketSubStatus"],
-                "FromDate": getUrlVars()["startdate"],
-                "EndDate": getUrlVars()["enddate"],
-                "TicketId": getUrlVars()["TicketId"],
-                "ResultCountCriteria": getUrlVars()["ResultCount"]
-            };
+        var searchparameter = {
+            "EnvironmentType": getUrlVars()["EnvironmentType"],
+            "ResultType": getUrlVars()["ResultType"],
+            "CategoryID": getUrlVars()["CatgID"],
+            "SubcategoryID": getUrlVars()["SubCatID"],
+            "AssignedTo": getUrlVars()["AssignedTo"],
+            "TicketStatus": getUrlVars()["TicketStatus"],
+            "TicketSubStatus": getUrlVars()["TicketSubStatus"],
+            "FromDate": getUrlVars()["startdate"],
+            "EndDate": getUrlVars()["enddate"],
+            "TicketId": getUrlVars()["TicketId"],
+            "ResultCountCriteria": getUrlVars()["ResultCount"]
+        };
 
-            $("#example").DataTable({
-                "processing": true, // for show progress bar
-                "serverSide": true, // for process server side
-                "filter": true, // this is for disable filter (search box)
-                "orderMulti": false, // for disable multiple column at once
-                "ajax": {
-                    "url": "/search/GetSearchDetails",
-                    "type": "POST",
-                    "datatype": "json",
-                    "data": { searchparameter: searchparameter },
+        $("#example").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ajax": {
+                "url": "/search/GetSearchDetails",
+                "type": "POST",
+                "datatype": "json",
+                "data": { searchparameter: searchparameter },
+            },
+            "columnDefs": [{
+                "targets": [0],
+                "visible": true,
+                "searchable": true
+            }],
+            "columns": [
+                {
+                    "render": function (data, type, full, meta) {
+                        debugger;
+                        return '<a class="neu-topnav__compact" style="text-decoration-style:solid;font-weight:bold" href="' + full.Url + '" target="_self">' + full.TicketCode + '</a>';
+                    }
                 },
-                "columnDefs": [{
-                    "targets": [0],
-                    "visible": true,
-                    "searchable": true
-                }],
-                "columns": [
-                    {
-                        "render": function (data, type, full, meta) {
-                            debugger;
-                            return '<a class="neu-topnav__compact" style="text-decoration-style:solid;font-weight:bold" href="' + full.Url + '" target="_self">' + full.TicketCode + '</a>';
-                        }
-                    },
-                    { "data": "ClosedDate", "name": "CreatedDate", "autoWidth": true },
-                    { "data": "Topic", "name": "Subject", "autoWidth": true },
-                    { "data": "SubCategory", "name": "SubCategory", "autoWidth": true },
-                    { "data": "ServiceDeliveryGroup", "name": "ServiceGroup", "autowidth": true },
-                    { "data": "Agent34ID", "name": "AssignedTo", "autowidth": true },
-                ],
-                "createdRow": function (row, data, dataIndex) {
-                    $(row).addClass('neu-table__row--small');
-                }
-            });
+                { "data": "ClosedDate", "name": "CreatedDate", "autoWidth": true },
+                { "data": "Topic", "name": "Subject", "autoWidth": true },
+                { "data": "SubCategory", "name": "SubCategory", "autoWidth": true },
+                { "data": "ServiceDeliveryGroup", "name": "ServiceGroup", "autowidth": true },
+                { "data": "Agent34ID", "name": "AssignedTo", "autowidth": true },
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('neu-table__row--small');
+            }
         });
-    </script>
-
-
-
-
-
-
+    });
+</script>

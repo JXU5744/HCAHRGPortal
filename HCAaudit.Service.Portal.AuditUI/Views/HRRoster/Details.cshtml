@@ -32,11 +32,11 @@
         <span id="errorMessage" class="neu-button--danger"></span>
     </div>
     <div class="col-sm-4">
-        <div tabindex="-1" aria-checked="false">
+        @*<div tabindex="-1" aria-checked="false">
             <button id="btnAddEmployee" name="btnAddEmployee" class="neu-button--primary neu-button neu-button--raised" style="display:none">
                 Add Employee
             </button>
-        </div>
+        </div>*@
         <div tabindex="-1" aria-checked="false">
             <button id="btnSearchEmployee" name="btnSearchEmployee" class="neu-button--primary neu-button neu-button--raised">
                 Search
@@ -44,6 +44,7 @@
         </div>
     </div>
 </div>
+
 <div class="row">
     <div class="col-sm-12">
         <fieldset id="fieldsetEmployeeForm" name="fieldsetEmployeeForm" class="neu-padding--0" disabled>
@@ -390,7 +391,7 @@
                                 $("#employeeForm").show();
                                 $("#btnUpdate").show();
                                 $("#btnSave").hide();
-                                $("#btnAddEmployee").hide();
+                               // $("#btnAddEmployee").hide();
 
                             }
                             else {
@@ -408,17 +409,17 @@
                 }
                 else {
                     $("#errorMessage").text("Employee 3-4 ID Required");
-                    $("#btnAddEmployee").hide();
+                   // $("#btnAddEmployee").hide();
                 }
 
             });
 
-            $("#btnAddEmployee").click(function () {
-                $("#employeeForm").show();
-                $("#btnSave").show();
-                $("#btnUpdate").hide();
+            //$("#btnAddEmployee").click(function () {
+            //    $("#employeeForm").show();
+            //    $("#btnSave").show();
+            //    $("#btnUpdate").hide();
 
-            });
+            //});
 
             $("#btncancel").click(function () {
                 location.reload();

@@ -33,28 +33,47 @@
                 <select name="teams" id="SubCatID" class="neu-select">
                 </select>
             </div>
-            <div class="col-sm-4"><button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button> </div>
+            <div class="col-sm-4">
+                <button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button>
+            </div>
         </div>
     </form>
 </div>
 
-<div class="col-sm-12 d-flex justify-content-end neu-margin--bottom-16">
-    <div class="col-sm-12 neu-margin--bottom-16">
-        <table id="tblquestions" class="neu-table" width="100%" cellspacing="0">
-            <thead class="neu-table__head">
-                <tr class="neu-table__header neu-table__sort-icon">
+
+@*<div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <table id="example" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+                <thead>
+                    <tr class="neu-table__row--large">
+                        <th>SubCatID</th>
+                        <th style="width:15%">Service Delivery Group</th>
+                        <th style="width:65%">Sub Category Name</th>
+                        <th style="width:10%">Edit</th>
+                        <th style="width:10%">Delete</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>*@
+
+
+
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12">
+        <table id="tblquestions" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+            <thead>
+                <tr class="neu-table__row--large">
                     <th>Question Master ID</th>
-                    <th>Question Sequence</th>
-                    <th>Question Name</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th style="width:10%">Question Sequence</th>
+                    <th style="width:70%">Question Name</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:10%">Delete</th>
                 </tr>
             </thead>
         </table>
     </div>
-
 </div>
-
 
 <div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
     <div class="row">
@@ -72,8 +91,9 @@
         <div class="col-sm-2">
             <label for="txtquestionseq" class="neu-input__label">Sequence</label>
             <input id="txtquestionseq" class="neu-input__label" type="text" disabled="disabled" />
+            <input id="hdnAddSubCatId" type="hidden" />
         </div>
-        <input id="hdnAddSubCatId" type="hidden" />
+        
     </div>
 
 
@@ -92,7 +112,7 @@
             <span id="errormsgquestionDescription" class="neu-button--danger">Enter Question Description</span>
         </div>
     </div>
-    <br/>
+    <br />
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
@@ -249,8 +269,6 @@
         });
 
 
-      
-
         $("#btnopenPopUp").hide();
         $('#errormsg').hide();
         $('#errormsgquestion').hide();
@@ -270,16 +288,35 @@
 
 
         $("#txtquestion").keypress(function (e) {
-             
-            $("#errormsgquestion").hide();  
+
+            $("#errormsgquestion").hide();
+        });
+        $("#txtquestionDescription").keypress(function (e) {
+            $("#errormsgquestionDescription").hide();
         });
 
-
         $("#txtquestionDescription").click(function (e) {
-            $("#txtquestionDescription").val($("#txtquestion").val());
-            $("#txtquestionDescription").prop("disabled", true);
-            $("#txtquestion").prop("disabled", true);
-            $("#errormsgquestionDescription").hide();
+            $.ajax({
+                type: "POST",
+                url: "/Questions/GetDesbyQuesText",
+                data: { "questionText": $("#txtquestion").val() },
+                success: function (response) {
+                    if (response == "nd") {
+                        $("#txtquestionDescription").val("");
+                        $("#txtquestionDescription").prop("disabled", false);
+                        $("#txtquestion").prop("disabled", false);
+                    } else {
+                        $("#txtquestionDescription").val(response);
+                        $("#txtquestionDescription").prop("disabled", true);
+                        $("#txtquestion").prop("disabled", true);
+
+                    }
+                }
+            });
+            //$("#txtquestionDescription").val($("#txtquestion").val());
+            //$("#txtquestionDescription").prop("disabled", true);
+            //$("#txtquestion").prop("disabled", true);
+            //$("#errormsgquestionDescription").hide();
         });
 
         $("#btnresetpopup").click(function () {
@@ -408,7 +445,7 @@
 
         });
 
-       
+
 
         $("#chkblanksubcat").change(function () {
             if (this.checked) {
