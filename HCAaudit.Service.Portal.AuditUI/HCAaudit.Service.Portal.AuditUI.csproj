@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\Evaluation\EvaluationController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.11" />
@@ -104,7 +100,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Evaluation\" />
     <Folder Include="DataBase\" />
     <Folder Include="wwwroot\assets\fonts\Glyphicons Halflings\" />
   </ItemGroup>

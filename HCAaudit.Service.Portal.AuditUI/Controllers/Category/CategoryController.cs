@@ -17,32 +17,41 @@ using System.Text;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ILogger<CategoryController> _logger;
         private readonly IConfiguration config;
         private IAuthService _authService;
-        List<CategoryMast> masterCategory = null;
         private AuditToolContext _auditToolContext;
-        public CategoryController(ILogger<CategoryController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
+        private bool isAdmin;
+        public CategoryController(ILogger<CategoryController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
-            //      _authService = authService;
+            _authService = authService;
+            isAdmin = _authService.CheckAdminUserGroup().Result;
         }
 
         [HttpPost]
         public ActionResult GetCategoryByid(string id)
         {
-            object response = "";
-            if (string.IsNullOrEmpty(id))
+            if (isAdmin)
             {
-                return Json(response);
+                object response = "";
+                if (string.IsNullOrEmpty(id))
+                {
+                    return Json(response);
+                }
+                return Json(GetSingleCategoryByid(id));
             }
-            return Json(GetSingleCategoryByid(id));
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
+
         Categorys GetSingleCategoryByid(string id)
         {
             var data = (from cat in _auditToolContext.Categories.Where(
@@ -51,62 +60,89 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         select cat).FirstOrDefault();
             return data;
         }
+
         [HttpPost]
         public ActionResult Edit(string id)
         {
-            object resp = "";
-            if (!string.IsNullOrEmpty(id))
+            if (isAdmin)
             {
-                string[] param = id.Split('$');
-                if (param.Count() > 0)
+                object resp = "";
+                if (!string.IsNullOrEmpty(id))
                 {
-                    var collection = GetDetails();
-                    foreach (var item in collection)
+                    string[] param = id.Split('$');
+                    if (param.Count() > 0)
                     {
-                        if (item.CatgDescription.ToLower() == param[1].ToLower().Trim())
-                        { resp = "1"; break; }
-                    }
-                    if (string.IsNullOrEmpty(resp.ToString()))
-                    {
-                        Categorys objCategorys = new Categorys();
-                        objCategorys = GetSingleCategoryByid(param[0]);
-                        objCategorys.CatgDescription = param[1];
-                        _auditToolContext.Categories.Update(objCategorys);
-                        _auditToolContext.SaveChanges();
+                        var collection = GetDetails();
+                        foreach (var item in collection)
+                        {
+                            if (item.CatgDescription.ToLower() == param[1].ToLower().Trim())
+                            { resp = "1"; break; }
+                        }
+                        if (string.IsNullOrEmpty(resp.ToString()))
+                        {
+                            Categorys objCategorys = GetSingleCategoryByid(param[0]);
+                            if (objCategorys != null)
+                            {
+                                objCategorys.CatgDescription = param[1];
+                                _auditToolContext.Categories.Update(objCategorys);
+                                _auditToolContext.SaveChanges();
+                            }
+                        }
                     }
                 }
+                return Json(resp);
             }
-            return Json(resp);
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
         public ActionResult Insert(string CategoryName)
         {
-            object responce = "";
-            if (isCategoryNameExists(CategoryName)) { responce = "1"; }
+            if (isAdmin)
+            {
+                object responce = "";
+                if (IsCategoryNameExists(CategoryName))
+                {
+                    responce = "1";
+                }
+                else
+                {
+                    Categorys objCategorys = new Categorys();
+                    objCategorys.CatgDescription = CategoryName;
+                    objCategorys.IsActive = true;
+                    _auditToolContext.Categories.Add(objCategorys);
+                    _auditToolContext.SaveChanges();
+                    return RedirectToAction("index");
+                }
+                return Json(responce);
+            }
             else
             {
-                Categorys objCategorys = new Categorys();
-                objCategorys.CatgDescription = CategoryName;
-                objCategorys.IsActive = true;
-                _auditToolContext.Categories.Add(objCategorys);
-                _auditToolContext.SaveChanges();
-                return RedirectToAction("index");
+                return RedirectToAction("Index", "Home");
             }
-            return Json(responce);
         }
 
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var data = (from cat in _auditToolContext.Categories select cat).ToList();
-            Categorys objCategorys = data.Find(category => category.CatgID == id);
-            objCategorys.IsActive = false; _auditToolContext.Categories.Update(objCategorys);
-            _auditToolContext.SaveChanges();
-            return RedirectToAction("Index", GetDetails());
+            if (isAdmin)
+            {
+                var data = (from cat in _auditToolContext.Categories select cat).ToList();
+                Categorys objCategorys = data.Find(category => category.CatgID == id);
+                objCategorys.IsActive = false; _auditToolContext.Categories.Update(objCategorys);
+                _auditToolContext.SaveChanges();
+                return RedirectToAction("Index", GetDetails());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
-        bool isCategoryNameExists(string inputcategoryname)
+        bool IsCategoryNameExists(string inputcategoryname)
         {
             bool result = false;
             var data = (from cat in _auditToolContext.Categories.Where(x => x.CatgDescription.ToLower() == inputcategoryname.ToLower()
@@ -121,99 +157,121 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
             return data;
         }
+
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
-            object response;
-            var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
-            SubCategory obj = data.Find(a => a.CatgID == id);
-            response = obj == null ? "HasecOrds" : "NoRecOrds";
-            return Json(response);
+            if (isAdmin)
+            {
+                object response;
+                var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
+                SubCategory obj = data.Find(a => a.CatgID == id);
+                response = obj == null ? "HasecOrds" : "NoRecOrds";
+                return Json(response);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", GetDetails());
+            if (isAdmin)
+            {
+                return View("Index", GetDetails());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
         public IActionResult Index(CategoryMast objCategoryMast)
         {
-            try
+            if (isAdmin)
             {
-                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
-
-                // Skip number of Rows count  
-                var start = Request.Form["start"].FirstOrDefault();
-
-                // Paging Length 10,20  
-                var length = Request.Form["length"].FirstOrDefault();
-
-                // Sort Column Name  
-                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-
-                // Sort Column Direction (asc, desc)  
-                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-
-                // Search Value from (Search box)  
-                var searchValue = Request.Form["search[value]"].FirstOrDefault();
-
-                //Paging Size (10, 20, 50,100)  
-                int pageSize = length != null ? Convert.ToInt32(length) : 0;
-
-                int skip = start != null ? Convert.ToInt32(start) : 0;
-
-                int recordsTotal = 0;
-
-                var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
-                objCategoryMast = new CategoryMast();
-                objCategoryMast._categoryList = new List<Category>();
-                foreach (var item in data)
+                try
                 {
-                    Category objCategory = new Category();
-                    objCategory.CatgID = item.CatgID; objCategory.CatgDescription = item.CatgDescription;
-                    objCategoryMast._categoryList.Add(objCategory);
-                }
+                    var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
 
-                // getting all Customer data  
-                var customerData = (from tempcustomer in objCategoryMast._categoryList
-                                    select tempcustomer);
+                    // Skip number of Rows count  
+                    var start = Request.Form["start"].FirstOrDefault();
 
-                //Sorting  
-                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-                {
-                    switch (sortColumn)
+                    // Paging Length 10,20  
+                    var length = Request.Form["length"].FirstOrDefault();
+
+                    // Sort Column Name  
+                    var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+
+                    // Sort Column Direction (asc, desc)  
+                    var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                    // Search Value from (Search box)  
+                    var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+                    //Paging Size (10, 20, 50,100)  
+                    int pageSize = length != null ? Convert.ToInt32(length) : 0;
+
+                    int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                    int recordsTotal = 0;
+
+                    var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
+                    objCategoryMast = new CategoryMast();
+                    objCategoryMast.CategoryList = new List<Category>();
+                    foreach (var item in data)
                     {
-                        case "CatgDescription":
-                            if (sortColumnDirection == "desc")
-                            {
-                                customerData = customerData.OrderByDescending(s => s.CatgDescription);
-                            }
-                            else
-                            {
-                                customerData = customerData.OrderBy(s => s.CatgDescription);
-                            }
-                            break;
+                        Category objCategory = new Category();
+                        objCategory.CatgID = item.CatgID; objCategory.CatgDescription = item.CatgDescription;
+                        objCategoryMast.CategoryList.Add(objCategory);
                     }
+
+                    // getting all Customer data  
+                    var customerData = (from tempcustomer in objCategoryMast.CategoryList
+                                        select tempcustomer);
+
+                    //Sorting  
+                    if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                    {
+                        switch (sortColumn)
+                        {
+                            case "CatgDescription":
+                                if (sortColumnDirection == "desc")
+                                {
+                                    customerData = customerData.OrderByDescending(s => s.CatgDescription);
+                                }
+                                else
+                                {
+                                    customerData = customerData.OrderBy(s => s.CatgDescription);
+                                }
+                                break;
+                        }
+                    }
+                    //Search  
+                    if (!string.IsNullOrEmpty(searchValue))
+                    {
+                        customerData = customerData.Where(m => m.CatgDescription.ToLower().StartsWith(searchValue.ToLower()));
+                    }
+
+                    //total number of rows counts   
+                    recordsTotal = customerData.Count();
+                    //Paging   
+                    var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
+                    //Returning Json Data  
+                    return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
+
                 }
-                //Search  
-                if (!string.IsNullOrEmpty(searchValue))
+                catch (Exception ex)
                 {
-                    customerData = customerData.Where(m => m.CatgDescription.ToLower().StartsWith(searchValue.ToLower()));
+                    throw ex;
                 }
-
-                //total number of rows counts   
-                recordsTotal = customerData.Count();
-                //Paging   
-                var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
-                //Returning Json Data  
-                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
             }
-            catch (Exception)
+            else
             {
-                throw;
+                return RedirectToAction("Index", "Home");
             }
         }
     }

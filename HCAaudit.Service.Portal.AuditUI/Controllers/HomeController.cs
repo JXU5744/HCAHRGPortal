@@ -50,7 +50,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 {
                     return RedirectToAction("Index", "Search");
                 }
-
             }
             else
             {

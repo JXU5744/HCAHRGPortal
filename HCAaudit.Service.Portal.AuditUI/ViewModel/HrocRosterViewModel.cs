@@ -9,13 +9,22 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
         public string EmployeeFullName { get; set; }
         public string EmployeeLastName { get; set; }
         public string EmployeeFirstName { get; set; }
+
+#nullable enable
         public string? SupervisorLastName { get; set; }
+#nullable enable
         public string? SupervisorFirstName { get; set; }
+#nullable enable
         public string? EmployeethreefourID { get; set; }
+#nullable enable
         public string? EmployeeStatus { get; set; }
+#nullable enable
         public string? PositionDesc { get; set; }
+#nullable enable
         public string? JobCDDesc { get; set; }
+#nullable enable
         public string? EmployeeStatusDesc { get; set; }
+#nullable enable
         public DateTime? DateHired { get; set; }
 
     }

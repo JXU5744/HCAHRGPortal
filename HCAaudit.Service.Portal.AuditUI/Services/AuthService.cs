@@ -47,7 +47,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
 
         public async Task<LoggedInUserDetails> LoggedInUserInfo()
         {
-            var token = await getToken();
+            var token = await GetToken();
             var firstName = token.Claims?.FirstOrDefault(claim => claim.Type == "firstName")?.Value;
             var lastName = token.Claims?.FirstOrDefault(claim => claim.Type == "lastName")?.Value;
             var hcdId = token.Claims?.FirstOrDefault(claim => claim.Type == "subject")?.Value;
@@ -84,7 +84,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         /// Get Token
         /// </summary>
         /// <returns></returns>
-        private async Task<JwtSecurityToken> getToken()
+        private async Task<JwtSecurityToken> GetToken()
         {
             var token_string = await contextAccessor.HttpContext.GetTokenAsync("access_token");
             return new JwtSecurityTokenHandler().ReadJwtToken(token_string);
@@ -97,7 +97,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         private async Task<JwtSecurityToken> GetIdToken()
         {
             var token_string = await contextAccessor.HttpContext.GetTokenAsync("id_token");
-            var token_stng = await contextAccessor.HttpContext.GetTokenAsync("access_token");
+            
             return new JwtSecurityTokenHandler().ReadJwtToken(token_string);
         }
         #endregion

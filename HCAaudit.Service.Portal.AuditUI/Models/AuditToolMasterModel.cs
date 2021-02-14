@@ -108,53 +108,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string SubCatgDescription { get; set; }
     }
 
-    public class Tickets
-    {
-        public int TicketID { get; set; }
-        public string Ticket { get; set; }
-        public static List<Tickets> GetTickets()
-        {
-            List<Tickets> objticketsList = new List<Tickets> {
-            new Tickets { TicketID = 1, Ticket = "ZYU126DG" },
-    new Tickets { TicketID = 2, Ticket = "G2NY6Q9Z" },
-    new Tickets { TicketID = 3, Ticket = "MXP97HD3" },
-    new Tickets { TicketID = 4, Ticket = "JGBWSU6C" },
-    new Tickets { TicketID = 5, Ticket = "KC9NDZ1E" }
-        };
-            return objticketsList;
-        }
-    }
-
+    
     public class AssignedTo
     {
         public int memberID { get; set; }
         public string membername { get; set; }
-        public static List<AssignedTo> GetAssignedTo()
-        {
-            List<AssignedTo> objticketsList = new List<AssignedTo> {
-            new AssignedTo { memberID = 1, membername = "MadisonBoling" },
-    new AssignedTo { memberID = 2, membername = "ATSEmail-Channel" },
-    new AssignedTo { memberID = 3, membername = "NicoleDietz" },
-    new AssignedTo { memberID = 4, membername = "AllaMaria" },
-     new AssignedTo { memberID = 5, membername = "FelisaMccarver" }
-        };
-            return objticketsList;
-        }
     }
 
     public class Status
     {
         public int StatusID { get; set; }
         public string Statusname { get; set; }
-        public static List<Status> GetStatus()
-        {
-            List<Status> objticketsList = new List<Status> {
-            new Status { StatusID = 1, Statusname = "Active" },
-    new Status { StatusID = 2, Statusname = "Inactive" },
-    new Status { StatusID = 3, Statusname = "outdated" }
-        };
-            return objticketsList;
-        }
     }
 
     public class BindSearchGrid
@@ -173,20 +137,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public DateTime? ClosedDateTime { get; set; }
         public string Topic { get; set; }
 
-
-
-        public List<BindSearchGrid> _dataforGrid { get; set; }
-        public static List<BindSearchGrid> GetGridData()
-        {
-            List<BindSearchGrid> objgriddata = new List<BindSearchGrid> {
-        new BindSearchGrid{ TicketNumber="ZYU126DG",CreatedDate=DateTime.Now.ToShortDateString(),status="Active",Subject="Onboarding Employees",ServiceGroup="OA",AssignedTo="Girish"},
-        new BindSearchGrid{ TicketNumber="G2NY6Q9Z",CreatedDate=DateTime.Now.ToShortDateString(),status="Inactive",Subject="Z-Auto-Onboarding Confirm",ServiceGroup="WFA",AssignedTo="Manoj"},
-        new BindSearchGrid{ TicketNumber="MXP97HD3",CreatedDate=DateTime.Now.ToShortDateString(),status="Resolved",Subject="License and Certification",ServiceGroup="RA",AssignedTo="Vishal"},
-        new BindSearchGrid{ TicketNumber="JGBWSU6C",CreatedDate=DateTime.Now.ToShortDateString(),status="Resolved",Subject="HCA Rewards",ServiceGroup="OA",AssignedTo="Jawahar"},
-        new BindSearchGrid{ TicketNumber="KC9NDZ1E",CreatedDate=DateTime.Now.ToShortDateString(),status="Active",Subject="Hiring Employees",ServiceGroup="RA",AssignedTo="Girish"}
-        };
-            return objgriddata;
-        }
+        public List<BindSearchGrid> DataforGrid { get; set; }
     }
 
     public class LoginModel
@@ -207,7 +158,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int CatgID { get; set; }
         public string CatgDescription { get; set; }
         public bool IsActive { get; set; }
-        public List<Category> _categoryList { get; set; }
+        public List<Category> CategoryList { get; set; }
     }
 
     [Table("Category")]
@@ -222,7 +173,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
     public class clsGroupCatSubcat
     {
-        public List<clsCatSubcat> _catSubCatGroup { get; set; }
+        public List<clsCatSubcat> CatSubCatGroup { get; set; }
     }
     public class clsCatSubcat
     {
@@ -239,7 +190,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string CatgDescription { get; set; }
         public int SubCatID { get; set; }
         public int QuestionId { get; set; }
-        public List<QuestionMaster> _questionList { get; set; }
     }
 
     [Table("SubCategory")]
@@ -249,20 +199,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int SubCatgID { get; set; }
         public int CatgID { get; set; }
         public string SubCatgDescription { get; set; }
-
         public bool IsActive { get; set; }
-        //public List<QuestionMaster> _questionList { get; set; }
     }
-
-    //public class QuestionMaster
-    //{
-
-    //   // public string QuestionId { get; set; }
-    //   // public int SubCatgID { get; set; }
-    //   // public int CatgID { get; set; }
-
-    //    public List<tbQuestionMaster> _questionMasterList { get; set; }
-    //}
 
     [Table("QuestionMaster")]
     public class QuestionMaster
@@ -285,7 +223,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string QuestionName { get; set; }
         public string QuestionDescription { get; set; }
         public bool IsActive { get; set; }
-        public int status { get; set; }
+        public int Status { get; set; }
     }
      
     [Table("HROCRoster")]
