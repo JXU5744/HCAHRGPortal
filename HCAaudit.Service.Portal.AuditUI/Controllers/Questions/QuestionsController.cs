@@ -54,6 +54,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (objQuestion != null)
                 {
                     objQuestion.SeqNumber = newsequenceno;
+                    objQuestion.ModifiedBy = Environment.UserName;
+                    objQuestion.ModifiedDate = DateTime.Now;
                     _auditToolContext.QuestionMapping.Update(objQuestion);
                     _auditToolContext.SaveChanges();
                 }
@@ -232,6 +234,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         QuestionMapping objtbQuestionMaster = new QuestionMapping();
                         objtbQuestionMaster.QuestionId = questionbankdata.QuestionId;
                         objtbQuestionMaster.SubCatgId = Convert.ToInt32(data[0]);
+                        objtbQuestionMaster.CreatedBy = Environment.UserName;
+                        objtbQuestionMaster.CreatedDate = DateTime.Now;
                         //objtbQuestionMaster.QuestionText = questionbankdata.QuestionName;
                         // bjtbQuestionMaster.QuestionScore = 10;// as Score column is not mandatory now Convert.ToInt32(data[2]);
                         objtbQuestionMaster.SeqNumber = Convert.ToInt32(data[3]);
@@ -250,8 +254,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
                 _logger.LogError($"Error in insert question while typecasting and database insert.");
+                throw ex;
             }
 
             return Json("");
@@ -301,7 +305,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         public IActionResult BindGrid(string subCategoryID)
         {
 
-            var query = _auditToolContext.QuestionMapping
+            var query = _auditToolContext.QuestionMapping.Where(x=>x.SubCatgId == Int32.Parse(subCategoryID) && x.IsActive == true)
              .Join(
                  _auditToolContext.QuestionBank,
                  questionMaster => questionMaster.QuestionId,
@@ -327,8 +331,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                       isActive = x.IsActive
                   }
                  )
-                  .Where(a => a.SubCatID == Int32.Parse(subCategoryID) && a.isActive == true)
-                 .OrderBy(a => a.SequenceNo)
+                  .OrderBy(a => a.SequenceNo)
                  .ToList();
             return Json(query);
 
@@ -479,6 +482,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             QuestionBank objtblQuestionBank = _auditToolContext.QuestionBank
                                          .Where(a => a.QuestionId == id && a.IsActive == true)
                                          .FirstOrDefault();
+            objtblQuestionBank.ModifiedDate = DateTime.Now;
+            objtblQuestionBank.ModifiedBy = Environment.UserName;
             objtblQuestionBank.IsActive = false;
             _auditToolContext.QuestionBank.Update(objtblQuestionBank); _auditToolContext.SaveChanges();
             return View("Details", GetDetails());
@@ -501,6 +506,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 foreach (var item in questionRemaingQues)
                 {
                     item.SeqNumber = seq;
+                    item.ModifiedBy = Environment.UserName;
+                    item.ModifiedDate = DateTime.Now;
                     seq++;
                     _auditToolContext.QuestionMapping.Update(item);
                 }
