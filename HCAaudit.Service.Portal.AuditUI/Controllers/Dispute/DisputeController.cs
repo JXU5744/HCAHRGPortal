@@ -111,50 +111,65 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
 
         [HttpPost]
-        public IActionResult GetData([FromBody]List<AuditNonComplianceModel> model)
+        public IActionResult GetData([FromBody] List<AuditNonComplianceModel> model)
         {
-            if (isAuditor)
-            {
-                //Not handled error and logs
-                var ticketId = model.First().TicketId;
-                var auditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.TicketID == ticketId);
-                auditMain.isDisputed = true;
-                auditMain.DisputeDate = DateTime.Now;
-                //auditMain.DisputeAuditor34ID = "";
 
-                var auditRes = _auditToolContext.AuditMainResponse.Where(x => x.TicketID == ticketId);
-                var dispute = new List<AuditDispute>();
-                foreach (var ques in model)
+            try
+            {
+                if (isAuditor)
                 {
-                    if (Convert.ToInt32(ques.GracePeriodId) > 0 || Convert.ToInt32(ques.OverturnId) > 0)
+                    //Not handled error and logs
+                    var ticketId = model.First().TicketId;
+                    var auditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.TicketID == ticketId);
+                    auditMain.isDisputed = true;
+                    auditMain.DisputeDate = DateTime.Now;
+                    auditMain.ModifiedDate = DateTime.Now;
+                    auditMain.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    auditMain.DisputeAuditor34ID = _authService.LoggedInUserInfo().Result.HcaId;
+
+                    var auditRes = _auditToolContext.AuditMainResponse.Where(x => x.TicketID == ticketId);
+                    var dispute = new List<AuditDispute>();
+                    foreach (var ques in model)
                     {
-                        auditRes.First(x => x.QuestionId == ques.QuestionId).isNonCompliant = false;
-                        dispute.Add(new AuditDispute()
+                        if (Convert.ToInt32(ques.GracePeriodId) > 0 || Convert.ToInt32(ques.OverturnId) > 0)
                         {
-                            TicketID = ques.TicketId,
-                            AuditMainID = auditMain.ID,
-                            GracePeriodId = Convert.ToInt32(ques.GracePeriodId),
-                            OverTurnId = Convert.ToInt32(ques.OverturnId),
-                            QuestionId = Convert.ToInt32(ques.QuestionId),
-                            QuestionRank = Convert.ToInt32(ques.QuestionRank),
-                            Comments = ques.Comment,
-                            CreatedOn = DateTime.Now
-                        });
+                            auditRes.First(x => x.QuestionId == ques.QuestionId).isNonCompliant = false;
+                            dispute.Add(new AuditDispute()
+                            {
+                                TicketID = ques.TicketId,
+                                AuditMainID = auditMain.ID,
+                                GracePeriodId = Convert.ToInt32(ques.GracePeriodId),
+                                OverTurnId = Convert.ToInt32(ques.OverturnId),
+                                QuestionId = Convert.ToInt32(ques.QuestionId),
+                                QuestionRank = Convert.ToInt32(ques.QuestionRank),
+                                Comments = ques.Comment,
+                                CreatedDate = DateTime.Now,
+                                CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                                ModifiedDate = DateTime.Now,
+                                ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName
+                            });
+                        }
+
                     }
 
+                    _auditToolContext.AuditMain.Update(auditMain);
+                    _auditToolContext.AuditMainResponse.UpdateRange(auditRes);
+                    _auditToolContext.AuditDispute.AddRange(dispute);
+
+                    var result = _auditToolContext.SaveChanges();
+
+                    return Json(result);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
                 }
 
-                _auditToolContext.AuditMain.Update(auditMain);
-                _auditToolContext.AuditMainResponse.UpdateRange(auditRes);
-                _auditToolContext.AuditDispute.AddRange(dispute);
-
-                var result = _auditToolContext.SaveChanges();
-
-                return Json(result);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+
+                throw ex;
             }
         }
     }

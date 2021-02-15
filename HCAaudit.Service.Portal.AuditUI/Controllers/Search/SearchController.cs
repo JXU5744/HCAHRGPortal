@@ -40,6 +40,25 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             isAuditor = _authService.CheckAuditorUserGroup().Result;
         }
 
+
+        [HttpGet]
+        public IActionResult Details()
+        {
+            BindSearchGrid objBindSearchGrid = new BindSearchGrid();
+            try
+            {
+               // objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                // _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Details", ErrorDiscription = ex.Message });
+            }
+            return View("Details", objBindSearchGrid);
+
+        }
+
+
         [HttpPost]
         public JsonResult GetCommaSeperated()
         {

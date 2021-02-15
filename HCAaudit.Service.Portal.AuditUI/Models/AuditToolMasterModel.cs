@@ -53,8 +53,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public bool isHighNonComplianceImpact { get; set; }
         public bool isLowNonComplianceImpact { get; set; }
         public bool isCorrectionRequired { get; set; }
-        public DateTime ModifiedDate { get; set; }
         public string NonComplianceComments { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
+
     }
 
     public class QuesBankMasterJoinMast

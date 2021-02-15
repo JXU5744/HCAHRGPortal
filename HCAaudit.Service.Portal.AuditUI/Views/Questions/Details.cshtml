@@ -64,7 +64,7 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-md-12">
             <label for="txtQuestion" class="neu-input__label">Question Name:</label>
-            <textarea id="txtQuestion" class="neu-input__field" rows="2" cols="50" style="resize:none"></textarea>
+            <textarea id="txtQuestion" class="neu-input__field" rows="4" cols="50" style="resize:none"></textarea>
             @*<textarea id="txtQuestion" class="form-control" rows="2" cols="50" style="resize:none"></textarea>*@
             <span id="errormsg" class="neu-button--danger">Please Enter or Select Question</span>
             @*<textarea name="textarea" style="width:250px;height:150px;"></textarea>*@
@@ -292,6 +292,8 @@
 
     function OpenEditpopup(CatgID) {
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
+        $('#errormsgedit').hide(); $('#errordescriptionmsgedit').hide();
+
         $.ajax({
             type: "POST",
             url: "/Questions/GetQuestionByid",

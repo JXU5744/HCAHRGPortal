@@ -250,11 +250,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     main.AuditNotes = audit.AuditNote;
                     main.AuditorName = audit.AuditorName;
                     main.AuditType = audit.EnvironmentType;
-                    main.ModifiedDate = DateTime.Now;
                     main.ServiceGroupID = audit.ServiceCatId;
                     main.SubcategoryID = audit.SubCatId;
                     main.SubmitDT = DateTime.Now;
                     main.TicketDate = audit.TicketDate;
+                    main.CreatedDate = DateTime.Now;
+                    main.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    main.ModifiedDate = DateTime.Now;
+                    main.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                     _auditToolContext.AuditMain.Add(main);
                     _auditToolContext.SaveChanges();
 
@@ -275,19 +278,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         obj.isNA = item.Action.IsNotApplicable;
                         obj.isNonCompliant = item.Action.IsNonCompliance;
                         obj.NonComplianceComments = item.Comments;
+                        obj.CreatedDate = DateTime.Now;
+                        obj.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                         obj.ModifiedDate = DateTime.Now;
+                        obj.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+
                         _auditToolContext.AuditMainResponse.Add(obj);
                         _auditToolContext.SaveChanges();
                     }
                 }
                 return RedirectToAction("Index", "Search");
-            } 
+            }
             else
             {
                 return RedirectToAction("Index", "Home");
             }
         }
-        
+
     }
 }
 

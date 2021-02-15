@@ -19,7 +19,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int GracePeriodId { get; set; }
         public int OverTurnId { get; set; } 
         public string Comments { get; set; }
-        public DateTime CreatedOn { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
 
 }
