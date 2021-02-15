@@ -42,13 +42,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             if (isAdmin || isAuditor)
             {
-                if (isAdmin)
+                if (isAuditor)
                 {
-                    return RedirectToAction("Details", "Category");
+                    return RedirectToAction("Index", "Search");
                 }
                 else
                 {
-                    return RedirectToAction("Index", "Search");
+                    return RedirectToAction("Index", "Category");
                 }
             }
             else
@@ -64,15 +64,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             if (isAdmin || isAuditor)
             {
-                if (isAdmin)
-                {
-                    return RedirectToAction("Details", "Category");
-                }
-                else
+                if (isAuditor)
                 {
                     return RedirectToAction("Index", "Search");
                 }
-
+                else
+                {
+                    return RedirectToAction("Index", "Category");
+                }
             }
             else
             {
