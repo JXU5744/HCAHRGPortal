@@ -113,8 +113,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             objHROCRoster.JobCDDesc = hROCRosterViewModel.JobCDDesc;
                             objHROCRoster.EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc;
                             objHROCRoster.DateHired = hROCRosterViewModel.DateHired;
-                            objHROCRoster.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                            objHROCRoster.CreatedDate = DateTime.Now;
                             objHROCRoster.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                             objHROCRoster.ModifiedDate = DateTime.Now;
                             _auditToolContext.HROCRoster.Update(objHROCRoster);
@@ -162,6 +160,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             JobCDDesc = hROCRosterViewModel.JobCDDesc,
                             EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
                             DateHired = hROCRosterViewModel.DateHired,
+                            CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            CreatedDate = DateTime.Now,
                             ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                             ModifiedDate = DateTime.Now
                         };
