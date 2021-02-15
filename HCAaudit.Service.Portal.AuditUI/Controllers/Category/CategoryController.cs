@@ -84,6 +84,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             if (objCategorys != null)
                             {
                                 objCategorys.CatgDescription = param[1];
+                                objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                objCategorys.ModifiedDate = DateTime.Now;
                                 _auditToolContext.Categories.Update(objCategorys);
                                 _auditToolContext.SaveChanges();
                             }
@@ -103,21 +105,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             if (isAdmin)
             {
-                object responce = "";
                 if (IsCategoryNameExists(CategoryName))
                 {
-                    responce = "1";
+                    return Json("1");
                 }
                 else
                 {
                     Categorys objCategorys = new Categorys();
                     objCategorys.CatgDescription = CategoryName;
                     objCategorys.IsActive = true;
+                    objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    objCategorys.CreatedDate = DateTime.Now;
+                    objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    objCategorys.ModifiedDate = DateTime.Now;
                     _auditToolContext.Categories.Add(objCategorys);
                     _auditToolContext.SaveChanges();
                     return RedirectToAction("index");
                 }
-                return Json(responce);
             }
             else
             {
@@ -132,7 +136,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 var data = (from cat in _auditToolContext.Categories select cat).ToList();
                 Categorys objCategorys = data.Find(category => category.CatgID == id);
-                objCategorys.IsActive = false; _auditToolContext.Categories.Update(objCategorys);
+                objCategorys.IsActive = false;
+                objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                objCategorys.ModifiedDate = DateTime.Now;
+                _auditToolContext.Categories.Update(objCategorys);
                 _auditToolContext.SaveChanges();
                 return RedirectToAction("Index", GetDetails());
             }

@@ -18,36 +18,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int QuestionSeqNumber { get; set; }
     }
 
-    public class tblAuditViewModel
-    {
-        public string TicketId { get; set; }
-        public string AgentName { get; set; }
-        public string Agent34Id { get; set; }
-        public string AuditorName { get; set; }
-        public string SubCatName { get; set; }
-        public int ServiceCatId { get; set; }
-        public int TicketSubStatus { get; set; }
-        public int TicketStatus { get; set; }
-
-        public DateTime TicketDate { get; set; }
-        public int SubCatId { get; set; }
-        public string ServiceGroupName { get; set; }
-        public bool isDisputed { get; set; }
-        public DateTime DisputedDate { get; set; }
-        public string AuditorQuit { get; set; }
-        public string AuditorQuitReason { get; set; }
-        public string EnvironmentType { get; set; }
-        public string AuditNote { get; set; }
-        public DateTime ModifiedDate { get; set; }
-        public DateTime DateOfAuditor { get; set; }
-    }
-
-
     [Table("Usp_GetHRAuditSearchResult")]
     [Keyless]
     public class Usp_GetHRAuditSearchResult
     {
-
         public string TicketCode { get; set; }
         public string ServiceDeliveryGroup { get; set; }
         public string Category { get; set; }
@@ -69,11 +43,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     {
         [Key]
         public int Id { get; set; }
-
         public int AuditMainID { get; set; }
-
         public string TicketID { get; set; }
-
         public int QuestionId { get; set; }
         public int QuestionRank { get; set; }
         public bool isCompliant { get; set; }
@@ -84,7 +55,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public bool isCorrectionRequired { get; set; }
         public DateTime ModifiedDate { get; set; }
         public string NonComplianceComments { get; set; }
-
     }
 
     public class QuesBankMasterJoinMast
@@ -96,8 +66,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string QuestionPercentage { get; set; }
         public int SubCatID { get; set; }
         public int QuestionMasterId { get; set; }
-        public bool isActive { get; set; }
-        
+        public int QuestionMappingId { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class CatSubCatJoinMast
@@ -129,14 +99,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string Subject { get; set; }
         public string ServiceGroup { get; set; }
         public string AssignedTo { get; set; }
-
         public string Category { get; set; }
-
         public string Subcategory { get; set; }
         public string UserThreeFourID { get; set; }
         public DateTime? ClosedDateTime { get; set; }
         public string Topic { get; set; }
-
         public List<BindSearchGrid> DataforGrid { get; set; }
     }
 
@@ -167,7 +134,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         [Key]
         public int CatgID { get; set; }
         public string CatgDescription { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
 
 
@@ -199,31 +170,41 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int SubCatgID { get; set; }
         public int CatgID { get; set; }
         public string SubCatgDescription { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
 
-    [Table("QuestionMaster")]
-    public class QuestionMaster
+    [Table("QuestionMapping")]
+    public class QuestionMapping
     {
         [Key]
-        public int QuestionMasterId { get; set; }
+        public int QuestionMappingId { get; set; }
         public int QuestionId { get; set; }
         public int SeqNumber { get; set; }
-        public int SubCatgID { get; set; }
-        public string QuestionText { get; set; }
-        public int QuestionScore { get; set; }
-        public bool IsActive { get; set; }
+        public int SubCatgId { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
+
     }
 
     [Table("QuestionBank")]
     public class QuestionBank
     {
         [Key]
-        public int QuestionID { get; set; }
+        public int QuestionId { get; set; }
         public string QuestionName { get; set; }
         public string QuestionDescription { get; set; }
-        public bool IsActive { get; set; }
-        public int Status { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
      
     [Table("HROCRoster")]
@@ -267,8 +248,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         [Column("Date Hired")]
         public DateTime? DateHired { get; set; }
-
+        public DateTime? CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public string ModifiedBy { get; set; }
     }
+
     [Table("TicketsViaSSIS")]
     public partial class TicketsViaSSIS
     {

@@ -29,6 +29,8 @@
         <label class="neu-input__label required" style="text-align:left;width:30%;">Enter Employee (by 3-4 ID)</label>
         <input name="txtSearch34Id" id="txtSearch34Id" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}" />
         <input name="hiddenHROCRosterId" id="hiddenHROCRosterId" class="neu-input__field" type="hidden" />
+        <input name="hiddenCreatedBy" id="hiddenCreatedBy" class="neu-input__field" type="hidden" />
+        <input name="hiddenCreatedDate" id="hiddenCreatedDate" class="neu-input__field" type="hidden" />
         <span id="errorMessage" class="neu-button--danger"></span>
     </div>
     <div class="col-sm-4">
@@ -177,6 +179,7 @@
                         </button>
                     </div>
                 </div>
+
             </div>
         </fieldset>
     </div>
@@ -373,7 +376,10 @@
                         data: { "EmployeeId": $("#txtSearch34Id").val() },
                         success: function (response) {
                             if (response.length > 0) {
-                                $("#hiddenHROCRosterId").val(response[0].HROCRosterId)
+                                $("#hiddenHROCRosterId").val(response[0].HROCRosterId);
+                                $("#hiddenCreatedBy").val(response[0].CreatedBy);
+                                $("#hiddenCreatedDate").val(response[0].CreatedDate);
+
                                 $("#txtEmployeeFullName").val(response[0].EmployeeFullName);
                                 $("#txtEmployeeFirstName").val(response[0].EmployeeFirstName);
                                 $("#txtEmployeeLastName").val(response[0].EmployeeLastName);
@@ -441,6 +447,8 @@
                     var HROCRosterViewModel =
                     {
                         "HROCRosterId": $("#hiddenHROCRosterId").val(),
+                        "CreatedBy": $("#hiddenCreatedBy").val(),
+                        "CreatedDate": $("#hiddenCreatedDate").val(),
                         "EmployeeNumber": $("#txtEmployeeNumber").val(),
                         "EmployeeFullName": $("#txtEmployeeFullName").val(),
                         "EmployeeLastName": $("#txtEmployeeLastName").val(),
@@ -490,6 +498,8 @@
                     var HROCRosterViewModel =
                     {
                         "HROCRosterId": $("#hiddenHROCRosterId").val(),
+                        "CreatedBy": $("#hiddenCreatedBy").val(),
+                        "CreatedDate": $("#hiddenCreatedDate").val(),
                         "EmployeeNumber": $("#txtEmployeeNumber").val(),
                         "EmployeeFullName": $("#txtEmployeeFullName").val(),
                         "EmployeeLastName": $("#txtEmployeeLastName").val(),

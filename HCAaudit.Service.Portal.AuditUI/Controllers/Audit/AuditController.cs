@@ -106,17 +106,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         var query = _auditToolContext.QuestionBank
                             .Join(
-                            _auditToolContext.QuestionMasters.Where(a => a.SubCatgID == subCategory
+                            _auditToolContext.QuestionMapping.Where(a => a.SubCatgId == subCategory
                             && a.IsActive == true),
-                        questionBanks => questionBanks.QuestionID,
+                        questionBanks => questionBanks.QuestionId,
                         questionMasters => questionMasters.QuestionId,
                         (questionBanks, questionMasters) => new
                         {
-                            QuestionId = questionBanks.QuestionID,
+                            QuestionId = questionBanks.QuestionId,
                             QuestionName = questionBanks.QuestionName,
                             QuestionDescription = questionBanks.QuestionDescription,
                             SeqNumber = questionMasters.SeqNumber,
-                            CatSubCatId = questionMasters.SubCatgID
+                            CatSubCatId = questionMasters.SubCatgId
                         })
                             .OrderBy(b => b.SeqNumber)
                             .Select(x => new QuestionConfigMappingJoinMast
@@ -181,17 +181,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         var query = _auditToolContext.QuestionBank
                             .Join(
-                            _auditToolContext.QuestionMasters.Where(a => a.SubCatgID == serviceCategory
+                            _auditToolContext.QuestionMapping.Where(a => a.SubCatgId == serviceCategory
                             && a.IsActive == true),
-                        questionBanks => questionBanks.QuestionID,
+                        questionBanks => questionBanks.QuestionId,
                         questionMasters => questionMasters.QuestionId,
                         (questionBanks, questionMasters) => new
                         {
-                            QuestionId = questionBanks.QuestionID,
+                            QuestionId = questionBanks.QuestionId,
                             QuestionName = questionBanks.QuestionName,
                             QuestionDescription = questionBanks.QuestionDescription,
                             SeqNumber = questionMasters.SeqNumber,
-                            CatSubCatId = questionMasters.SubCatgID
+                            CatSubCatId = questionMasters.SubCatgId
                         })
                             .OrderBy(b => b.SeqNumber)
                             .Select(x => new QuestionConfigMappingJoinMast

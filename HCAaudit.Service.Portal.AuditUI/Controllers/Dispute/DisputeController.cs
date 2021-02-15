@@ -78,7 +78,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 var auditNonCompList = new List<AuditNonComplianceModel>();
                 foreach (var auditRes in auditResponses)
                 {
-                    var questionText = _auditToolContext.QuestionBank.Where(x => x.QuestionID == auditRes.QuestionId).FirstOrDefault();
+                    var questionText = _auditToolContext.QuestionBank.Where(x => x.QuestionId == auditRes.QuestionId).FirstOrDefault();
 
                     if (questionText != null)
                     {
