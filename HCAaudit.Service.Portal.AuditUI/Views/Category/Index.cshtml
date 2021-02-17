@@ -172,9 +172,9 @@
             resizable: false
         });
 
-        $("#btncancelpopupdelete").click(function () {
-            $("#popupcontent").dialog('close');
-        });
+        //$("#btncancelpopupdelete").click(function () {
+        //    $("#popupcontent").dialog('close');
+        //});
 
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
@@ -183,27 +183,12 @@
         $("#btncancelpopupedit").click(function () {
             $("#popupcontentedit").dialog('close');
         });
-
-        $("#btnopenPopUp").click(function () {
-            $("#popupcontent").dialog({
-                position: 'bottom'
-            });
-        });
-        $("#btnopenPopUp").click(function () {
-            $("#popupcontentedit").dialog({
-                position: 'bottom'
-            });
-        });
+       
+        
     });
 
-    //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
-
-    //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
-
-    //$("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 190, width: 700 });
-
     $("#btnopenPopUp").click(function () {
-        $('#txtcategory').val(""); $('#errormsgedit').hide();
+        $('#txtcategory').val(""); $('#errormsg').hide();
         $("#popupcontent").dialog('open');
     });
 

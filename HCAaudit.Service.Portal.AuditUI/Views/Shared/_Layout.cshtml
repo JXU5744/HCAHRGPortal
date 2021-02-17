@@ -20,15 +20,17 @@
         <div class="neu-topnav__compact">
             @if (auth.CheckAuditorUserGroup().Result)
             {
-                <a asp-controller="search" asp-action="index" class="d-flex align-items-center flex-grow-1"><i class="material-icons neu-margin--right-10">home</i></a>
+                <a asp-controller="search" asp-action="index" class="d-flex align-items-left flex-grow-1"><i class="material-icons neu-margin--right-10">home</i></a>
             }
             else
             {
                 <a asp-controller="home" asp-action="index" class="d-flex align-items-center flex-grow-1"><i class="material-icons neu-margin--right-10">home</i></a>
             }
 
-        <div class="logo-title">
-            <cell class="show-for-large">&#124; &nbsp; &nbsp; &nbsp;</cell><cell>HR Audit Tool</cell>
+            
+
+            <div class="logo-title">
+            <cell class="show-for-large"></cell><cell>HR Audit Tool</cell>
         </div>
 
             <div style="z-index: 1;">
