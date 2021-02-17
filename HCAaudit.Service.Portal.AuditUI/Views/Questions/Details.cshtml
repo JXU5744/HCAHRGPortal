@@ -63,8 +63,8 @@
 <div id="popupcontent" title="Add Question" hidden="hidden" class="neu-container">
     <div class="row neu-margin--bottom-16">
         <div class="col-md-12">
-            <label for="txtQuestion" class="neu-input__label">Question Name:</label>
-            <textarea id="txtQuestion" class="neu-input__field" rows="4" cols="50" style="resize:none"></textarea>
+            <label for="txtquestion" class="neu-input__label">Question Name:</label>
+            <textarea id="txtquestion" class="neu-input__field" rows="4" cols="50" style="resize:none"></textarea>
             @*<textarea id="txtQuestion" class="form-control" rows="2" cols="50" style="resize:none"></textarea>*@
             <span id="errormsg" class="neu-button--danger">Please Enter or Select Question</span>
             @*<textarea name="textarea" style="width:250px;height:150px;"></textarea>*@
@@ -201,7 +201,7 @@
         });
 
         $("#btnopenPopUp").click(function () {
-            $("#txtQuestion").val("");
+            $("#txtquestion").val("");
             $("#txtdescription").val("");
             $('#errormsg').hide();
             $('#errordescriptionmsg').hide();
@@ -227,7 +227,7 @@
             url: "/Questions/GetCommaSeperated",
             data: null,
             success: function (response) {
-                $("#txtQuestion").autocomplete({
+                $("#txtquestion").autocomplete({
                     source: response
                 });
             },
@@ -240,6 +240,20 @@
         });
 
         $("#popupcontent").dialog('open');
+    });
+
+    $("#txtdescription").click(function (e) {
+        $.ajax({
+            type: "POST",
+            url: "/Questions/GetDesbyQuesText",
+            data: { "questionText": $("#txtquestion").val() },
+            success: function (response) {
+                if (response == "nd") {
+                } else {
+                    $("#txtdescription").val(response);
+                }
+            }
+        });
     });
 
     $("#txtQuestionedit").keyup(function () {
@@ -262,17 +276,11 @@
                 }
             });
             $("#popupcontentedit").dialog('open');
-            //$("#errormsgedit").show();
-            //$("#errormsgedit").text("Please Enter Question");
         }
-        //else {
-        //    $("#errormsgedit").hide();
-        //}
     });
 
-    //$("#errormsg").hide();
 
-    $('#txtQuestion').on('keypress', function (event) {
+    $('#txtquestion').on('keypress', function (event) {
         $('#errormsg').hide();
     });
 
@@ -349,7 +357,7 @@
 
     $("#btnaddQuestion").click(function () {
 
-        var questionName = $('#txtQuestion').val();
+        var questionName = $('#txtquestion').val();
         var questionDesc = $('#txtdescription').val();
 
         if (questionName == "") { $("#errormsg").show(); $("#errormsg").text("Please Enter Question"); return false; }
