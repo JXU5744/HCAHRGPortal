@@ -4,15 +4,15 @@
 }
 @model List<HCAaudit.Service.Portal.AuditUI.Models.Categorys>
 
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" href="~/css/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="~/css/main.css" />
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -113,7 +113,11 @@
                 "targets": [0],
                 "visible": false,
                 "searchable": true
-            }],
+            },
+                {
+                    "targets": [0, 2, 3],
+                    "orderable": false
+                }],
             "columns": [
                 { "data": "CatgID", "name": "CatgID", "autoWidth": true },
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
