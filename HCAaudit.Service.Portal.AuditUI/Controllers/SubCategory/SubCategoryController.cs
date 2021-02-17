@@ -25,128 +25,169 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private bool isAdmin = false;
-        public SubCategoryController(ILogger<SubCategoryController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        private IErrorLog _log;
+        
+        public SubCategoryController(ILogger<SubCategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
+            _log = log;
         }
 
 
         //[Route("category/method")]
         public IActionResult GetCategory()
         {
-            if (isAdmin)
+            try
             {
-                var categoryList = GetCategoryDetails();
-                _logger.LogInformation($"No of records: {categoryList.Count()}");
-                //categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
-                //ViewBag.ListOfCategory = categoryList;
-                return Json(categoryList);
+                if (isAdmin)
+                {
+                    var categoryList = GetCategoryDetails();
+                    
+                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    
+                    return Json(categoryList);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in GetCategory method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategory", ErrorDiscription = ex.Message });
             }
+         
+            return RedirectToAction("Index", "Home");
+
         }
 
         [HttpPost]
         public ActionResult GetCategoryByid(int id)
         {
-            if (isAdmin)
+            try
             {
-                object response = "";
-                if (id == 0)
+                if (isAdmin)
                 {
-                    return Json(response);
+                    object response = "";
+                    if (id == 0)
+                    {
+                        return Json(response);
+                    }
+                    var data = GetDetail(id);
+                    return Json(data);
                 }
-                var data = GetDetail(id);
-                return Json(data);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in GetCategoryByid method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategoryByid", ErrorDiscription = ex.Message });
             }
+            return RedirectToAction("Index", "Home");
         }
 
 
         SubCategory GetSubCategoryDetailsByID(int id)
         {
-            SubCategory data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgID == id && x.IsActive == true)
-                                select subcat).FirstOrDefault();
+            SubCategory data = null;
+            try
+            {
+                data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgID == id && x.IsActive == true)
+                                    select subcat).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetSubCategoryDetailsByID method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetSubCategoryDetailsByID", ErrorDiscription = ex.Message });
+            }
+
             return data;
         }
 
         [HttpPost]
         public ActionResult Edit(string id)
         {
-            if (isAdmin)
+            try
             {
-                object responce = "";
-                if (!string.IsNullOrEmpty(id))
+                if (isAdmin)
                 {
-                    string[] param = id.Split('$');
-                    if (param.Count() > 0)
+                    object responce = "";
+                    if (!string.IsNullOrEmpty(id))
                     {
-
-                        var collection = GetDetails();
-                        foreach (var item in collection)
+                        string[] param = id.Split('$');
+                        if (param.Count() > 0)
                         {
-                            if (item.SubCatgDescription.ToLower() == param[1].ToLower().Trim())
-                            { responce = "1"; break; }
-                        }
-                        if (string.IsNullOrEmpty(responce.ToString()))
-                        {
-                            SubCategory objCategorys = GetSubCategoryDetailsByID(Int32.Parse(param[0]));
-                            if (objCategorys != null)
+                            var collection = GetDetails();
+                            foreach (var item in collection)
                             {
-                                objCategorys.SubCatgDescription = param[1];
-                                objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                                objCategorys.ModifiedDate = DateTime.Now;
-                                _auditToolContext.SubCategories.Update(objCategorys);
-                                _auditToolContext.SaveChanges();
+                                if (item.SubCatgDescription.ToLower() == param[1].ToLower().Trim())
+                                { 
+                                    responce = "1"; 
+                                    break; 
+                                }
+                            }
+                            if (string.IsNullOrEmpty(responce.ToString()))
+                            {
+                                SubCategory objCategorys = GetSubCategoryDetailsByID(Int32.Parse(param[0]));
+                                if (objCategorys != null)
+                                {
+                                    objCategorys.SubCatgDescription = param[1];
+                                    objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                    objCategorys.ModifiedDate = DateTime.Now;
+                                    _auditToolContext.SubCategories.Update(objCategorys);
+                                    _auditToolContext.SaveChanges();
+                                }
                             }
                         }
                     }
+                    return Json(responce);
                 }
-                return Json(responce);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Edit method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Edit", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public ActionResult Insert(string catgID, string subCategoryName)
         {
-            if (isAdmin)
+            try
             {
-                object responce = "";
-
-                if (isSubcategoryNameExists(Int32.Parse(catgID), subCategoryName)) { responce = "1"; }
-                else
+                if (isAdmin)
                 {
-                    SubCategory objCategorys = new SubCategory();
-                    objCategorys.CatgID = Convert.ToInt32(catgID); 
-                    objCategorys.SubCatgDescription = subCategoryName; 
-                    objCategorys.IsActive = true;
-                    objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                    objCategorys.CreatedDate = DateTime.Now;
-                    objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                    objCategorys.ModifiedDate = DateTime.Now;
-                    _auditToolContext.SubCategories.Add(objCategorys);
-                    _auditToolContext.SaveChanges();
-                    return RedirectToAction("Details");
+                    object responce = "";
+
+                    if (IsSubcategoryNameExists(Int32.Parse(catgID), subCategoryName)) { responce = "1"; }
+                    else
+                    {
+                        SubCategory objCategorys = new SubCategory();
+                        objCategorys.CatgID = Convert.ToInt32(catgID);
+                        objCategorys.SubCatgDescription = subCategoryName;
+                        objCategorys.IsActive = true;
+                        objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        objCategorys.CreatedDate = DateTime.Now;
+                        objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        objCategorys.ModifiedDate = DateTime.Now;
+                        _auditToolContext.SubCategories.Add(objCategorys);
+                        _auditToolContext.SaveChanges();
+                        return RedirectToAction("Details");
+                    }
+                    return Json(responce);
                 }
-                return Json(responce);
+
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Insert method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Insert", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -181,19 +222,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     int recordsTotal = 0;
 
                     var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
-
-                    .Join(
-            _auditToolContext.Categories,
-            subCategories => subCategories.CatgID,
-            categories => categories.CatgID,
-            (subCategories, categories) => new
-            {
-                CatgID = categories.CatgID,
-                SubCatID = subCategories.SubCatgID,
-                CatgDescription = categories.CatgDescription,
-                SubCatgDescription = subCategories.SubCatgDescription
-            }
-            ).ToList();
+                        .Join(_auditToolContext.Categories, subCategories => subCategories.CatgID,
+                                categories => categories.CatgID,
+                                (subCategories, categories) => new
+                                {
+                                    CatgID = categories.CatgID,
+                                    SubCatID = subCategories.SubCatgID,
+                                    CatgDescription = categories.CatgDescription,
+                                    SubCatgDescription = subCategories.SubCatgDescription
+                                }).ToList();
 
                     // getting all Customer data  
                     var customerData = (from tempcustomer in GetDetails()
@@ -228,123 +265,155 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
                     return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    _logger.LogInformation($"Exception in Details method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.Message });
                 }
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public IActionResult Details()
         {
-            if (isAdmin)
+            try
             {
-                return View("Details", GetDetails());
+                if (isAdmin)
+                {
+                    return View("Details", GetDetails());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Details method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.Message });
             }
+            return RedirectToAction("Index", "Home");
+            
         }
 
-        bool isSubcategoryNameExists(int categoryid, string subcategoryname)
+        private bool IsSubcategoryNameExists(int categoryid, string subcategoryname)
         {
+
             bool result = false;
-            var data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgDescription.ToLower() == subcategoryname.ToLower()
+            try
+            {
+                var data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgDescription.ToLower() == subcategoryname.ToLower()
                          && x.CatgID == categoryid && x.IsActive == true)
-                        select subcat).FirstOrDefault();
-            if (data != null) result = true;
+                            select subcat).FirstOrDefault();
+                if (data != null) result = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in IsSubcategoryNameExists method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_IsSubcategoryNameExists", ErrorDiscription = ex.Message });
+            }
             return result;
         }
 
-        List<CatSubCatJoinMast> GetDetails()
+        private List<CatSubCatJoinMast> GetDetails()
         {
-            var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
+            try
+            {
+                var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
                 .Join(
-        _auditToolContext.Categories,
-        subCategories => subCategories.CatgID,
-        categories => categories.CatgID,
-        (subCategories, categories) => new
+                    _auditToolContext.Categories,
+                    subCategories => subCategories.CatgID,
+                    categories => categories.CatgID,
+                    (subCategories, categories) => new
+                    {
+                        CatgID = categories.CatgID,
+                        SubCatID = subCategories.SubCatgID,
+                        CatgDescription = categories.CatgDescription,
+                        SubCatgDescription = subCategories.SubCatgDescription
+                    })
+                     .Select(x => new CatSubCatJoinMast
+                     {
+                         CatgID = x.CatgID,
+                         SubCatgID = x.SubCatID,
+                         CatgDescription = x.CatgDescription,
+                         SubCatgDescription = x.SubCatgDescription
+                     }
+                    ).ToList();
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetDetails method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetails", ErrorDiscription = ex.Message });
+            }
+
+            return new List<CatSubCatJoinMast>();
+        }
+
+        private CatSubCatJoinMast GetDetail(int subcatid)
         {
-            CatgID = categories.CatgID,
-            SubCatID = subCategories.SubCatgID,
-            CatgDescription = categories.CatgDescription,
-            SubCatgDescription = subCategories.SubCatgDescription
-        })
-         .Select(x => new CatSubCatJoinMast
-         {
-             CatgID = x.CatgID,
-             SubCatgID = x.SubCatID,
-             CatgDescription = x.CatgDescription
-        ,
-             SubCatgDescription = x.SubCatgDescription
-         }
-        ).ToList();
+            CatSubCatJoinMast query = null;
+            try
+            {
+                query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
+                .Join(
+                    _auditToolContext.Categories,
+                    subCategories => subCategories.CatgID,
+                    categories => categories.CatgID,
+                    (subCategories, categories) => new
+                    {
+                        CatgID = categories.CatgID,
+                        SubCatID = subCategories.SubCatgID,
+                        CatgDescription = categories.CatgDescription,
+                        SubCatgDescription = subCategories.SubCatgDescription
+                    })
+                     .Select(x => new CatSubCatJoinMast
+                     {
+                         CatgID = x.CatgID,
+                         SubCatgID = x.SubCatID,
+                         CatgDescription = x.CatgDescription,
+                         SubCatgDescription = x.SubCatgDescription
+                     }
+                    ).Where(a => a.SubCatgID == subcatid).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetDetail method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetail", ErrorDiscription = ex.Message });
+            }
 
             return query;
         }
 
-        CatSubCatJoinMast GetDetail(int subcatid)
-        {
-            var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
-                .Join(
-        _auditToolContext.Categories,
-        subCategories => subCategories.CatgID,
-        categories => categories.CatgID,
-        (subCategories, categories) => new
-        {
-            CatgID = categories.CatgID,
-            SubCatID = subCategories.SubCatgID,
-            CatgDescription = categories.CatgDescription,
-            SubCatgDescription = subCategories.SubCatgDescription
-        })
-         .Select(x => new CatSubCatJoinMast
-         {
-             CatgID = x.CatgID,
-             SubCatgID = x.SubCatID,
-             CatgDescription = x.CatgDescription,
-             SubCatgDescription = x.SubCatgDescription
-         }
-        ).Where(a => a.SubCatgID == subcatid).SingleOrDefault();
-            return query;
-        }
-        [HttpPost]
-        public IActionResult delete(int id)
-        {
-            if (isAdmin)
-            {
-                SubCategory objSubCategory = new SubCategory();
-                try
-                {
-                    objSubCategory = GetSubCategoryDetailsByID(id);
+        //[HttpPost]
+        //public IActionResult delete(int id)
+        //{
+        //    if (isAdmin)
+        //    {
+        //        SubCategory objSubCategory = new SubCategory();
+        //        try
+        //        {
+        //            objSubCategory = GetSubCategoryDetailsByID(id);
 
-                    objSubCategory.SubCatgID = id; 
-                    objSubCategory.IsActive = false;
-                    objSubCategory.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                    objSubCategory.ModifiedDate = DateTime.Now;
-                    _auditToolContext.SubCategories.Update(objSubCategory);
-                    _auditToolContext.SaveChanges();
+        //            objSubCategory.SubCatgID = id; 
+        //            objSubCategory.IsActive = false;
+        //            objSubCategory.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+        //            objSubCategory.ModifiedDate = DateTime.Now;
+        //            _auditToolContext.SubCategories.Update(objSubCategory);
+        //            _auditToolContext.SaveChanges();
 
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogInformation($"Exception in Delete method");
+        //            _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Delete", ErrorDiscription = ex.Message });
+        //        }
 
-                return View("Details", GetDetails());
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
-        }
+        //        return View("Details", GetDetails());
+        //    }
+            
+        //    return RedirectToAction("Index", "Home");
+        //}
 
         List<Categorys> GetCategoryDetails()
         {
@@ -354,18 +423,24 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
-            if (isAdmin)
+            try
             {
-                object response;
-                var data = (from cat in _auditToolContext.QuestionMapping.Where(a => a.IsActive == true) select cat).ToList();
-                QuestionMapping obj = data.Find(a => a.SubCatgId == id);
-                response = obj == null ? "NoRecords" : "HasRecords";
-                return Json(response);
+                if (isAdmin)
+                {
+                    object response;
+                    var data = (from cat in _auditToolContext.QuestionMapping.Where(a => a.IsActive == true) select cat).ToList();
+                    QuestionMapping obj = data.Find(a => a.SubCatgId == id);
+                    response = obj == null ? "NoRecords" : "HasRecords";
+                    return Json(response);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in HasDeleteAccess method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_HasDeleteAccess", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

@@ -24,31 +24,39 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private bool isAdmin;
-        public QuestionsController(ILogger<QuestionsController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        private IErrorLog _log;
+        public QuestionsController(ILogger<QuestionsController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
+            _log = log;
         }
 
         [HttpPost]
         public ActionResult GetQuestionByid(string id)
         {
-            if (isAdmin)
+            try
             {
-                object response = "";
-                if (string.IsNullOrEmpty(id))
+                if (isAdmin)
                 {
-                    return Json(response);
+                    object response = "";
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        return Json(response);
+                    }
+                    return Json(GetSingleQuestionByid(id));
                 }
-                return Json(GetSingleQuestionByid(id));
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in GetQuestionByid method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionByid", ErrorDiscription = ex.Message });
             }
+            return RedirectToAction("Index", "Home");
+
         }
 
         [HttpPost]
@@ -96,8 +104,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return Json("error");
-                    throw ex;
+                    _logger.LogInformation($"Exception in EditQuestionSequence method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_EditQuestionSequence", ErrorDiscription = ex.Message });
+                    return Json("Error");
                 }
             }
             else
@@ -110,95 +119,132 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public ActionResult GetDesbyQuesText(string questionText)
         {
-            if (isAdmin)
+            try
             {
-                var responce = "";
-
-                responce = _auditToolContext.QuestionBank
-                            .Where(a => a.QuestionName == questionText && a.IsActive == true)
-                            .Select(a => a.QuestionDescription)
-                            .FirstOrDefault();
-                if (string.IsNullOrWhiteSpace(responce))
+                if (isAdmin)
                 {
-                    return Json(responce = "nd");
+                    var responce = "";
+
+                    responce = _auditToolContext.QuestionBank
+                                .Where(a => a.QuestionName == questionText && a.IsActive == true)
+                                .Select(a => a.QuestionDescription)
+                                .FirstOrDefault();
+                    if (string.IsNullOrWhiteSpace(responce))
+                    {
+                        return Json(responce = "nd");
+                    }
+                    return Json(responce);
                 }
-                return Json(responce);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in GetDesbyQuesText method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDesbyQuesText", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
             [HttpPost]
         public ActionResult GetQuestionSeqByid(int id, int subcatid, int actionQid)
         {
-            if (isAdmin)
+            try
             {
-                var query = _auditToolContext.QuestionMapping
-                 .Join(
-                     _auditToolContext.QuestionBank,
-                     questionMaster => questionMaster.QuestionId,
-                     questionBank => questionBank.QuestionId,
-                     (questionMaster, questionBank) => new
-                     {
-                         QuestionId = questionMaster.QuestionId,
-                         SequenceNo = questionMaster.SeqNumber,
-                         QuestionText = questionBank.QuestionName,
-                         QuestionDes = questionBank.QuestionDescription,
-                         SubCatId = questionMaster.SubCatgId,
-                         QuestionMasterId = questionMaster.QuestionMappingId,
-                         IsActive = questionMaster.IsActive
-                     })
-                      .Select(x => new QuesBankMasterJoinMast
-                      {
-                          QuestionId = x.QuestionId,
-                          SequenceNo = x.SequenceNo,
-                          QuestionText = x.QuestionText,
-                          QuestionDesc = x.QuestionDes,
-                          SubCatID = x.SubCatId,
-                          QuestionMasterId = x.QuestionMasterId,
-                          QuestionMappingId = x.QuestionMasterId,
-                          IsActive = (bool)x.IsActive
-                      }
-                     )
-                      .Where(a => a.SubCatID == subcatid && a.IsActive == true)
-                     .OrderBy(a => a.SequenceNo)
-                     .ToList();
+                if (isAdmin)
+                {
+                    var query = _auditToolContext.QuestionMapping
+                     .Join(
+                         _auditToolContext.QuestionBank,
+                         questionMaster => questionMaster.QuestionId,
+                         questionBank => questionBank.QuestionId,
+                         (questionMaster, questionBank) => new
+                         {
+                             QuestionId = questionMaster.QuestionId,
+                             SequenceNo = questionMaster.SeqNumber,
+                             QuestionText = questionBank.QuestionName,
+                             QuestionDes = questionBank.QuestionDescription,
+                             SubCatId = questionMaster.SubCatgId,
+                             QuestionMasterId = questionMaster.QuestionMappingId,
+                             IsActive = questionMaster.IsActive
+                         })
+                          .Select(x => new QuesBankMasterJoinMast
+                          {
+                              QuestionId = x.QuestionId,
+                              SequenceNo = x.SequenceNo,
+                              QuestionText = x.QuestionText,
+                              QuestionDesc = x.QuestionDes,
+                              SubCatID = x.SubCatId,
+                              QuestionMasterId = x.QuestionMasterId,
+                              QuestionMappingId = x.QuestionMasterId,
+                              IsActive = (bool)x.IsActive
+                          }
+                         )
+                          .Where(a => a.SubCatID == subcatid && a.IsActive == true)
+                         .OrderBy(a => a.SequenceNo)
+                         .ToList();
 
-                return Json(query);
+                    return Json(query);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in GetQuestionSeqByid method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionSeqByid", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
-        QuestionBank GetSingleQuestionByid(string id)
+        private QuestionBank GetSingleQuestionByid(string id)
         {
-            var data = _auditToolContext.QuestionBank.Where(a => a.QuestionId == Convert.ToInt32(id) && a.IsActive == true).FirstOrDefault();
+            QuestionBank data = null;
+            
+            try
+            {
+                data = _auditToolContext.QuestionBank.Where(a => a.QuestionId == Convert.ToInt32(id) && a.IsActive == true).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetSingleQuestionByid method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetSingleQuestionByid", ErrorDiscription = ex.Message });
+            }
             return data;
         }
 
         [HttpPost]
         public ActionResult Edit(string id)
         {
-            if (isAdmin)
+            try
             {
-                object responce = "";
-                if (!string.IsNullOrEmpty(id))
+                if (isAdmin)
                 {
-                    string[] param = id.Split('$');
-                    if (param.Count() > 0 && param.Count() == 3)
+                    object responce = "";
+                    if (!string.IsNullOrEmpty(id))
                     {
-                        QuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
-
-                        var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
-                        if (questionlist.Count > 0)
+                        string[] param = id.Split('$');
+                        if (param.Count() > 0 && param.Count() == 3)
                         {
-                            if (questionlist[0].QuestionId != objtblQuestionBank.QuestionId)
+                            QuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
+
+                            var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
+                            if (questionlist.Count > 0)
                             {
-                                responce = "1";
+                                if (questionlist[0].QuestionId != objtblQuestionBank.QuestionId)
+                                {
+                                    responce = "1";
+                                }
+                                else
+                                {
+                                    objtblQuestionBank.QuestionName = param[1];
+                                    objtblQuestionBank.QuestionDescription = param[2];
+                                    objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                    objtblQuestionBank.ModifiedDate = DateTime.Now;
+                                    _auditToolContext.QuestionBank.Update(objtblQuestionBank);
+                                    _auditToolContext.SaveChanges();
+                                    return Json(objtblQuestionBank);
+
+                                }
                             }
                             else
                             {
@@ -209,46 +255,45 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 _auditToolContext.QuestionBank.Update(objtblQuestionBank);
                                 _auditToolContext.SaveChanges();
                                 return Json(objtblQuestionBank);
-
                             }
                         }
-                        else
-                        {
-                            objtblQuestionBank.QuestionName = param[1];
-                            objtblQuestionBank.QuestionDescription = param[2];
-                            objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                            objtblQuestionBank.ModifiedDate = DateTime.Now;
-                            _auditToolContext.QuestionBank.Update(objtblQuestionBank);
-                            _auditToolContext.SaveChanges();
-                            return Json(objtblQuestionBank);
-                        }
                     }
+                    return Json(responce);
                 }
-                return Json(responce);
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Edit method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
+            
         }
 
         [HttpPost]
         public JsonResult BindSubCategory(string categoryID)
         {
             _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
+            try
+            {
+                if (isAdmin)
+                {
+                    var filteredSubCategoryList = _auditToolContext.SubCategories
+                                                 .Where(x => x.CatgID == Convert.ToInt32(categoryID) && x.IsActive == true)
+                                                 .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
+                    _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
+                    return Json(filteredSubCategoryList);
+                }
 
-            if (isAdmin)
-            {
-                var filteredSubCategoryList = _auditToolContext.SubCategories
-                                             .Where(x => x.CatgID == Convert.ToInt32(categoryID) && x.IsActive == true)
-                                             .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
-                _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
-                return Json(filteredSubCategoryList);
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
+                _logger.LogInformation($"Exception in BindSubCategory method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindSubCategory", ErrorDiscription = ex.Message });
             }
+
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         [HttpPost]
@@ -298,14 +343,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             {
                                 _logger.LogInformation($"Inserted Sucessfully.");
                             }
-                            else _logger.LogInformation($"Inserted failed.");
+                            else
+                            {
+                                _logger.LogInformation($"Inserted failed.");
+                            }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in insert question while typecasting and database insert.");
-                    throw ex;
+                    _logger.LogInformation($"Exception in SaveQuestionForMaster method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_SaveQuestionForMaster", ErrorDiscription = ex.Message });
                 }
 
                 return Json("");
@@ -317,79 +365,110 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
         List<QuestionBank> GetDetails()
         {
-            var data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true).ToList();
+            List<QuestionBank> data = new List<QuestionBank>();
+
+            try
+            {
+                data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetDetails method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDetails", ErrorDiscription = ex.Message });
+            }
             return data;
         }
 
-        bool isQuestionNameExists(string inputQuestionName)
+        private bool IsQuestionNameExists(string inputQuestionName)
         {
             bool result = false;
-            var data = (from cat in _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == inputQuestionName.ToLower()
+            try
+            {
+                var data = (from cat in _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == inputQuestionName.ToLower()
                         && x.IsActive == true)
-                        select cat).FirstOrDefault();
-            if (data != null) result = true;
+                            select cat).FirstOrDefault();
+                if (data != null) result = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in IsQuestionNameExists method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_IsQuestionNameExists", ErrorDiscription = ex.Message });
+            }
             return result;
         }
 
         
         public IActionResult Index()
         {
-            if (isAdmin)
+            try
             {
-                var categoryList = _auditToolContext.Categories
-                                   .Where(x => x.IsActive == true)
-                                   .ToList();
-                _logger.LogInformation($"No of records: {categoryList.Count()}");
-                categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
-                ViewBag.ListOfCategory = categoryList;
-                return View();
+                if (isAdmin)
+                {
+                    var categoryList = _auditToolContext.Categories
+                                       .Where(x => x.IsActive == true)
+                                       .ToList();
+                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
+                    ViewBag.ListOfCategory = categoryList;
+                    return View();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Index method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Index", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public IActionResult BindGrid(string subCategoryID)
         {
-            if (isAdmin)
+            try
             {
-                var query = _auditToolContext.QuestionMapping
-             .Join(
-                 _auditToolContext.QuestionBank,
-                 questionMaster => questionMaster.QuestionId,
-                 questionBank => questionBank.QuestionId,
-                 (questionMaster, questionBank) => new
-                 {
-                     QuestionId = questionMaster.QuestionId,
-                     SequenceNo = questionMaster.SeqNumber,
-                     QuestionText = questionBank.QuestionName,
-                     QuestionDes = questionBank.QuestionDescription,
-                     SubCatId = questionMaster.SubCatgId,
-                     QuestionMasterId = questionMaster.QuestionMappingId,
-                     IsActive = questionMaster.IsActive
-                 })
-                  .Select(x => new QuesBankMasterJoinMast
-                  {
-                      QuestionId = x.QuestionId,
-                      SequenceNo = x.SequenceNo,
-                      QuestionText = x.QuestionText,
-                      QuestionDesc = x.QuestionDes,
-                      SubCatID = x.SubCatId,
-                      QuestionMappingId = x.QuestionMasterId,
-                      IsActive = (bool)x.IsActive
-                  }
-                 )
-                  .Where(a => a.SubCatID == Int32.Parse(subCategoryID) && a.IsActive == true)
-                 .OrderBy(a => a.SequenceNo)
-                 .ToList();
-                return Json(query);
+                if (isAdmin)
+                {
+                    var query = _auditToolContext.QuestionMapping
+                 .Join(
+                     _auditToolContext.QuestionBank,
+                     questionMaster => questionMaster.QuestionId,
+                     questionBank => questionBank.QuestionId,
+                     (questionMaster, questionBank) => new
+                     {
+                         QuestionId = questionMaster.QuestionId,
+                         SequenceNo = questionMaster.SeqNumber,
+                         QuestionText = questionBank.QuestionName,
+                         QuestionDes = questionBank.QuestionDescription,
+                         SubCatId = questionMaster.SubCatgId,
+                         QuestionMasterId = questionMaster.QuestionMappingId,
+                         IsActive = questionMaster.IsActive
+                     })
+                      .Select(x => new QuesBankMasterJoinMast
+                      {
+                          QuestionId = x.QuestionId,
+                          SequenceNo = x.SequenceNo,
+                          QuestionText = x.QuestionText,
+                          QuestionDesc = x.QuestionDes,
+                          SubCatID = x.SubCatId,
+                          QuestionMappingId = x.QuestionMasterId,
+                          IsActive = (bool)x.IsActive
+                      }
+                     )
+                      .Where(a => a.SubCatID == Int32.Parse(subCategoryID) && a.IsActive == true)
+                     .OrderBy(a => a.SequenceNo)
+                     .ToList();
+                    return Json(query);
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in BindGrid method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindGrid", ErrorDiscription = ex.Message });
             }
+         
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -397,7 +476,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             if (isAdmin)
             {
-                return View("details", GetDetails());
+                return View("Details", GetDetails());
             }
             else
             {
@@ -407,43 +486,55 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         public JsonResult GetCommaSeperated()
         {
-            if (isAdmin)
+            try
             {
-                return Json(GetDetails().Select(a => a.QuestionName));
+                if (isAdmin)
+                {
+                    return Json(GetDetails().Select(a => a.QuestionName));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
+                _logger.LogInformation($"Exception in GetCommaSeperated method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetCommaSeperated", ErrorDiscription = ex.Message });
             }
+            
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         public JsonResult GetIndexCommaSeperated(string subCategoryID)
         {
-            if (isAdmin)
+            try
             {
-                var dataMaster = _auditToolContext.QuestionMapping
-                                 .Where(a => a.SubCatgId == Convert.ToInt32(subCategoryID) && a.IsActive == true)
-                                 .ToList();
-                var dataBank = GetDetails();
-                if (dataMaster.Count() > 0)
+                if (isAdmin)
                 {
-                    foreach (var item in dataMaster)
+                    var dataMaster = _auditToolContext.QuestionMapping
+                                     .Where(a => a.SubCatgId == Convert.ToInt32(subCategoryID) && a.IsActive == true)
+                                     .ToList();
+                    var dataBank = GetDetails();
+                    if (dataMaster.Count() > 0)
                     {
-                        QuestionBank objtblQuestionBank = new QuestionBank();
-                        objtblQuestionBank = dataBank.Where(a => a.QuestionId == item.QuestionId).SingleOrDefault();
-                        if (objtblQuestionBank != null)
+                        foreach (var item in dataMaster)
                         {
-                            dataBank.Remove(objtblQuestionBank);
+                            QuestionBank objtblQuestionBank = new QuestionBank();
+                            objtblQuestionBank = dataBank.Where(a => a.QuestionId == item.QuestionId).SingleOrDefault();
+                            if (objtblQuestionBank != null)
+                            {
+                                dataBank.Remove(objtblQuestionBank);
+                            }
                         }
                     }
+
+                    return Json(dataBank.Select(a => a.QuestionName));
                 }
 
-                return Json(dataBank.Select(a => a.QuestionName));
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
+                _logger.LogInformation($"Exception in GetIndexCommaSeperated method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetIndexCommaSeperated", ErrorDiscription = ex.Message });
             }
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         [HttpPost]
@@ -508,140 +599,171 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    _logger.LogInformation($"Exception in Details method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Details", ErrorDiscription = ex.Message });
                 }
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult DeleteQuestionBank(int id)
         {
-            if (isAdmin)
+            try
             {
-                QuestionBank objtblQuestionBank = _auditToolContext.QuestionBank
-                                             .Where(a => a.QuestionId == id && a.IsActive == true)
-                                             .FirstOrDefault();
-                objtblQuestionBank.IsActive = false;
-                objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                objtblQuestionBank.ModifiedDate = DateTime.Now;
-                _auditToolContext.QuestionBank.Update(objtblQuestionBank); 
-                _auditToolContext.SaveChanges();
-                return View("Details", GetDetails());
+                if (isAdmin)
+                {
+                    QuestionBank objtblQuestionBank = _auditToolContext.QuestionBank
+                                                 .Where(a => a.QuestionId == id && a.IsActive == true)
+                                                 .FirstOrDefault();
+                    objtblQuestionBank.IsActive = false;
+                    objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    objtblQuestionBank.ModifiedDate = DateTime.Now;
+                    _auditToolContext.QuestionBank.Update(objtblQuestionBank);
+                    _auditToolContext.SaveChanges();
+                    return View("Details", GetDetails());
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in DeleteQuestionBank method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionBank", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult DeleteQuestionMaster(int id, int SubCatId)
         {
-            if (isAdmin)
+            try
             {
-                var data = _auditToolContext.QuestionMapping
-                            .Where(a => a.QuestionMappingId == id && a.IsActive == true)
-                            .FirstOrDefault();
-                if (data != null)
+                if (isAdmin)
                 {
-                    data.IsActive = false;
-                    var seq = data.SeqNumber;
-                    _auditToolContext.QuestionMapping.Update(data);
-                    var questionRemaingQues = _auditToolContext.QuestionMapping.Where
-                            (b => b.SubCatgId == data.SubCatgId &&
-                            b.SeqNumber > data.SeqNumber &&
-                            b.IsActive == true).ToList();
-                    foreach (var item in questionRemaingQues)
+                    var data = _auditToolContext.QuestionMapping
+                                .Where(a => a.QuestionMappingId == id && a.IsActive == true)
+                                .FirstOrDefault();
+                    if (data != null)
                     {
-                        item.SeqNumber = seq;
-                        item.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        item.ModifiedDate = DateTime.Now;
-                        seq++;
-                        _auditToolContext.QuestionMapping.Update(item);
+                        data.IsActive = false;
+                        var seq = data.SeqNumber;
+                        _auditToolContext.QuestionMapping.Update(data);
+                        var questionRemaingQues = _auditToolContext.QuestionMapping.Where
+                                (b => b.SubCatgId == data.SubCatgId &&
+                                b.SeqNumber > data.SeqNumber &&
+                                b.IsActive == true).ToList();
+                        foreach (var item in questionRemaingQues)
+                        {
+                            item.SeqNumber = seq;
+                            item.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                            item.ModifiedDate = DateTime.Now;
+                            seq++;
+                            _auditToolContext.QuestionMapping.Update(item);
+                        }
+
+                        _auditToolContext.SaveChanges();
                     }
 
-                    _auditToolContext.SaveChanges();
+                    return View("index", GetDetails());
                 }
-
-                return View("index", GetDetails());
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in DeleteQuestionMaster method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionMaster", ErrorDiscription = ex.Message });
             }
+            
+           return RedirectToAction("Index", "Home");
+          
         }
 
         [HttpGet]
         public ViewResult Edit(int id)
         {
-            if (isAdmin)
+            try
             {
-                var data = (from Q in _auditToolContext.QuestionBank.Where(a => a.IsActive == true && a.QuestionId == id) select Q).ToList();
-                
-                return View("Edit", data);
+                if (isAdmin)
+                {
+                    var data = (from Q in _auditToolContext.QuestionBank.Where(a => a.IsActive == true && a.QuestionId == id) select Q).ToList();
+
+                    return View("Edit", data);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return View("Index");
+                _logger.LogInformation($"Exception in Edit method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.Message });
             }
+
+            return View("Index");
         }
 
         [HttpPost]
         public ActionResult Insert(string questionname, string questiondesc)
         {
-            if (isAdmin)
+            try
             {
-                object responce = "";
-
-                if (isQuestionNameExists(questionname)) 
-                { 
-                    responce = "1"; 
-                }
-
-                if (string.IsNullOrEmpty(responce.ToString()) && !string.IsNullOrEmpty(questionname) && !string.IsNullOrEmpty(questiondesc))
+                if (isAdmin)
                 {
-                    QuestionBank objtblQuestionBank = new QuestionBank();
-                    objtblQuestionBank.QuestionName = questionname;
-                    objtblQuestionBank.IsActive = true;
-                    objtblQuestionBank.QuestionDescription = questiondesc;
-                    objtblQuestionBank.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                    objtblQuestionBank.CreatedDate = DateTime.Now;
-                    objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                    objtblQuestionBank.ModifiedDate = DateTime.Now;
-                    _auditToolContext.QuestionBank.Add(objtblQuestionBank);
-                    _auditToolContext.SaveChanges();
-                    return RedirectToAction("Details");
-                }
+                    object responce = "";
 
-                return Json(responce);
+                    if (IsQuestionNameExists(questionname))
+                    {
+                        responce = "1";
+                    }
+
+                    if (string.IsNullOrEmpty(responce.ToString()) && !string.IsNullOrEmpty(questionname) && !string.IsNullOrEmpty(questiondesc))
+                    {
+                        QuestionBank objtblQuestionBank = new QuestionBank();
+                        objtblQuestionBank.QuestionName = questionname;
+                        objtblQuestionBank.IsActive = true;
+                        objtblQuestionBank.QuestionDescription = questiondesc;
+                        objtblQuestionBank.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        objtblQuestionBank.CreatedDate = DateTime.Now;
+                        objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        objtblQuestionBank.ModifiedDate = DateTime.Now;
+                        _auditToolContext.QuestionBank.Add(objtblQuestionBank);
+                        _auditToolContext.SaveChanges();
+                        return RedirectToAction("Details");
+                    }
+
+                    return Json(responce);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Insert method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Insert", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public ActionResult HasDeleteAccessforQB(int id)
         {
-            if (isAdmin)
+            try
             {
-                object response;
-                var obj = _auditToolContext.QuestionMapping
-                                          .Where(a => a.QuestionId == id
-                                           && a.IsActive == true)
-                                          .FirstOrDefault();
-                response = obj == null ? "NoRecords" : "HasRecords";
-                return Json(response);
+                if (isAdmin)
+                {
+                    object response;
+                    var obj = _auditToolContext.QuestionMapping
+                                              .Where(a => a.QuestionId == id
+                                               && a.IsActive == true)
+                                              .FirstOrDefault();
+                    response = obj == null ? "NoRecords" : "HasRecords";
+                    return Json(response);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in HasDeleteAccessforQB method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_HasDeleteAccessforQB", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
         }
     }
 }

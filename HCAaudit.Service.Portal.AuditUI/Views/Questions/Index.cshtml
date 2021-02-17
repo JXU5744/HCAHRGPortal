@@ -3,13 +3,13 @@
 }
 
 
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
 
 @model List<HCAaudit.Service.Portal.AuditUI.Models.QuestionMapping>
 
@@ -45,7 +45,7 @@
         <table id="tblquestions" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
             <thead>
                 <tr class="neu-table__row--large">
-                    <th style="width:0%">Question Master ID</th>
+                    <th>Question Master ID</th>
                     <th style="width:10%">Question Sequence</th>
                     <th style="width:70%">Question Name</th>
                     <th style="width:10%">Edit</th>
@@ -368,18 +368,22 @@
                                                 "targets": [0],
                                                 "visible": false,
                                                 "searchable": false
-                                            }],
+                                            },
+                                                {
+                                                    "targets": [0, 3, 4],
+                                                    "orderable": false
+                                                }],
 
                                             columns: [{ 'data': 'QuestionMappingId' },
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
+                                                "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
-                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
                                                 },
                                             ],
@@ -473,18 +477,22 @@
                                 "targets": [0],
                                 "visible": false,
                                 "searchable": false
-                            }],
+                            },
+                                {
+                                    "targets": [0, 3, 4],
+                                    "orderable": false
+                                }],
 
                             columns: [{ 'data': 'QuestionMappingId' },
                                 { 'data': 'SequenceNo' },
                                 { 'data': 'QuestionText' },
                             {
-                                "render": function (data, type, full, meta) { return "<a href='#' class='btn btn-info'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                             },
                             {
                                 data: null,
                                 render: function (data, type, row) {
-                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                 }
                                 },
                             ],
@@ -588,19 +596,23 @@
                                                 "targets": [0],
                                                 "visible": false,
                                                 "searchable": false
-                                            }],
+                                            },
+                                                {
+                                                    "targets": [0, 3, 4],
+                                                    "orderable": false
+                                                }],
 
                                             columns: [
                                                 { 'data': 'QuestionMappingId' },
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
+                                                "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
-                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
                                                 },],
                                             "createdRow": function (row, data, dataIndex) {
