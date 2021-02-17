@@ -2,14 +2,13 @@
     ViewData["Title"] = "Question Master";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-@*<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />*@
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
 
 <style type="text/css">
     .ui-autocomplete {
@@ -151,18 +150,22 @@
                 "targets": [0],
                 "visible": false,
                 "searchable": false
-            }],
+            },
+                {
+                    "targets": [0, 3, 4],
+                    "orderable": false
+                }],
             "columns": [
                 { "data": "QuestionId", "name": "QuestionId", "autoWidth": true },
                 { "data": "QuestionName", "name": "QuestionName", "autoWidth": true },
                 { "data": "QuestionDescription", "name": "QuestionDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button--small neu-button--flat" href="javascript:void(0)" onclick=OpenEditpopup(' + full.QuestionId + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="javascript:void(0)" onclick=OpenEditpopup(' + full.QuestionId + ');>Edit</a>'; }
                 },
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return "<a href='#' class='neu-button--danger neu-button--small neu-button--flat' onclick=DeleteData('" + row.QuestionId + "'); >Delete</a>";
+                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionId + "'); >Delete</a>";
                     }
                 },
             ],

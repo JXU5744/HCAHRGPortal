@@ -27,86 +27,94 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IAuthService _authService;
         private AuditToolContext _auditToolContext;
         private bool isAuditor;
-        public DisputeController(ILogger<DisputeController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        private IErrorLog _log;
+
+        public DisputeController(ILogger<DisputeController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
             _authService = authService;
             isAuditor = _authService.CheckAuditorUserGroup().Result;
+            _log = log;
         }
 
         [HttpGet]
         public IActionResult Index(int AuditMainId)
         {
-            if (isAuditor)
+            try
             {
-                var disp = _auditToolContext.AuditMain.Where(y => y.ID == (int)AuditMainId &&
-                        y.isDisputed == true).FirstOrDefault();
-
-                if (disp != null)
-                    return RedirectToAction("Index", "Search");
-
-                var model = new DisputeModel();
-                //need check for isDisputed
-                model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.ID == AuditMainId);
-                var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainID == AuditMainId &&
-                    x.isNonCompliant == true).ToList();
-                var subcategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == model.AuditMain.SubcategoryID).FirstOrDefault();
-                var category = _auditToolContext.Categories.Where(x => x.CatgID == model.AuditMain.ServiceGroupID).FirstOrDefault();
-
-                model.ServiceDeliveryGroupName = category == null ? string.Empty : category.CatgDescription;
-                model.SubCategoryName = subcategory == null ? string.Empty : subcategory.SubCatgDescription;
-
-                var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive).ToList();
-
-                var gracePeriod = new List<SelectListItem>();
-                gracePeriod.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
-                foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Grace Period"))
+                if (isAuditor)
                 {
-                    gracePeriod.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
-                }
+                    var disp = _auditToolContext.AuditMain.Where(y => y.ID == (int)AuditMainId &&
+                            y.isDisputed == true).FirstOrDefault();
 
-                var overturn = new List<SelectListItem>();
-                overturn.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
-                foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Over Turn"))
-                {
-                    overturn.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
-                }
+                    if (disp != null)
+                        return RedirectToAction("Index", "Search");
 
+                    var model = new DisputeModel();
+                    //need check for isDisputed
+                    model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.ID == AuditMainId);
+                    var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainID == AuditMainId &&
+                        x.isNonCompliant == true).ToList();
+                    var subcategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == model.AuditMain.SubcategoryID).FirstOrDefault();
+                    var category = _auditToolContext.Categories.Where(x => x.CatgID == model.AuditMain.ServiceGroupID).FirstOrDefault();
 
-                var auditNonCompList = new List<AuditNonComplianceModel>();
-                foreach (var auditRes in auditResponses)
-                {
-                    var questionText = _auditToolContext.QuestionBank.Where(x => x.QuestionId == auditRes.QuestionId).FirstOrDefault();
+                    model.ServiceDeliveryGroupName = category == null ? string.Empty : category.CatgDescription;
+                    model.SubCategoryName = subcategory == null ? string.Empty : subcategory.SubCatgDescription;
 
-                    if (questionText != null)
+                    var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive).ToList();
+
+                    var gracePeriod = new List<SelectListItem>();
+                    gracePeriod.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                    foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Grace Period"))
                     {
-                        auditNonCompList.Add(new AuditNonComplianceModel()
-                        {
-                            QuestionId = auditRes.QuestionId,
-                            Question = questionText.QuestionDescription, //need to call service to get the question
-                            IsCompliant = auditRes.isCompliant,
-                            IsNonCompliant = auditRes.isNonCompliant,
-                            IsCorrectionRequired = auditRes.isCorrectionRequired,
-                            NonComplianceComments = auditRes.NonComplianceComments,
-                            TicketId = auditRes.TicketID,
-                            QuestionRank = auditRes.QuestionRank
-
-                        });
+                        gracePeriod.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
                     }
 
-                }
-                model.GracePeriod = gracePeriod;
-                model.Overturn = overturn;
-                model.AuditNonComplianceModel = auditNonCompList;
+                    var overturn = new List<SelectListItem>();
+                    overturn.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                    foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Over Turn"))
+                    {
+                        overturn.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                    }
 
-                return View(model);
+
+                    var auditNonCompList = new List<AuditNonComplianceModel>();
+                    foreach (var auditRes in auditResponses)
+                    {
+                        var questionText = _auditToolContext.QuestionBank.Where(x => x.QuestionId == auditRes.QuestionId).FirstOrDefault();
+
+                        if (questionText != null)
+                        {
+                            auditNonCompList.Add(new AuditNonComplianceModel()
+                            {
+                                QuestionId = auditRes.QuestionId,
+                                Question = questionText.QuestionDescription, //need to call service to get the question
+                                IsCompliant = auditRes.isCompliant,
+                                IsNonCompliant = auditRes.isNonCompliant,
+                                IsCorrectionRequired = auditRes.isCorrectionRequired,
+                                NonComplianceComments = auditRes.NonComplianceComments,
+                                TicketId = auditRes.TicketID,
+                                QuestionRank = auditRes.QuestionRank
+
+                            });
+                        }
+
+                    }
+                    model.GracePeriod = gracePeriod;
+                    model.Overturn = overturn;
+                    model.AuditNonComplianceModel = auditNonCompList;
+
+                    return View(model);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Index method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.Message });
             }
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -160,17 +168,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     return Json(result);
                 }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                _logger.LogInformation($"Exception in Index method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.Message });
             }
+            
+            return RedirectToAction("Index", "Home");
         }
     }
 }
