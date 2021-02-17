@@ -132,6 +132,7 @@ namespace HCAaudit.Service.Portal.AuditUI
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IErrorLog, ErrorLogService>();
             services.AddMvc()
                     .AddJsonOptions(jsonOptions =>
                     {
