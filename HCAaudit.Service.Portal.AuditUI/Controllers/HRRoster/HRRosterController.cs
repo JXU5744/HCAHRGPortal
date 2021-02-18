@@ -26,63 +26,78 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private bool isAdmin = false;
-        public HRRosterController(ILogger<HRRosterController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        private IErrorLog _log;
+        
+        public HRRosterController(ILogger<HRRosterController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
+            _log = log;
         }
 
 
         [HttpPost]
         public JsonResult GetDetailsById(EmployeeIdViewModel employeeIdViewModel)
         {
-            if (isAdmin)
+            try
             {
-                var data = (from hroc in _auditToolContext.HROCRoster select hroc).ToList();
-                var objclstbHROCRoster = data.Where(x => x.EmployeethreefourID.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
-                                        .Select(x => new
-                                        {
-                                            x.HROCRosterId,
-                                            x.EmployeeFullName,
-                                            x.EmployeeLastName,
-                                            x.EmployeeFirstName,
-                                            x.EmployeethreefourID,
-                                            x.EmployeeNumber,
-                                            x.SupervisorLastName,
-                                            x.SupervisorFirstName,
-                                            x.DateHired,
-                                            x.JobCDDesc,
-                                            x.PositionDesc,
-                                            x.EmployeeStatus,
-                                            x.EmployeeStatusDesc,
-                                            x.CreatedDate,
-                                            x.CreatedBy,
-                                            x.ModifiedBy,
-                                            x.ModifiedDate
-                                        }).ToList();
+                if (isAdmin)
+                {
+                    var data = (from hroc in _auditToolContext.HROCRoster select hroc).ToList();
+                    var objclstbHROCRoster = data.Where(x => x.EmployeethreefourID.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
+                                            .Select(x => new
+                                            {
+                                                x.HROCRosterId,
+                                                x.EmployeeFullName,
+                                                x.EmployeeLastName,
+                                                x.EmployeeFirstName,
+                                                x.EmployeethreefourID,
+                                                x.EmployeeNumber,
+                                                x.SupervisorLastName,
+                                                x.SupervisorFirstName,
+                                                x.DateHired,
+                                                x.JobCDDesc,
+                                                x.PositionDesc,
+                                                x.EmployeeStatus,
+                                                x.EmployeeStatusDesc,
+                                                x.CreatedDate,
+                                                x.CreatedBy,
+                                                x.ModifiedBy,
+                                                x.ModifiedDate
+                                            }).ToList();
 
-                return Json(objclstbHROCRoster);
+                    return Json(objclstbHROCRoster);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
+                _logger.LogInformation($"Exception in GetDetailsById method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.Message });
             }
+            
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         [HttpGet]
         public IActionResult Details()
         {
-            if (isAdmin)
+            try
             {
-                return View("Details");
+                if (isAdmin)
+                {
+                    return View("Details");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _logger.LogInformation($"Exception in Details method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
         
@@ -124,8 +139,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    resp = "Error : " + ex;
+                    _logger.LogInformation($"Exception in Edit method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.Message });
                 }
+                
                 return Json(resp);
             }
             else
@@ -173,8 +190,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    resp = "Error : " + ex;
+                    _logger.LogInformation($"Exception in Insert method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.Message });
                 }
+
                 return Json(resp);
             }
             else

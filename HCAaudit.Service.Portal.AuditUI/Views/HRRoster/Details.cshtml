@@ -3,17 +3,17 @@
     ViewData["Title"] = "HR Professional";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
+<link href="~/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+@*<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>*@
 <script type="text/javascript" src="~/js/moment.min.js"></script>
 <script type="text/javascript" src="~/js/numeric.js"></script>
 
@@ -24,26 +24,28 @@
     </div>
 </div>
 
-<div class="row neu-margin--bottom-16 d-flex align-items-end">
+<div class="row neu-margin--bottom-0 d-flex align-items-end">
     <div class="col-sm-4" tabindex="-1" aria-checked="false">
         <label class="neu-input__label required" style="text-align:left;width:30%;">Enter Employee (by 3-4 ID)</label>
         <input name="txtSearch34Id" id="txtSearch34Id" class="neu-input__field" type="text" pattern="[A-Za-z]{3}[0-9]{4}" />
         <input name="hiddenHROCRosterId" id="hiddenHROCRosterId" class="neu-input__field" type="hidden" />
         <input name="hiddenCreatedBy" id="hiddenCreatedBy" class="neu-input__field" type="hidden" />
         <input name="hiddenCreatedDate" id="hiddenCreatedDate" class="neu-input__field" type="hidden" />
-        <span id="errorMessage" class="neu-button--danger"></span>
+
     </div>
     <div class="col-sm-4">
-        @*<div tabindex="-1" aria-checked="false">
-            <button id="btnAddEmployee" name="btnAddEmployee" class="neu-button--primary neu-button neu-button--raised" style="display:none">
-                Add Employee
-            </button>
-        </div>*@
         <div tabindex="-1" aria-checked="false">
             <button id="btnSearchEmployee" name="btnSearchEmployee" class="neu-button--primary neu-button neu-button--raised">
                 Search
             </button>
         </div>
+    </div>
+
+</div>
+
+<div class="row neu-margin--bottom-30 d-flex align-items-end">
+    <div class="col-sm-4">
+        <span id="errorMessage" class="neu-button--danger"></span>
     </div>
 </div>
 
@@ -397,7 +399,7 @@
                                 $("#employeeForm").show();
                                 $("#btnUpdate").show();
                                 $("#btnSave").hide();
-                               // $("#btnAddEmployee").hide();
+                                // $("#btnAddEmployee").hide();
 
                             }
                             else {
@@ -415,7 +417,7 @@
                 }
                 else {
                     $("#errorMessage").text("Employee 3-4 ID Required");
-                   // $("#btnAddEmployee").hide();
+                    // $("#btnAddEmployee").hide();
                 }
 
             });

@@ -3,23 +3,23 @@
     ViewData["Title"] = "Audit Page";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+<link href="~/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="~/js/bootstrap-multiselect.min.js"></script>
+<script src="~/js/bootstrap-datepicker.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
+@*<style>
     * {
         box-sizing: border-box;
     }
@@ -61,7 +61,7 @@
         height: 100px;
         resize: none; /* Remove this if you want the user to resize the textarea */
     }
-</style>
+</style>*@
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -118,7 +118,7 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <table id="auditDetails" class="neu-table" width="100%" cellspacing="0">
+                <table id="auditDetails" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
                     <thead class="neu-table__head">
                         <tr class="neu-table__header neu-table__sort-icon" style="text-align:center">
                             <th style="width:5%;text-align:center" rowspan="2">Question Sequence</th>
@@ -179,7 +179,7 @@
                 </table>
             </div>
         </div>
-    
+
 
     </div>
 
@@ -216,19 +216,19 @@
             </div>
         </div>-->
     </div>
-    <div  id="PopUpCancel" style="display:none">
-     Select Reason:   @Html.DropDownList("ddlCancel", new List<SelectListItem>
+    <div id="PopUpCancel" style="display:none">
+        Select Reason:   @Html.DropDownList("ddlCancel", new List<SelectListItem>
 {
-    new SelectListItem{ Text="Option 1", Value = "1" },
-    new SelectListItem{ Text="Option 2", Value = "2" },
-    new SelectListItem{ Text="Option 3", Value = "3" },
- })
+new SelectListItem{ Text="Option 1", Value = "1" },
+new SelectListItem{ Text="Option 2", Value = "2" },
+new SelectListItem{ Text="Option 3", Value = "3" },
+})
 
 
         @*<div class="row align-center">
-            <button id="btnOk" class="button" tabindex="102" data-close aria-label="Ok">Ok</button>
-            <button id="btnCancel" class="button" tabindex="102" data-close aria-label="Cancel">Cancel</button>
-        </div>*@
+                <button id="btnOk" class="button" tabindex="102" data-close aria-label="Ok">Ok</button>
+                <button id="btnCancel" class="button" tabindex="102" data-close aria-label="Cancel">Cancel</button>
+            </div>*@
 
     </div>
 </form>
@@ -254,10 +254,10 @@
                     $("#PopUpCancel").dialog('close');
                 },
             }
-            
+
         });
         $('.ui-dialog-titlebar-close').hide();
-        
+
         $("#PopUpCancel").dialog('open');
         return false;
     }

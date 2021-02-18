@@ -20,6 +20,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public DbSet<AuditDispute> AuditDispute { get; set; }
         public DbSet<ListOfValues> ListOfValues { get; set; }
         public DbSet<HROCRoster> HROCRoster { get; set; }
+
+        public DbSet<ErrorDetail> ErrorDetails { get; set; }
     }
     
 }

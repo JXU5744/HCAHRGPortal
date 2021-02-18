@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
@@ -19,7 +18,6 @@ using HCAaudit.Service.Portal.AuditUI.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 
-
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
     [Authorize]
@@ -30,14 +28,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private IAuthService _authService;
         private AuditToolContext _auditToolContext;
         private bool isAuditor = false;
+        private IErrorLog _log;
 
-        public SearchController(ILogger<SearchController> logger, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        public SearchController(ILogger<SearchController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
             _authService = authService;
             isAuditor = _authService.CheckAuditorUserGroup().Result;
+            _log = log;
         }
 
 
@@ -47,31 +47,32 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             BindSearchGrid objBindSearchGrid = new BindSearchGrid();
             try
             {
-               // objBindSearchGrid._dataforGrid = BindSearchGrid.GetGridData();
+                // _log.WriteErrorLog(new LogItem { ErrorType = "Info", ErrorSource = "SearchController_Details", ErrorDiscription = "Test message" });
             }
             catch (Exception ex)
             {
-                throw ex;
-                // _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Details", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Details", ErrorDiscription = ex.Message });
             }
             return View("Details", objBindSearchGrid);
-
         }
-
 
         [HttpPost]
         public JsonResult GetCommaSeperated()
         {
-            if (isAuditor)
+            try
             {
-                var mydata = _auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID);
+                if (isAuditor)
+                {
+                    var mydata = _auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID);
+                    return Json(_auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID));
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCommaSeperated", ErrorDiscription = ex.Message });
+            }
 
-                return Json(_auditToolContext.HROCRoster.Select(a => a.EmployeethreefourID));
-            }
-            else
-            {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
-            }
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         [HttpPost]
@@ -112,7 +113,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     else
                     {
                         string environmentType = searchparameter.EnvironmentType != null ? searchparameter.EnvironmentType : "Production";
-
 
                         int categoryId = searchparameter.CategoryID;
 
@@ -158,8 +158,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             }
                         }
 
-                        //objgriddata = objgriddata.OrderBy(x => Guid.NewGuid()).Take(20).ToList();
-
                         recordsTotal = objgriddata.Count();
 
                         //Paging   
@@ -170,15 +168,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = ex.Message });
                 }
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
+            return RedirectToAction("Index", "Home");
+
         }
-            
+
 
 
         [HttpPost]
@@ -247,95 +244,127 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = ex.Message });
                 }
             }
-            else
-            {
-                return RedirectToAction("Index", "Home");
-            }
+
+            return RedirectToAction("Index", "Home");
+
         }
 
         [HttpPost]
         public IActionResult Index(BindSearchGrid objBindSearchGrid)
         {
-            if (isAuditor)
+            try
             {
-                return RedirectToAction("Details", objBindSearchGrid);
+                if (isAuditor)
+                {
+                    return RedirectToAction("Details", objBindSearchGrid);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Index", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
-        
-        
+
+
         [HttpGet]
         public IActionResult Index()
         {
-            if (isAuditor)
+            try
             {
-                var categoryList = GetCategoryDetails();
-                _logger.LogInformation($"No of records: {categoryList.Count()}");
-                categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
-                ViewBag.ListOfCategory = categoryList;
+                if (isAuditor)
+                {
+                    var categoryList = GetCategoryDetails();
+                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
+                    ViewBag.ListOfCategory = categoryList;
 
-                var assignedtoList = GetHRList();
-                //assignedtoList.Insert(0, new AssignedTo { memberID = 0, membername = "Select Member" });
-                ViewBag.ListOfMembers = assignedtoList;
+                    var assignedtoList = GetHRList();
+                    //assignedtoList.Insert(0, new AssignedTo { memberID = 0, membername = "Select Member" });
+                    ViewBag.ListOfMembers = assignedtoList;
 
-                return View();
+                    return View();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Home");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Index", ErrorDiscription = ex.Message });
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public JsonResult BindSubCategory(string categoryID)
         {
-            _logger.LogInformation($"Request for SubCategoryList with CategoryID: {categoryID}");
-            if (isAuditor)
+            try
             {
-                var subCategoryList = _auditToolContext.SubCategories.Where(x => x.IsActive == true).ToList();
-                var filteredSubCategoryList = subCategoryList
-                                             .Where(x => x.CatgID == Convert.ToInt32(categoryID))
-                                             .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
-                _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
-                return Json(filteredSubCategoryList);
+                if (isAuditor)
+                {
+                    var subCategoryList = _auditToolContext.SubCategories.Where(x => x.IsActive == true).ToList();
+                    var filteredSubCategoryList = subCategoryList
+                                                 .Where(x => x.CatgID == Convert.ToInt32(categoryID))
+                                                 .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
+                    _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
+                    return Json(filteredSubCategoryList);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_BindSubCategory", ErrorDiscription = ex.Message });
             }
+
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         List<Categorys> GetCategoryDetails()
         {
-            var data = (from subCat in _auditToolContext.Categories.Where(x=>x.IsActive == true) select subCat).ToList();
+            List<Categorys> data = null;
+
+            try
+            {
+                data = (from subCat in _auditToolContext.Categories.Where(x => x.IsActive == true) select subCat).ToList();
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCategoryDetails", ErrorDiscription = ex.Message });
+            }
+
             return data;
         }
 
         public List<AssignedTo> GetHRList()
         {
-            var query = (from hrdata in _auditToolContext.HROCRoster
-                         select new
-                         {
-                             HrThreeFourID = hrdata.EmployeethreefourID
-                         }).Distinct().ToList();
-
-            int rowno = 1;
-
             List<AssignedTo> lstAssignedTo = new List<AssignedTo>();
-            foreach (var emplist in query)
+
+            try
             {
-                AssignedTo tempAssignedto = new AssignedTo();
-                tempAssignedto.memberID = rowno;
-                tempAssignedto.membername = emplist.HrThreeFourID;
-                rowno++;
-                lstAssignedTo.Add(tempAssignedto);
+                var query = (from hrdata in _auditToolContext.HROCRoster
+                             select new
+                             {
+                                 HrThreeFourID = hrdata.EmployeethreefourID
+                             }).Distinct().ToList();
+
+                int rowno = 1;
+
+                foreach (var emplist in query)
+                {
+                    AssignedTo tempAssignedto = new AssignedTo();
+                    tempAssignedto.memberID = rowno;
+                    tempAssignedto.membername = emplist.HrThreeFourID;
+                    rowno++;
+                    lstAssignedTo.Add(tempAssignedto);
+                }
             }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetHRList", ErrorDiscription = ex.Message });
+            }
+
             return lstAssignedTo.ToList();
         }
 
@@ -343,6 +372,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             int ticketStatus, string ticketSubStatus, string resultCountCriteria, string assignedTo, string fromDate, string toDate, String TicketId)
         {
             List<Usp_GetHRAuditSearchResult> objgriddata = new List<Usp_GetHRAuditSearchResult>();
+
             try
             {
                 var query = "Exec  [dbo].[usp_GetHRAuditSearchResult] @EnvironmentType, @CategoryId, @SubCategoryId, @ResultType, " +
@@ -365,13 +395,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     new SqlParameter { ParameterName = "@TicketId", Value = TicketId }
                 };
 
-                objgriddata = _auditToolContext.Usp_GetHRAuditSearchResult.FromSqlRaw(query,parms.ToArray()).ToList();
+                objgriddata = _auditToolContext.Usp_GetHRAuditSearchResult.FromSqlRaw(query, parms.ToArray()).ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error While Getting Data" + ex);
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetClosedAuditSearchResult", ErrorDiscription = ex.Message });
             }
-
 
             return objgriddata;
         }
@@ -379,14 +408,21 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
         private int GetCaegoryID(int subcategoryid)
         {
-            int categoryid= -1;
+            int categoryid = -1;
 
-            var catgObj = _auditToolContext.SubCategories.Where(y => y.IsActive == true &&
-            y.SubCatgID == subcategoryid).FirstOrDefault();
-
-            if (catgObj != null)
+            try
             {
-                categoryid =  catgObj.CatgID;
+                var catgObj = _auditToolContext.SubCategories.Where(y => y.IsActive == true &&
+           y.SubCatgID == subcategoryid).FirstOrDefault();
+
+                if (catgObj != null)
+                {
+                    categoryid = catgObj.CatgID;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCaegoryID", ErrorDiscription = ex.Message });
             }
 
             return categoryid;
@@ -396,74 +432,86 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public JsonResult GetAllSubcategory()
         {
-            _logger.LogInformation($"Request for AllSubCategoryList Category Identity");
-            if (isAuditor)
+            try
             {
-                var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
-                .Join(
-                _auditToolContext.Categories.Where(x => x.IsActive == true),
-                subCategories => subCategories.CatgID,
-                categories => categories.CatgID,
-                (subCategories, categories) => new
+                if (isAuditor)
                 {
-                    SubCatID = subCategories.SubCatgID,
-                    CatgDescription = categories.CatgDescription,
-                    SubCatgDescription = subCategories.SubCatgDescription
-                })
-                .Select(x => new CatSubCatJoinMast
-                {
-                    SubCatgID = x.SubCatID,
-                    SubCatgDescription = string.Format("{0} ({1})", x.SubCatgDescription, x.CatgDescription)
-                }
-                ).ToList().OrderBy(y => y.SubCatgDescription);
+                    var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
+                    .Join(
+                    _auditToolContext.Categories.Where(x => x.IsActive == true),
+                    subCategories => subCategories.CatgID,
+                    categories => categories.CatgID,
+                    (subCategories, categories) => new
+                    {
+                        SubCatID = subCategories.SubCatgID,
+                        CatgDescription = categories.CatgDescription,
+                        SubCatgDescription = subCategories.SubCatgDescription
+                    })
+                    .Select(x => new CatSubCatJoinMast
+                    {
+                        SubCatgID = x.SubCatID,
+                        SubCatgDescription = string.Format("{0} ({1})", x.SubCatgDescription, x.CatgDescription)
+                    }
+                    ).ToList().OrderBy(y => y.SubCatgDescription);
 
-                _logger.LogInformation($"No of SubCategoryListrecords: {query.Count()}");
-                return Json(query);
+                    _logger.LogInformation($"No of SubCategoryListrecords: {query.Count()}");
+                    return Json(query);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Json(new { Success = "False", responseText = "Authorization Error" });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetAllSubcategory", ErrorDiscription = ex.Message });
             }
+
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         public List<BindSearchGrid> GetSearchResult()
         {
             //isActiveFlag
 
-            var ticketdata = (from ticket in _auditToolContext.SearchTicketDetail
-                              join hrdata in _auditToolContext.HROCRoster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
-                              join Category in _auditToolContext.Categories on hrdata.JobCDDesc equals Category.CatgDescription 
-                              
-                              select new
-                              {
-                                  ticket.TicketCode,
-                                  hrdata.PositionDesc,
-                                  ticket.Category,
-                                  ticket.SubCategory,
-                                  ticket.CloseUserId,
-                                  hrdata.EmployeeFullName,
-                                  ticket.ClosedDateTime,
-                                  ticket.Topic
-                              }
-                              ).ToList();
-
-
             List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
-            foreach (var t in ticketdata)
+
+            try
             {
-                BindSearchGrid tempItem = new BindSearchGrid();
-                tempItem.TicketNumber = t.TicketCode;
-                tempItem.ServiceGroup = t.PositionDesc;
-                tempItem.Category = t.Category;
-                tempItem.Subcategory = t.SubCategory;
-                tempItem.UserThreeFourID = t.CloseUserId;
-                tempItem.AssignedTo = t.EmployeeFullName;
-                tempItem.ClosedDateTime = t.ClosedDateTime;
-                tempItem.Topic = t.Topic;
-                objgriddata.Add(tempItem);
+
+                var ticketdata = (from ticket in _auditToolContext.SearchTicketDetail
+                                  join hrdata in _auditToolContext.HROCRoster on ticket.CloseUserId.Substring(0, 7) equals hrdata.EmployeethreefourID
+                                  join Category in _auditToolContext.Categories on hrdata.JobCDDesc equals Category.CatgDescription
+
+                                  select new
+                                  {
+                                      ticket.TicketCode,
+                                      hrdata.PositionDesc,
+                                      ticket.Category,
+                                      ticket.SubCategory,
+                                      ticket.CloseUserId,
+                                      hrdata.EmployeeFullName,
+                                      ticket.ClosedDateTime,
+                                      ticket.Topic
+                                  }
+                                  ).ToList();
+
+
+                foreach (var t in ticketdata)
+                {
+                    BindSearchGrid tempItem = new BindSearchGrid();
+                    tempItem.TicketNumber = t.TicketCode;
+                    tempItem.ServiceGroup = t.PositionDesc;
+                    tempItem.Category = t.Category;
+                    tempItem.Subcategory = t.SubCategory;
+                    tempItem.UserThreeFourID = t.CloseUserId;
+                    tempItem.AssignedTo = t.EmployeeFullName;
+                    tempItem.ClosedDateTime = t.ClosedDateTime;
+                    tempItem.Topic = t.Topic;
+                    objgriddata.Add(tempItem);
+                }
+
             }
-
-
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchResult", ErrorDiscription = ex.Message });
+            }
 
             return objgriddata;
         }
