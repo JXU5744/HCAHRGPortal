@@ -22,14 +22,14 @@
 
 @*<style>
 
-    th {
-        text-align: center;
-    }
+        th {
+            text-align: center;
+        }
 
-    label {
-        font-weight: normal !important;
-    }
-</style>*@
+        label {
+            font-weight: normal !important;
+        }
+    </style>*@
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -131,13 +131,16 @@
     </div>
 </div>
 
-<div class="row neu-margin--bottom-16">
+<div class="row neu-margin--bottom-10">
     <div class="col-sm-12 neu-text--align-center">
         <span id="errorMessage" class="neu-button--danger"></span>
     </div>
+</div>
+
+<div class="row">
     <div class="col-sm-12 neu-text--align-center">
         <button id="btnSave" class="neu-button--primary neu-button neu-button--raised">Save</button>
-        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10" onclick="return ResetControls(); ">Cancel</button>
     </div>
 </div>
 
@@ -182,7 +185,6 @@
                 var isSelected = false;
 
                 $.each($("#disputeDataTable tbody tr"), function () {
-
                     var GracePeriodId = $(this).find('[id$="GracePeriodId"]').val();
                     var OverturnId = $(this).find('[id$="OverturnId"]').val();
                     if (GracePeriodId > 0 || OverturnId > 0) { isSelected = true; }
@@ -198,7 +200,8 @@
                 });
 
                 if (!isSelected) {
-                    alert('SElect  option for 1 row');
+                    //alert('SElect  option for 1 row');
+                    $("#errorMessage").text("Please select action for any one question.");
                     e.preventDefault();
                     return false;
                 }
@@ -221,18 +224,6 @@
 
             });
 
-
-            //$("#ddlcategory").change(function () {
-            //    var catgID = $('#ddlcategory').val();
-            //    if (catgID != "0") { $('#errormsgcategory').hide(); }
-            //});
-
-            //$("#ddlcategory").change(function () {
-            //    var catgID = $('#ddlcategory').val();
-            //    if (catgID != "0") { $('#errormsgcategory').hide(); }
-            //});
-
-
             $('[id$="GracePeriodId"]').on("change", function () {
                 var $this = $(this);
                 if ($this.val() > 0) {
@@ -253,6 +244,24 @@
                 }
             });
         });
+
+
+        function ResetControls() {
+            $("#errorMessage").text("");
+
+            $.each($("#disputeDataTable tbody tr"), function () {
+
+                var GracePeriodId = $(this).find('[id$="GracePeriodId"]').val();
+                if (GracePeriodId > 0) { $(this).find('[id$="GracePeriodId"]').val(0);}
+                $(this).find('[id$="GracePeriodId"]').prop("disabled", false);
+
+                var OverturnId = $(this).find('[id$="OverturnId"]').val();
+                if (OverturnId > 0) { $(this).find('[id$="OverturnId"]').val(0); }
+                    $(this).find('[id$="OverturnId"]').prop("disabled", false);
+            });
+            return false;
+        }
+
 
         $(function () {
             $("#popupcontentdispute").dialog({
