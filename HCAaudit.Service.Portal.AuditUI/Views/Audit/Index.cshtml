@@ -218,18 +218,15 @@
     </div>
     <div id="PopUpCancel" style="display:none">
         Select Reason:   @Html.DropDownList("ddlCancel", new List<SelectListItem>
-{
-new SelectListItem{ Text="Option 1", Value = "1" },
-new SelectListItem{ Text="Option 2", Value = "2" },
-new SelectListItem{ Text="Option 3", Value = "3" },
-})
-
-
-        @*<div class="row align-center">
-                <button id="btnOk" class="button" tabindex="102" data-close aria-label="Ok">Ok</button>
-                <button id="btnCancel" class="button" tabindex="102" data-close aria-label="Cancel">Cancel</button>
-            </div>*@
-
+           {
+           new SelectListItem{ Text="Case is not applicable", Value = "1" },
+           new SelectListItem{ Text="Case has been re-opened", Value = "2" },
+           new SelectListItem{ Text="Accidentally accessed audit form", Value = "3" },
+           new SelectListItem{ Text="Audit was a hang-up documentation call", Value = "4" },
+           new SelectListItem{ Text="Duplicate case", Value = "5" },
+           new SelectListItem{ Text="Have to do other work", Value = "6" },
+           new SelectListItem{ Text="Choosing different agent", Value = "7" },
+           })
     </div>
 </form>
 
@@ -261,6 +258,7 @@ new SelectListItem{ Text="Option 3", Value = "3" },
         $("#PopUpCancel").dialog('open');
         return false;
     }
+
     $('.actioncheck').click(function () {
         var $this = $(this);
         var name = $(this).attr("id");

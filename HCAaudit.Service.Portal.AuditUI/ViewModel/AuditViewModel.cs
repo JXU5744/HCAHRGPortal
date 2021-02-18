@@ -5,8 +5,15 @@ using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.ViewModel
 {
+
+
     public class AuditViewModel
     {
+        public AuditViewModel()
+        {
+            Question = new List<Question>();
+        }
+
         public string TicketId { get; set; }
         public string AgentName { get; set; }
         public string Agent34Id { get; set; }

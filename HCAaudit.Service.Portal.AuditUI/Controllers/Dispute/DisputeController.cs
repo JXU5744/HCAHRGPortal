@@ -166,6 +166,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     var result = _auditToolContext.SaveChanges();
 
+                    FormatAndSendEmail(auditMain.ID);
+
                     return Json(result);
                 }
             }
@@ -176,6 +178,79 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             
             return RedirectToAction("Index", "Home");
+        }
+
+
+        private void FormatAndSendEmail(int mainID)
+        {
+            var rowStartTag = "<tr>";
+            var rowEndTag = "</tr>";
+            var cellStartTag = "<td>";
+            var cellEndTag = "</td>";
+
+            var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
+            if (auditMain != null)
+            {
+                var auditMainResponse = _auditToolContext.AuditDispute.Where(X => X.AuditMainID == mainID).ToList();
+                //var category = _auditToolContext.Categories.Where(x => x.CatgID == auditMain.ServiceGroupID).FirstOrDefault();
+                //var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
+
+                var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
+                var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketID;
+                //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
+                var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+                var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+                var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+
+                var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is the Case Management Audit Dispute and Resolution for Ticket #<b>" + auditMain.TicketID + "</b><br>";
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("<html><Body>");
+                stringBuilder.Append(body);
+               // stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
+                stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Rank</th><th>Question Description</th>");
+                stringBuilder.Append("<th>Correction Required</th><th>Comments</th><th>Grace Period</th><th>Over Turn</th><th>Dispute Comments</th></tr>");
+                foreach (var item in auditMainResponse)
+                {
+                    var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
+                    if (questionDesc != null)
+                    {
+                        var quesSeq = item.QuestionRank;
+                        var quesDescription = questionDesc.QuestionDescription;
+                        
+                        //var correctionRequired = item.isCorrectionRequired == true ? "Yes" : "No";
+
+                        //var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
+
+                        //var graceperiod = item.GracePeriodId;
+
+                        //var overturn = item.OverTurnId;
+
+                        //var comments = item.Comments == null ? string.Empty : item.Comments;
+
+                        //stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
+                        //stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);
+                        //stringBuilder.Append(cellEndTag + cellStartTag + notApplicable + cellEndTag + cellStartTag + correctionRequired);
+                        //stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
+                    }
+                }
+                stringBuilder.Append(rowStartTag + cellStartTag + "Audit Comments:" + cellEndTag + "<td colspan=6>" + auditMain.AuditNotes + cellEndTag + "</table>");
+                stringBuilder.Append("</Body></html>");
+
+                var emailObject = new EmailTemplate
+                {
+                    SendFrom = sendFrom,
+                    SendTo = sendTo,
+                    ReplyTo = replyTo,
+                    Subject = subject,
+                    EmailBody = stringBuilder.ToString()
+                };
+
+                //EmailHelper emailHelper = new EmailHelper(_configuration);
+
+               // emailHelper.SendEmailNotification(emailObject);
+
+            }
         }
     }
 }

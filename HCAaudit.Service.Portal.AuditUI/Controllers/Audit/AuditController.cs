@@ -23,17 +23,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     public class AuditController : Controller
     {
         private readonly ILogger<AuditController> _logger;
-        private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor;
         private IErrorLog _log;
+        public IConfiguration _configuration { get; }
 
         public AuditController(ILogger<AuditController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
+            _configuration = configuration;
             _authService = authService;
             isAuditor = _authService.CheckAuditorUserGroup().Result;
             _log = log;
@@ -295,6 +295,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             _auditToolContext.AuditMainResponse.Add(obj);
                             _auditToolContext.SaveChanges();
                         }
+
+                        FormatAndSendEmail( main.ID);
                     }
                     return RedirectToAction("Index", "Search");
                 }
@@ -306,6 +308,117 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+
+        [HttpPost]
+        public IActionResult CancelAudit(AuditViewModel audit)
+        {
+            try
+            {
+                if (isAuditor)
+                {
+                    if (audit != null)
+                    {
+                        AuditMain main = new AuditMain();
+                        main.TicketID = audit.TicketId;
+                        main.Agent34ID = audit.Agent34Id;
+                        main.AgentName = audit.AgentName;
+                        main.AuditNotes = audit.AuditNote;
+                        main.AuditorName = audit.AuditorName;
+                        main.AuditType = audit.EnvironmentType;
+                        main.ServiceGroupID = audit.ServiceCatId;
+                        main.SubcategoryID = audit.SubCatId;
+                        main.SubmitDT = DateTime.Now;
+                        main.AuditorQuit = "Quit";
+                        main.AuditorQuitReason = "Drop down value";
+                        main.TicketDate = audit.TicketDate;
+                        main.CreatedDate = DateTime.Now;
+                        main.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        main.ModifiedDate = DateTime.Now;
+                        main.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        _auditToolContext.AuditMain.Add(main);
+                        _auditToolContext.SaveChanges();
+                    }
+                    return RedirectToAction("Index", "Search");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in CancelAudit method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_CancelAudit", ErrorDiscription = ex.Message });
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        private void FormatAndSendEmail( int mainID)
+        {
+            var rowStartTag = "<tr>";
+            var rowEndTag = "</tr>";
+            var cellStartTag = "<td>";
+            var cellEndTag = "</td>";
+
+            var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
+            if (auditMain != null)
+            {
+                var auditMainResponse = _auditToolContext.AuditMainResponse.Where(X => X.AuditMainID == mainID).ToList();
+                var category = _auditToolContext.Categories.Where(x => x.CatgID == auditMain.ServiceGroupID).FirstOrDefault();
+                var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
+
+                var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
+                var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketID;
+                //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
+                var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+                var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+                var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+
+                var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketID + "</b><br>";
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("<html><Body>");
+                stringBuilder.Append(body);
+                stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>": String.Empty));
+                stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Question Sequence</th><th>Question Description</th><th>Compliant</th><th>Non Compliant</th><th>");
+                stringBuilder.Append("Not Applicable</th><th>Correction Required</th><th>Comments</th></tr>");
+                foreach (var item in auditMainResponse)
+                {
+                    var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
+                    if (questionDesc != null)
+                    {
+                        var quesSeq = item.QuestionRank;
+                        var quesDescription = questionDesc.QuestionDescription;
+                        var compliance = item.isCompliant == true ? "Yes" : "No";
+                        var nonCompliance = item.isNonCompliant == true ? "Yes" : "No";
+                        var impact = item.isHighNonComplianceImpact == true ? " (High)" : (item.isLowNonComplianceImpact == true ? " (Low)" : string.Empty);
+                        nonCompliance += impact;
+                        var correctionRequired = item.isCorrectionRequired == true ? "Yes" : "No";
+                        var notApplicable = item.isNA == true ? "Yes" : "No";
+                        var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
+
+                        stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
+                        stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);
+                        stringBuilder.Append(cellEndTag + cellStartTag + notApplicable + cellEndTag + cellStartTag + correctionRequired);
+                        stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
+                    }
+                }
+                stringBuilder.Append(rowStartTag + cellStartTag + "Audit Comments:" + cellEndTag + "<td colspan=6>" + auditMain.AuditNotes + cellEndTag + "</table>");
+                stringBuilder.Append("</Body></html>");
+
+                var emailObject = new EmailTemplate
+                {
+                    SendFrom = sendFrom,
+                    SendTo = sendTo,
+                    ReplyTo = replyTo,
+                    Subject = subject,
+                    EmailBody = stringBuilder.ToString()
+                };
+
+                EmailHelper emailHelper = new EmailHelper(_configuration);
+
+                emailHelper.SendEmailNotification(emailObject);
+
+            }
         }
     }
 }
