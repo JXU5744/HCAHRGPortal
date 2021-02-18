@@ -29,7 +29,7 @@
                 </select>
             </div>
             <div class="col-sm-4">
-                <label for="SubCatID" class="neu-input__label">Subcategory</label>
+                <label for="SubCatID" class="neu-input__label">Sub Category</label>
                 <select name="teams" id="SubCatID" class="neu-select">
                 </select>
             </div>
@@ -57,28 +57,33 @@
 </div>
 
 <div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
-
-    <div class="row">
-        <div class="col-sm-6">
-            <label for="txtcategory" class="neu-input__label">Service Delivery Group</label>
-            <input id="txtcategory" class="neu-input__label" type="text" disabled="disabled" />
+    <div class="row neu-margin--bottom-1">
+        <div class="col-sm-5">
+            <label class="neu-input__label">Service Delivery Group</label>
         </div>
-        <div class="col-sm-6">
-            <label for="txtsubcategory" class="neu-input__label">Sub Category</label>
-            <input id="txtsubcategory" class="neu-input__label" type="text" disabled="disabled" />
+        <div class="col-sm-7">
+            <label class="neu-input__label">Sub Category</label>
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-16">
-        <div class="col-sm-12">
+    <div class="row neu-margin--bottom-8">
+        <div class="col-sm-5">
+            <input id="txtcategory" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
+        </div>
+        <div class="col-sm-7">
+            <input id="txtsubcategory" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-10">
+        <div class="col-sm-2">
             <label for="txtquestionseq" class="neu-input__label">Sequence</label>
-            <input id="txtquestionseq" class="neu-input__label" type="text" disabled="disabled" />
+            <input id="txtquestionseq" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
             <input id="hdnAddSubCatId" type="hidden" />
         </div>
-
     </div>
 
-    <div class="row neu-margin--bottom-16">
+    <div class="row neu-margin--bottom-14">
         <div class="col-md-12">
             <label for="txtquestion" class="neu-input__label">Question Name:</label>
             <textarea id="txtquestion" class="neu-input__field" rows="2" cols="50" style="resize:none"></textarea>
@@ -87,21 +92,13 @@
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-16">
+    <div class="row neu-margin--bottom-14">
         <div class="col-sm-12">
             <label for="txtquestionDescription" class="neu-input__label">Question Description:</label>
             <textarea id="txtquestionDescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
             <span id="errormsgquestionDescription" class="neu-button--danger">Please enter Question Description</span>
         </div>
     </div>
-
-    @*<div class="row neu-margin--bottom-24">
-        <div class="col-sm-12">
-            <label for="txtquestionDescription" class="neu-input__label">Question Description:</label>
-            <textarea id="txtquestionDescription" class="neu-input__field" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errormsgquestionDescription" class="neu-button--danger">Enter Question Description</span>
-        </div>
-    </div>*@
 
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
@@ -113,51 +110,65 @@
 
 </div>
 
-
 <div id="popupcontentedit" title="Edit Question Mapping" hidden="hidden" class="container">
-    <div class="row">
-        <div class="col-sm-6">
-            <label for="txtcategoryEdit" class="neu-input__label">Service Delivery Group</label>
-            <input id="txtcategoryEdit" class="neu-input__label" maxlength="4" type="text" disabled="disabled" />
-        </div>
-        <div class="col-sm-6">
-            <label for="txtsubcategoryEdit" class="neu-input__label">Sub Category</label>
-            <input id="txtsubcategoryEdit" class="neu-input__label" type="text" disabled="disabled" />
-        </div>
-    </div>
 
-    <div class="row neu-margin--bottom-24">
-        <div class="col-sm-12">
-            <label for="txtquestionEdit" class="neu-input__label">Question Name:</label>
-            <textarea id="txtquestionEdit" class="neu-input__field" rows="5" cols="50" style="resize:none" disabled="disabled"></textarea>
+    <div class="row neu-margin--bottom-1">
+        <div class="col-sm-5">
+            <label class="neu-input__label">Service Delivery Group</label>
         </div>
-    </div>
-
-    <div class="row neu-margin--bottom-24">
-        <div class="col-sm-12">
-            <label for="txtquestionDescriptionEdit" class="neu-input__label">Question Description:</label>
-            <textarea id="txtquestionDescriptionEdit" class="neu-input__field" rows="5" cols="50" style="resize:none" disabled="disabled"></textarea>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-24">
-        <div class="col-sm-2">
-            <label for="lblQuestionedit" class="neu-input__label">Current Sequence</label>
-            <input id="lblQuestionedit" class="neu-input__label" type="text" disabled="disabled" />
-        </div>
-        <div class="col-sm-6"><input id="hdnid" type="hidden" /></div>
-        <div class="col-sm-6"><input id="hdnSubCatId" type="hidden" /></div>
-    </div>
-
-
-    <div class="row neu-margin--bottom-24">
-        <div class="col-sm-2"> <label for="ddlQuestionsqedit" class="input-group">Question Sequence:</label></div>
         <div class="col-sm-7">
+            <label class="neu-input__label">Sub Category</label>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-8">
+        <div class="col-sm-5">
+            <input id="txtcategoryEdit" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
+        </div>
+        <div class="col-sm-7">
+            <input id="txtsubcategoryEdit" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-1">
+        <div class="col-md-12">
+            <label for="txtquestion" class="neu-input__label">Question Name</label>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-14">
+        <div class="col-md-12">
+            <textarea id="txtquestionEdit" rows="2" cols="70" disabled="disabled" style="resize:none;background-color:lightgray"></textarea>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-1">
+        <div class="col-md-12">
+            <label for="txtquestion" class="neu-input__label">Question Description</label>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-14">
+        <div class="col-md-12">
+            <textarea id="txtquestionDescriptionEdit" rows="5" cols="70" disabled="disabled" style="resize:none;background-color:lightgray"></textarea>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-10">
+        <div class="col-sm-6">
+            <label for="lblQuestionedit" class="neu-input__label">Current Question Sequence</label>
+            <input id="lblQuestionedit" class="neu-input__label" type="text" disabled="disabled" />
+            <input id="hdnid" type="hidden" />
+            <input id="hdnSubCatId" type="hidden" />
+        </div>
+
+        <div class="col-sm-6">
+            <input id="hdnid" type="hidden" />
+            <label for="ddlQuestionsqedit" class="neu-input__label">New Question Sequence:</label>
             <select name="ddlQuestionsqedit" id="ddlQuestionsqedit" class="form-control">
             </select>
             <span id="errormsgsqedit" style="color:red">Please choose the Sequence</span>
         </div>
-        <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
     </div>
 
     <div class="row">
@@ -168,7 +179,6 @@
     </div>
 
 </div>
-
 
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
@@ -205,7 +215,8 @@
                 });
             });
             $("#popupcontentedit").dialog({
-                width: 'auto',
+                width: 635,
+                height :460,
                 autoOpen: false,
                 draggable: false,
                 resizable: false
@@ -378,7 +389,8 @@
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
+                                                
+                                                  "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
                                                 data: null,
@@ -607,7 +619,7 @@
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="/Questions/Edit/' + full.QuestionMappingId + '">Edit</a>'; }
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
                                                 data: null,
