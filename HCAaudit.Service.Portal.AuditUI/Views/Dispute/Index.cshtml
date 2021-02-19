@@ -140,23 +140,19 @@
 <div class="row">
     <div class="col-sm-12 neu-text--align-center">
         <button id="btnSave" class="neu-button--primary neu-button neu-button--raised">Save</button>
-        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10" onclick="return ResetControls(); ">Cancel</button>
+        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
     </div>
 </div>
 
-<div id="popupcontentdispute" title="Dispute Submitted Sucessfully" hidden="hidden" class="container">
-
+<div id="popupcontentdispute" title="Dispute" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label id="lblcustomtext"></label>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12"></div>
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnok" class="neu-button--primary neu-button neu-button--raised neu-button--large">OK</button>
-        </div>
-        <div class="col-sm-12">
         </div>
     </div>
 </div>
@@ -174,6 +170,10 @@
         $(document).ready(function () {
 
             $("#btnok").click(function (e) {
+                window.location.href = "/Search/Index"
+            });
+
+            $("#btnCancel").click(function (e) {
                 window.location.href = "/Search/Index"
             });
 
@@ -200,7 +200,6 @@
                 });
 
                 if (!isSelected) {
-                    //alert('SElect  option for 1 row');
                     $("#errorMessage").text("Please select action for any one question.");
                     e.preventDefault();
                     return false;
@@ -244,24 +243,6 @@
                 }
             });
         });
-
-
-        function ResetControls() {
-            $("#errorMessage").text("");
-
-            $.each($("#disputeDataTable tbody tr"), function () {
-
-                var GracePeriodId = $(this).find('[id$="GracePeriodId"]').val();
-                if (GracePeriodId > 0) { $(this).find('[id$="GracePeriodId"]').val(0);}
-                $(this).find('[id$="GracePeriodId"]').prop("disabled", false);
-
-                var OverturnId = $(this).find('[id$="OverturnId"]').val();
-                if (OverturnId > 0) { $(this).find('[id$="OverturnId"]').val(0); }
-                    $(this).find('[id$="OverturnId"]').prop("disabled", false);
-            });
-            return false;
-        }
-
 
         $(function () {
             $("#popupcontentdispute").dialog({
