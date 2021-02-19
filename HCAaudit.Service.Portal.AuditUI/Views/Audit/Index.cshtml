@@ -216,17 +216,9 @@
             </div>
         </div>-->
     </div>
+
     <div id="PopUpCancel" style="display:none">
-        Select Reason:   @Html.DropDownList("ddlCancel", new List<SelectListItem>
-           {
-           new SelectListItem{ Text="Case is not applicable", Value = "1" },
-           new SelectListItem{ Text="Case has been re-opened", Value = "2" },
-           new SelectListItem{ Text="Accidentally accessed audit form", Value = "3" },
-           new SelectListItem{ Text="Audit was a hang-up documentation call", Value = "4" },
-           new SelectListItem{ Text="Duplicate case", Value = "5" },
-           new SelectListItem{ Text="Have to do other work", Value = "6" },
-           new SelectListItem{ Text="Choosing different agent", Value = "7" },
-           })
+        Cancellation Reason: @Html.DropDownListFor(x => x.AuditorQuitReasonId, Model.CancellationReason, new { @class = "neu-select" })
     </div>
 </form>
 

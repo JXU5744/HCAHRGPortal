@@ -108,6 +108,18 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             auditViewModel.AgentName = hrProffName;
                             auditViewModel.TicketDate = (DateTime)ssisTicket.ClosedDate;
 
+                            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive && 
+                                x.CodeType.Trim().ToLower() == "audit cancel reason").ToList();
+
+                            var cancelReason = new List<SelectListItem>();
+                            cancelReason.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                            foreach (var item in listOfValues)
+                            {
+                                cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                            }
+
+                            auditViewModel.CancellationReason = cancelReason;
+
                             var query = _auditToolContext.QuestionBank
                                 .Join(
                                 _auditToolContext.QuestionMapping.Where(a => a.SubCatgId == subCategory
@@ -155,6 +167,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                             auditViewModel.Question = lstQuestionList;
                         }
+                        else
+                        {
+                            return RedirectToAction("Index", "Search");
+                        }
                     }
                     else if (ticketStatus == "1")
                     {
@@ -182,6 +198,18 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             auditViewModel.ServiceCatId = serviceCategory;
                             auditViewModel.AgentName = hrProffName;
                             auditViewModel.TicketDate = (DateTime)ssisTicket.CreateDate;
+
+                            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive &&
+                                x.CodeType.Trim().ToLower() == "audit cancel reason").ToList();
+
+                            var cancelReason = new List<SelectListItem>();
+                            cancelReason.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                            foreach (var item in listOfValues)
+                            {
+                                cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                            }
+
+                            auditViewModel.CancellationReason = cancelReason;
 
                             var query = _auditToolContext.QuestionBank
                                 .Join(
@@ -229,6 +257,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             }
 
                             auditViewModel.Question = lstQuestionList;
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Search");
                         }
                     }
 
@@ -411,6 +443,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     SendTo = sendTo,
                     ReplyTo = replyTo,
                     Subject = subject,
+                    SendFromName = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                     EmailBody = stringBuilder.ToString()
                 };
 

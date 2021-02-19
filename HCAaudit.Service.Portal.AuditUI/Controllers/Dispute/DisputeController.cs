@@ -191,9 +191,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
             if (auditMain != null)
             {
-                var auditMainResponse = _auditToolContext.AuditDispute.Where(X => X.AuditMainID == mainID).ToList();
-                //var category = _auditToolContext.Categories.Where(x => x.CatgID == auditMain.ServiceGroupID).FirstOrDefault();
-                //var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
+                var auditDispute = _auditToolContext.AuditDispute.Where(X => X.AuditMainID == mainID).ToList();
+                var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
 
                 var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                 var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketID;
@@ -207,34 +206,38 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("<html><Body>");
                 stringBuilder.Append(body);
-               // stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
-                stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Rank</th><th>Question Description</th>");
-                stringBuilder.Append("<th>Correction Required</th><th>Comments</th><th>Grace Period</th><th>Over Turn</th><th>Dispute Comments</th></tr>");
-                foreach (var item in auditMainResponse)
+                stringBuilder.Append("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
+                stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Question Sequence</th><th>Question Description</th>");
+                stringBuilder.Append("<th>Correction Required</th><th>Audit Comments</th><th>Grace Period</th><th>Over Turn</th><th>Dispute Comments</th></tr>");
+                foreach (var item in auditDispute)
                 {
                     var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
+                    var auditResponseObject = _auditToolContext.AuditMainResponse.Where(
+                        x => x.QuestionId == item.QuestionId && 
+                        x.AuditMainID == item.AuditMainID && 
+                        x.isNonCompliant == true).FirstOrDefault();
+
                     if (questionDesc != null)
                     {
+                        var gracePeriod = _auditToolContext.ListOfValues.Where(x => x.ID == (int)item.GracePeriodId).FirstOrDefault();
+                        var overTurn = _auditToolContext.ListOfValues.Where(x => x.ID == (int)item.OverTurnId).FirstOrDefault();
+
                         var quesSeq = item.QuestionRank;
                         var quesDescription = questionDesc.QuestionDescription;
-                        
-                        //var correctionRequired = item.isCorrectionRequired == true ? "Yes" : "No";
+                        var correctionRequired = auditResponseObject != null && auditResponseObject.isCorrectionRequired ? "Yes" : "No";
+                        var responseComments = auditResponseObject != null? auditResponseObject.NonComplianceComments : String.Empty;
+                        var gracePeriodDesc = gracePeriod != null ? gracePeriod.Code : String.Empty;
+                        var overTurnDesc = overTurn != null ? overTurn.Code : String.Empty;
+                        var comments = item.Comments == null ? string.Empty : item.Comments;
 
-                        //var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
-
-                        //var graceperiod = item.GracePeriodId;
-
-                        //var overturn = item.OverTurnId;
-
-                        //var comments = item.Comments == null ? string.Empty : item.Comments;
-
-                        //stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
-                        //stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);
-                        //stringBuilder.Append(cellEndTag + cellStartTag + notApplicable + cellEndTag + cellStartTag + correctionRequired);
-                        //stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
+                        stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
+                        stringBuilder.Append(cellEndTag + cellStartTag + correctionRequired + cellEndTag + cellStartTag + responseComments);
+                        stringBuilder.Append(cellEndTag + cellStartTag + gracePeriodDesc + cellEndTag + cellStartTag + overTurnDesc);
+                        stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
                     }
                 }
-                stringBuilder.Append(rowStartTag + cellStartTag + "Audit Comments:" + cellEndTag + "<td colspan=6>" + auditMain.AuditNotes + cellEndTag + "</table>");
+
+                stringBuilder.Append("</table>");
                 stringBuilder.Append("</Body></html>");
 
                 var emailObject = new EmailTemplate
@@ -246,10 +249,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     EmailBody = stringBuilder.ToString()
                 };
 
-                //EmailHelper emailHelper = new EmailHelper(_configuration);
+                EmailHelper emailHelper = new EmailHelper(config);
 
-               // emailHelper.SendEmailNotification(emailObject);
-
+                emailHelper.SendEmailNotification(emailObject);
             }
         }
     }

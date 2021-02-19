@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HCAaudit.Service.Portal.AuditUI.ViewModel
 {
@@ -30,12 +31,13 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
         public bool isDisputed { get; set; }
         public DateTime DisputedDate { get; set; }
         public string AuditorQuit { get; set; }
-        public string AuditorQuitReason { get; set; }
+        public string AuditorQuitReasonId { get; set; }
         public string EnvironmentType { get; set; }
         public string AuditNote { get; set; }
         public DateTime ModifiedDate { get; set; }
         public DateTime DateOfAuditor { get; set; }
         public List<Question> Question { get; set; }
+        public IEnumerable<SelectListItem> CancellationReason { get; set; }
     }
 
     public class Question

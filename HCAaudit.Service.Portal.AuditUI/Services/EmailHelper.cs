@@ -37,7 +37,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                     //message.To.Add("ojl8871@hca.corpad.net");
                 }
 
-                message.From = new MailAddress(emailContent.SendFrom);
+                message.From = new MailAddress(emailContent.SendFrom, emailContent.SendFromName);
                 message.Subject = emailContent.Subject;
                 message.Body = emailContent.EmailBody;
                 message.ReplyToList.Add(emailContent.ReplyTo);
