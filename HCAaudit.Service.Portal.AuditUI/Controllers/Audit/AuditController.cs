@@ -108,7 +108,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             auditViewModel.AgentName = hrProffName;
                             auditViewModel.TicketDate = (DateTime)ssisTicket.ClosedDate;
 
-                            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive && 
+                            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive &&
                                 x.CodeType.Trim().ToLower() == "audit cancel reason").ToList();
 
                             var cancelReason = new List<SelectListItem>();
@@ -328,7 +328,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             _auditToolContext.SaveChanges();
                         }
 
-                        FormatAndSendEmail( main.ID);
+                        FormatAndSendEmail(main.ID);
                     }
                     return RedirectToAction("Index", "Search");
                 }
@@ -348,31 +348,57 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             try
             {
+                object response = "";
+
                 if (isAuditor)
                 {
                     if (audit != null)
                     {
-                        AuditMain main = new AuditMain();
-                        main.TicketID = audit.TicketId;
-                        main.Agent34ID = audit.Agent34Id;
-                        main.AgentName = audit.AgentName;
-                        main.AuditNotes = audit.AuditNote;
-                        main.AuditorName = audit.AuditorName;
-                        main.AuditType = audit.EnvironmentType;
-                        main.ServiceGroupID = audit.ServiceCatId;
-                        main.SubcategoryID = audit.SubCatId;
-                        main.SubmitDT = DateTime.Now;
-                        main.AuditorQuit = "Quit";
-                        main.AuditorQuitReason = "Drop down value";
-                        main.TicketDate = audit.TicketDate;
-                        main.CreatedDate = DateTime.Now;
-                        main.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        main.ModifiedDate = DateTime.Now;
-                        main.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        _auditToolContext.AuditMain.Add(main);
-                        _auditToolContext.SaveChanges();
+                        
+                        int tempreasonid = 0;
+                        if (audit.AuditorQuitReasonId != null && int.TryParse(audit.AuditorQuitReasonId, out tempreasonid))
+                        {
+                            if (tempreasonid > 0)
+                            {
+                                var cancelreason = _auditToolContext.ListOfValues.Where(x => x.ID == Int32.Parse(audit.AuditorQuitReasonId)).FirstOrDefault();
+
+                                AuditMain main = new AuditMain();
+
+                                main.TicketID = audit.TicketId;
+                                main.Agent34ID = audit.Agent34Id;
+                                main.AgentName = audit.AgentName;
+                                main.AuditorName = audit.AuditorName;
+                                main.AuditType = audit.EnvironmentType;
+                                main.ServiceGroupID = audit.ServiceCatId;
+                                main.SubcategoryID = audit.SubCatId;
+                                main.SubmitDT = DateTime.Now;
+                                main.AuditorQuit = "Quit";
+                                main.AuditorQuitReason = cancelreason.Code;
+                                main.TicketDate = audit.TicketDate;
+                                main.CreatedDate = DateTime.Now;
+                                main.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                main.ModifiedDate = DateTime.Now;
+                                main.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                _auditToolContext.AuditMain.Add(main);
+                                _auditToolContext.SaveChanges();
+                            }
+                            else
+                            {
+                                response = "1";
+                            }
+                        }
+                        else
+                        {
+                            response = "1";
+                        }
+
                     }
-                    return RedirectToAction("Index", "Search");
+
+                    else
+                    {
+                        response = "1";
+                    }
+                    return Json(response);
                 }
             }
             catch (Exception ex)
@@ -384,7 +410,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private void FormatAndSendEmail( int mainID)
+        private void FormatAndSendEmail(int mainID)
         {
             var rowStartTag = "<tr>";
             var rowEndTag = "</tr>";
@@ -410,7 +436,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("<html><Body>");
                 stringBuilder.Append(body);
-                stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>": String.Empty));
+                stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
                 stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Question Sequence</th><th>Question Description</th><th>Compliant</th><th>Non Compliant</th><th>");
                 stringBuilder.Append("Not Applicable</th><th>Correction Required</th><th>Comments</th></tr>");
                 foreach (var item in auditMainResponse)

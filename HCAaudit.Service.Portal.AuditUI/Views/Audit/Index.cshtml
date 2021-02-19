@@ -20,48 +20,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 @*<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    #myInput {
-        background-image: url('/css/searchicon.png');
-        background-position: 10px 12px;
-        background-repeat: no-repeat;
-        width: 100%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
-    }
-
-    #myUL {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-
-        #myUL li a {
-            border: 1px solid #ddd;
-            margin-top: -1px; /* Prevent double borders */
-            background-color: #f6f6f6;
-            padding: 12px;
-            text-decoration: none;
-            font-size: 18px;
-            color: black;
-            display: block
+        * {
+            box-sizing: border-box;
         }
 
-            #myUL li a:hover:not(.header) {
-                background-color: #eee;
+        #myInput {
+            background-image: url('/css/searchicon.png');
+            background-position: 10px 12px;
+            background-repeat: no-repeat;
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+
+        #myUL {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            #myUL li a {
+                border: 1px solid #ddd;
+                margin-top: -1px; /* Prevent double borders */
+                background-color: #f6f6f6;
+                padding: 12px;
+                text-decoration: none;
+                font-size: 18px;
+                color: black;
+                display: block
             }
 
-    textarea {
-        overflow-y: scroll;
-        height: 100px;
-        resize: none; /* Remove this if you want the user to resize the textarea */
-    }
-</style>*@
+                #myUL li a:hover:not(.header) {
+                    background-color: #eee;
+                }
+
+        textarea {
+            overflow-y: scroll;
+            height: 100px;
+            resize: none; /* Remove this if you want the user to resize the textarea */
+        }
+    </style>*@
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -195,31 +195,25 @@
             </div>
         </div>
 
-        <!--<div class="row">
-        <div class="col">-->
-        @*<button id="btnAnswerNo" class="btn btn-primary">
-                Return to Toolbox (Will NOT Submit Audit)
-            </button>*@
-        <!--</div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">
-                <button id="btnAnswerYes" class="btn btn-success">
-                    Submit Audit
-                </button>
-            </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">
-
-            </div>
-        </div>-->
     </div>
 
-    <div id="PopUpCancel" style="display:none">
-        Cancellation Reason: @Html.DropDownListFor(x => x.AuditorQuitReasonId, Model.CancellationReason, new { @class = "neu-select" })
+    <div id="PopUpCancel" title="Cancel Audit" hidden="hidden" class="container">
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <label class="neu-input__label" for="AuditorQuitReasonId"> Cancellation Reason </label>
+                @Html.DropDownListFor(x => x.AuditorQuitReasonId, Model.CancellationReason, new { @class = "neu-select" })
+                <span id="errormsg" class="neu-button--danger neu-button--small"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btnCancelAudit" class="neu-button--primary neu-button neu-button--raised">Save</button>
+                <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+            </div>
+        </div>
+
     </div>
+     
 </form>
 
 
@@ -230,26 +224,76 @@
       href="~/css/daterangepicker.css" />
 <!-- Script for the date range picker -->
 <script type="text/javascript">
+
     function OpenCancelPopUp() {
         $("#PopUpCancel").dialog({
             autoOpen: false,
             width: 500,
             height: 'auto',
-            buttons: {
-                Ok: function () {
-                    $("#PopUpCancel").dialog('close');
-                },
-                Cancel: function () {
-                    $("#PopUpCancel").dialog('close');
-                },
-            }
-
         });
+
+        $('#errormsg').hide();
+
         $('.ui-dialog-titlebar-close').hide();
 
         $("#PopUpCancel").dialog('open');
         return false;
     }
+
+
+
+    $("#btncancelpopup").click(function () {
+        $("#PopUpCancel").dialog('close');
+    });
+
+
+    $("#btnCancelAudit").click(function () {
+        if ($('#AuditorQuitReasonId').val() == 0) {
+            $('#errormsg').show();
+            $('#errormsg').text('Please select cancel reason');
+            return false;
+        }
+
+        var auditparameters = {
+            "TicketID": $('#TicketId').val(),
+            "Agent34ID": $('#Agent34Id').val(),
+            "AgentName": $('#AgentName').val(),
+            "AuditorName": $('#AuditorName').val(),
+            "EnvironmentType": $('#EnvironmentType').val(),
+            "ServiceCatId": $('#ServiceCatId').val(),
+            "SubCatId": $('#SubCatId').val(),
+            "TicketDate": $('#TicketDate').val(),
+            "AuditorQuitReasonId": $('#AuditorQuitReasonId').val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Audit/CancelAudit",
+
+            data: { "audit": auditparameters },
+
+            success: function (response) {
+                if (response == "1") {
+                    alert("Please select valid value");
+                }
+                else {
+
+                    $("#PopUpCancel").dialog('close');
+                    window.location.replace("/Search/Index");
+                }
+            },
+
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+        
+    });
+
+
 
     $('.actioncheck').click(function () {
         var $this = $(this);
