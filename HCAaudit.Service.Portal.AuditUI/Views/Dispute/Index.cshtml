@@ -40,41 +40,41 @@
 <div class="card">
     <div class="row">
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Ticket ID</label>
+            <label for="AuditMain_TicketID" class="neu-input__label">Ticket ID</label>
             @Html.TextBoxFor(m => Model.AuditMain.TicketID, new { @disabled = true, @class = "neu-input__field" })
             @Html.HiddenFor(x => Model.AuditMain.TicketID)
         </div>
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Agent's 3-4 ID</label>
+            <label for="AuditMain_Agent34ID" class="neu-input__label">Agent's 3-4 ID</label>
             @Html.TextBoxFor(m => Model.AuditMain.Agent34ID, new { @disabled = true, @class = "neu-input__field" })
         </div>
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Agent Name</label>
+            <label for="AuditMain_AgentName" class="neu-input__label">Agent Name</label>
             @Html.TextBoxFor(m => Model.AuditMain.AgentName, new { @disabled = true, @class = "neu-input__field" })
         </div>
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Record Date</label>
+            <label for="AuditMain_TicketDate" class="neu-input__label">Record Date</label>
             @Html.TextBoxFor(m => Model.AuditMain.TicketDate, new { @disabled = true, @class = "neu-input__field" })
         </div>
     </div>
 
     <div class="row">
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Audit Date</label>
+            <label for="AuditMain_SubmitDT" class="neu-input__label">Audit Date</label>
             @Html.TextBoxFor(m => Model.AuditMain.SubmitDT, new { @disabled = true, @class = "neu-input__field" })
         </div>
 
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Auditor Name</label>
+            <label for="AuditMain_AuditorName" class="neu-input__label">Auditor Name</label>
             @Html.TextBoxFor(m => Model.AuditMain.AuditorName, new { @disabled = true, @class = "neu-input__field" })
         </div>
 
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Service Group</label>
+            <label for="ServiceDeliveryGroupName" class="neu-input__label">Service Group</label>
             @Html.TextBoxFor(m => Model.ServiceDeliveryGroupName, new { @disabled = true, @class = "neu-input__field" })
         </div>
         <div class="col-sm-3">
-            <label for="format-pdf" class="neu-input__label">Sub Group</label>
+            <label for="SubCategoryName" class="neu-input__label">Sub Group</label>
             @Html.TextBoxFor(m => Model.SubCategoryName, new { @disabled = true, @class = "neu-input__field" })
         </div>
     </div>
