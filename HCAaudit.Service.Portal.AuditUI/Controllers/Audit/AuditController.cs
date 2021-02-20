@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
 using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
-using System.Collections;
 using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
@@ -51,7 +45,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         string.IsNullOrWhiteSpace(TicketDate) ||
                         ServiceCatId == 0 || SubCatId == 0)
                         return RedirectToAction("Index", "Search");
-
 
                     var ticketId = TicketId;
                     var ticketStatus = TicketStatus;
@@ -90,12 +83,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         if (ssisTicket != null)
                         {
-
                             auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CloseUserId) ? "" : ssisTicket.CloseUserId.Substring(0, 7);
 
                             var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
                             var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
-
 
                             auditViewModel.TicketId = ssisTicket.TicketCode;
                             auditViewModel.AuditorName = _authService.LoggedInUserInfo().Result.LoggedInFullName;
@@ -144,6 +135,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 }).OrderBy(c => c.QuestionSeqNumber).ToList();
 
                             List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question> lstQuestionList = new List<HCAaudit.Service.Portal.AuditUI.ViewModel.Question>();
+
                             foreach (var item in query)
                             {
                                 ViewModel.Action objAction = new ViewModel.Action();
@@ -164,7 +156,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 objQuestion.CorrectionRequire = true;
                                 lstQuestionList.Add(objQuestion);
                             }
-
                             auditViewModel.Question = lstQuestionList;
                         }
                         else
@@ -182,12 +173,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         if (ssisTicket != null)
                         {
-
                             auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CreatorUserId) ? "" : ssisTicket.CreatorUserId.Substring(0, 7);
 
                             var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
                             var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
-
 
                             auditViewModel.TicketId = ssisTicket.TicketCode;
                             auditViewModel.AuditorName = _authService.LoggedInUserInfo().Result.LoggedInFullName;
@@ -255,7 +244,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 objQuestion.CorrectionRequire = true;
                                 lstQuestionList.Add(objQuestion);
                             }
-
                             auditViewModel.Question = lstQuestionList;
                         }
                         else
@@ -263,7 +251,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             return RedirectToAction("Index", "Search");
                         }
                     }
-
                     return View(auditViewModel);
                 }
             }
@@ -302,13 +289,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         _auditToolContext.AuditMain.Add(main);
                         _auditToolContext.SaveChanges();
 
-
                         foreach (var item in audit.Question)
                         {
                             AuditMainResponse obj = new AuditMainResponse();
 
                             obj.QuestionId = item.QuestionId;
-                            //Audit Main ID to be set in AuditMainresponse
                             obj.AuditMainID = main.ID;
                             obj.QuestionRank = item.QuestionSequence;
                             obj.TicketID = main.TicketID;
@@ -327,7 +312,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             _auditToolContext.AuditMainResponse.Add(obj);
                             _auditToolContext.SaveChanges();
                         }
-
                         FormatAndSendEmail(main.ID);
                     }
                     return RedirectToAction("Index", "Search");
@@ -338,10 +322,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in SaveAudit method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_SaveAudit", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
-
 
         [HttpPost]
         public IActionResult CancelAudit(AuditViewModel audit)
@@ -349,12 +331,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             try
             {
                 object response = "";
-
                 if (isAuditor)
                 {
                     if (audit != null)
                     {
-                        
                         int tempreasonid = 0;
                         if (audit.AuditorQuitReasonId != null && int.TryParse(audit.AuditorQuitReasonId, out tempreasonid))
                         {
@@ -391,9 +371,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             response = "1";
                         }
-
                     }
-
                     else
                     {
                         response = "1";
@@ -406,7 +384,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in CancelAudit method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_CancelAudit", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -417,68 +394,69 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var cellStartTag = "<td>";
             var cellEndTag = "</td>";
 
-            var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
-            if (auditMain != null)
+            try
             {
-                var auditMainResponse = _auditToolContext.AuditMainResponse.Where(X => X.AuditMainID == mainID).ToList();
-                var category = _auditToolContext.Categories.Where(x => x.CatgID == auditMain.ServiceGroupID).FirstOrDefault();
-                var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
-
-                var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
-                var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketID;
-                //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
-                var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
-                var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
-                var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
-
-                var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketID + "</b><br>";
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("<html><Body>");
-                stringBuilder.Append(body);
-                stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
-                stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Question Sequence</th><th>Question Description</th><th>Compliant</th><th>Non Compliant</th><th>");
-                stringBuilder.Append("Not Applicable</th><th>Correction Required</th><th>Comments</th></tr>");
-                foreach (var item in auditMainResponse)
+                var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
+                if (auditMain != null)
                 {
-                    var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
-                    if (questionDesc != null)
+                    var auditMainResponse = _auditToolContext.AuditMainResponse.Where(X => X.AuditMainID == mainID).ToList();
+                    var category = _auditToolContext.Categories.Where(x => x.CatgID == auditMain.ServiceGroupID).FirstOrDefault();
+                    var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
+                    var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
+                    var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketID;
+                    //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
+                    var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+                    var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+                    var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+
+                    var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketID + "</b><br>";
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.Append("<html><Body>");
+                    stringBuilder.Append(body);
+                    stringBuilder.Append("<br>Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
+                    stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Question Sequence</th><th>Question Description</th><th>Compliant</th><th>Non Compliant</th><th>");
+                    stringBuilder.Append("Not Applicable</th><th>Correction Required</th><th>Comments</th></tr>");
+                    foreach (var item in auditMainResponse)
                     {
-                        var quesSeq = item.QuestionRank;
-                        var quesDescription = questionDesc.QuestionDescription;
-                        var compliance = item.isCompliant == true ? "Yes" : "No";
-                        var nonCompliance = item.isNonCompliant == true ? "Yes" : "No";
-                        var impact = item.isHighNonComplianceImpact == true ? " (High)" : (item.isLowNonComplianceImpact == true ? " (Low)" : string.Empty);
-                        nonCompliance += impact;
-                        var correctionRequired = item.isCorrectionRequired == true ? "Yes" : "No";
-                        var notApplicable = item.isNA == true ? "Yes" : "No";
-                        var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
+                        var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
+                        if (questionDesc != null)
+                        {
+                            var quesSeq = item.QuestionRank;
+                            var quesDescription = questionDesc.QuestionDescription;
+                            var compliance = item.isCompliant == true ? "Yes" : "No";
+                            var nonCompliance = item.isNonCompliant == true ? "Yes" : "No";
+                            var impact = item.isHighNonComplianceImpact == true ? " (High)" : (item.isLowNonComplianceImpact == true ? " (Low)" : string.Empty);
+                            nonCompliance += impact;
+                            var correctionRequired = item.isCorrectionRequired == true ? "Yes" : "No";
+                            var notApplicable = item.isNA == true ? "Yes" : "No";
+                            var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
 
-                        stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
-                        stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);
-                        stringBuilder.Append(cellEndTag + cellStartTag + notApplicable + cellEndTag + cellStartTag + correctionRequired);
-                        stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
+                            stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
+                            stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);
+                            stringBuilder.Append(cellEndTag + cellStartTag + notApplicable + cellEndTag + cellStartTag + correctionRequired);
+                            stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
+                        }
                     }
+                    stringBuilder.Append(rowStartTag + cellStartTag + "Audit Comments:" + cellEndTag + "<td colspan=6>" + auditMain.AuditNotes + cellEndTag + "</table>");
+                    stringBuilder.Append("</Body></html>");
+                    var emailObject = new EmailTemplate
+                    {
+                        SendFrom = sendFrom,
+                        SendTo = sendTo,
+                        ReplyTo = replyTo,
+                        Subject = subject,
+                        SendFromName = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                        EmailBody = stringBuilder.ToString()
+                    };
+                    EmailHelper emailHelper = new EmailHelper(_configuration,_log);
+                    emailHelper.SendEmailNotification(emailObject);
                 }
-                stringBuilder.Append(rowStartTag + cellStartTag + "Audit Comments:" + cellEndTag + "<td colspan=6>" + auditMain.AuditNotes + cellEndTag + "</table>");
-                stringBuilder.Append("</Body></html>");
-
-                var emailObject = new EmailTemplate
-                {
-                    SendFrom = sendFrom,
-                    SendTo = sendTo,
-                    ReplyTo = replyTo,
-                    Subject = subject,
-                    SendFromName = _authService.LoggedInUserInfo().Result.LoggedInFullName,
-                    EmailBody = stringBuilder.ToString()
-                };
-
-                EmailHelper emailHelper = new EmailHelper(_configuration);
-
-                emailHelper.SendEmailNotification(emailObject);
-
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_FormatAndSendEmail", ErrorDiscription = ex.Message });
             }
         }
     }
 }
-

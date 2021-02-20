@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Http;
 using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -37,7 +31,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _log = log;
         }
 
-
         //[Route("category/method")]
         public IActionResult GetCategory()
         {
@@ -46,9 +39,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (isAdmin)
                 {
                     var categoryList = GetCategoryDetails();
-                    
                     _logger.LogInformation($"No of records: {categoryList.Count()}");
-                    
                     return Json(categoryList);
                 }
             }
@@ -57,9 +48,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetCategory method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategory", ErrorDiscription = ex.Message });
             }
-         
             return RedirectToAction("Index", "Home");
-
         }
 
         [HttpPost]
@@ -94,14 +83,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgID == id && x.IsActive == true)
                                     select subcat).FirstOrDefault();
-
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetSubCategoryDetailsByID method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetSubCategoryDetailsByID", ErrorDiscription = ex.Message });
             }
-
             return data;
         }
 
@@ -149,7 +136,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Edit method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Edit", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -179,14 +165,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     return Json(responce);
                 }
-
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Insert method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Insert", ErrorDiscription = ex.Message });
             }
-            
             return RedirectToAction("Index", "Home");
         }
 
@@ -272,7 +256,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.Message });
                 }
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -292,12 +275,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.Message });
             }
             return RedirectToAction("Index", "Home");
-            
         }
 
         private bool IsSubcategoryNameExists(int categoryid, string subcategoryname)
         {
-
             bool result = false;
             try
             {
@@ -338,7 +319,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                          SubCatgDescription = x.SubCatgDescription
                      }
                     ).ToList();
-
                 return query;
             }
             catch (Exception ex)
@@ -346,7 +326,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetDetails method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetails", ErrorDiscription = ex.Message });
             }
-
             return new List<CatSubCatJoinMast>();
         }
 
@@ -381,39 +360,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetDetail method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetail", ErrorDiscription = ex.Message });
             }
-
             return query;
         }
-
-        //[HttpPost]
-        //public IActionResult delete(int id)
-        //{
-        //    if (isAdmin)
-        //    {
-        //        SubCategory objSubCategory = new SubCategory();
-        //        try
-        //        {
-        //            objSubCategory = GetSubCategoryDetailsByID(id);
-
-        //            objSubCategory.SubCatgID = id; 
-        //            objSubCategory.IsActive = false;
-        //            objSubCategory.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-        //            objSubCategory.ModifiedDate = DateTime.Now;
-        //            _auditToolContext.SubCategories.Update(objSubCategory);
-        //            _auditToolContext.SaveChanges();
-
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            _logger.LogInformation($"Exception in Delete method");
-        //            _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Delete", ErrorDiscription = ex.Message });
-        //        }
-
-        //        return View("Details", GetDetails());
-        //    }
-            
-        //    return RedirectToAction("Index", "Home");
-        //}
 
         List<Categorys> GetCategoryDetails()
         {
@@ -439,9 +387,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in HasDeleteAccess method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_HasDeleteAccess", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
     }
 }
-

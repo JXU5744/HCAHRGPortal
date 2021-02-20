@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
@@ -10,9 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Http;
 using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Rendering;
-
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -56,7 +51,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionByid", ErrorDiscription = ex.Message });
             }
             return RedirectToAction("Index", "Home");
-
         }
 
         [HttpPost]
@@ -67,7 +61,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 try
                 {
                     var objQuestion = _auditToolContext.QuestionMapping
-                    //.Where(a => a.QuestionMasterId == cquestionid ).FirstOrDefault();
                     .Where(a => a.QuestionMappingId == cquestionid && a.IsActive == true).FirstOrDefault();
 
                     if (objQuestion != null)
@@ -98,9 +91,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     {
                         return Json("Error Udating Current sequence number");
                     }
-
                     return Json("Success");
-
                 }
                 catch (Exception ex)
                 {
@@ -113,7 +104,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-
         }
 
         [HttpPost]
@@ -141,11 +131,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetDesbyQuesText method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDesbyQuesText", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
-            [HttpPost]
+        [HttpPost]
         public ActionResult GetQuestionSeqByid(int id, int subcatid, int actionQid)
         {
             try
@@ -182,7 +171,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                           .Where(a => a.SubCatID == subcatid && a.IsActive == true)
                          .OrderBy(a => a.SequenceNo)
                          .ToList();
-
                     return Json(query);
                 }
             }
@@ -191,14 +179,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetQuestionSeqByid method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionSeqByid", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
         private QuestionBank GetSingleQuestionByid(string id)
         {
             QuestionBank data = null;
-            
+
             try
             {
                 data = _auditToolContext.QuestionBank.Where(a => a.QuestionId == Convert.ToInt32(id) && a.IsActive == true).FirstOrDefault();
@@ -243,7 +230,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     _auditToolContext.QuestionBank.Update(objtblQuestionBank);
                                     _auditToolContext.SaveChanges();
                                     return Json(objtblQuestionBank);
-
                                 }
                             }
                             else
@@ -266,9 +252,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Edit method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.Message });
             }
-            
             return RedirectToAction("Index", "Home");
-            
         }
 
         [HttpPost]
@@ -285,14 +269,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
                     return Json(filteredSubCategoryList);
                 }
-
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in BindSubCategory method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindSubCategory", ErrorDiscription = ex.Message });
             }
-
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
@@ -397,7 +379,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return result;
         }
 
-        
         public IActionResult Index()
         {
             try
@@ -418,7 +399,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Index method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Index", ErrorDiscription = ex.Message });
             }
-            
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -460,14 +441,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                      .ToList();
                     return Json(query);
                 }
-
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in BindGrid method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindGrid", ErrorDiscription = ex.Message });
             }
-         
             return RedirectToAction("Index", "Home");
         }
 
@@ -498,7 +477,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetCommaSeperated method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetCommaSeperated", ErrorDiscription = ex.Message });
             }
-            
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
@@ -524,10 +502,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             }
                         }
                     }
-
                     return Json(dataBank.Select(a => a.QuestionName));
                 }
-
             }
             catch (Exception ex)
             {
@@ -597,7 +573,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
                     return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
                 }
                 catch (Exception ex)
                 {
@@ -605,7 +580,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Details", ErrorDiscription = ex.Message });
                 }
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -625,14 +599,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.SaveChanges();
                     return View("Details", GetDetails());
                 }
-
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in DeleteQuestionBank method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionBank", ErrorDiscription = ex.Message });
             }
-            
             return RedirectToAction("Index", "Home");
         }
 
@@ -665,7 +637,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         _auditToolContext.SaveChanges();
                     }
-
                     return View("index", GetDetails());
                 }
             }
@@ -674,9 +645,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in DeleteQuestionMaster method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionMaster", ErrorDiscription = ex.Message });
             }
-            
-           return RedirectToAction("Index", "Home");
-          
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -687,7 +656,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (isAdmin)
                 {
                     var data = (from Q in _auditToolContext.QuestionBank.Where(a => a.IsActive == true && a.QuestionId == id) select Q).ToList();
-
                     return View("Edit", data);
                 }
             }
@@ -696,7 +664,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Edit method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.Message });
             }
-
             return View("Index");
         }
 
@@ -728,7 +695,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         _auditToolContext.SaveChanges();
                         return RedirectToAction("Details");
                     }
-
                     return Json(responce);
                 }
             }
@@ -737,7 +703,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Insert method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Insert", ErrorDiscription = ex.Message });
             }
-            
             return RedirectToAction("Index", "Home");
         }
 
@@ -762,7 +727,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in HasDeleteAccessforQB method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_HasDeleteAccessforQB", ErrorDiscription = ex.Message });
             }
-            
             return RedirectToAction("Index", "Home");
         }
     }

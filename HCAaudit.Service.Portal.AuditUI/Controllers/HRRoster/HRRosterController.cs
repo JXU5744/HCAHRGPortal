@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
 using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text;
 using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
@@ -37,7 +29,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             isAdmin = _authService.CheckAdminUserGroup().Result;
             _log = log;
         }
-
 
         [HttpPost]
         public JsonResult GetDetailsById(EmployeeIdViewModel employeeIdViewModel)
@@ -68,7 +59,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                                 x.ModifiedBy,
                                                 x.ModifiedDate
                                             }).ToList();
-
                     return Json(objclstbHROCRoster);
                 }
             }
@@ -77,7 +67,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in GetDetailsById method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.Message });
             }
-            
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
@@ -96,7 +85,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Details method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -115,7 +103,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             (x => x.HROCRosterId == hROCRosterViewModel.HROCRosterId).FirstOrDefault();
                         if (objHROCRoster != null)
                         {
-                            //objCategorys = GetSingleCategoryByid(param[0]);
                             objHROCRoster.EmployeeNumber = hROCRosterViewModel.EmployeeNumber;
                             objHROCRoster.EmployeeFullName = hROCRosterViewModel.EmployeeFullName;
                             objHROCRoster.EmployeeLastName = hROCRosterViewModel.EmployeeLastName;
@@ -132,7 +119,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             objHROCRoster.ModifiedDate = DateTime.Now;
                             _auditToolContext.HROCRoster.Update(objHROCRoster);
                             _auditToolContext.SaveChanges();
-
                             resp = "Success";
                         }
                     }
@@ -142,7 +128,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _logger.LogInformation($"Exception in Edit method");
                     _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.Message });
                 }
-                
                 return Json(resp);
             }
             else
@@ -150,7 +135,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
 
         [HttpPost]
         public ActionResult Insert(HROCRosterViewModel hROCRosterViewModel)
@@ -184,7 +168,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         };
                         _auditToolContext.HROCRoster.Add(objHROCRoster);
                         _auditToolContext.SaveChanges();
-
                         resp = "Success";
                     }
                 }
@@ -193,7 +176,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _logger.LogInformation($"Exception in Insert method");
                     _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.Message });
                 }
-
                 return Json(resp);
             }
             else
@@ -201,8 +183,5 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
     }
-
 }
-

@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Http;
 using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -50,7 +44,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         _logger.LogInformation($"Returning Response with CategoryID is null or empty");
                         return Json(response);
                     }
-                    
                     _logger.LogInformation($"Requesting Method GetSingleCategoryByid for CategoryID as {id}");
                     return Json(GetSingleCategoryByid(id));
                 }
@@ -60,7 +53,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in getting Category for CategoryID as {id}");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetCategoryByid", ErrorDiscription = ex.Message });
             }
-
             _logger.LogInformation($"Returning from GetCategoryByid Action to Home Page {id}");
             return RedirectToAction("Index", "Home");
         }
@@ -81,7 +73,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in getting Category in GetSingleCategoryByid method for CategoryID as {id}");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetSingleCategoryByid", ErrorDiscription = ex.Message });
             }
-
             _logger.LogInformation($"Exiting GetSingleCategoryByid method with data: {data}");
             return data;
         }
@@ -126,7 +117,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Edit", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -160,9 +150,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Insert", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
-
         }
 
         [HttpPost]
@@ -186,13 +174,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Delete", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
         private bool IsCategoryNameExists(string inputcategoryname)
         {
-
             bool result = false;
             try
             {
@@ -206,7 +192,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_IsCategoryNameExists", ErrorDiscription = ex.Message });
             }
-
             return result;
         }
 
@@ -242,7 +227,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_HasDeleteAccess", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -260,7 +244,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index", ErrorDiscription = ex.Message });
             }
-
             return RedirectToAction("Index", "Home");
         }
 
@@ -338,7 +321,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
                     return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
                 }
                 catch (Exception ex)
                 {
@@ -349,6 +331,4 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
     }
-
 }
-

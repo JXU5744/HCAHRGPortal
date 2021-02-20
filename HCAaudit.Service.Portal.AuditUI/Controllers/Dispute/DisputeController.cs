@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
 using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
-using System.Collections;
 using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
@@ -79,7 +73,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         overturn.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
                     }
 
-
                     var auditNonCompList = new List<AuditNonComplianceModel>();
                     foreach (var auditRes in auditResponses)
                     {
@@ -97,15 +90,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 NonComplianceComments = auditRes.NonComplianceComments,
                                 TicketId = auditRes.TicketID,
                                 QuestionRank = auditRes.QuestionRank
-
                             });
                         }
-
                     }
                     model.GracePeriod = gracePeriod;
                     model.Overturn = overturn;
                     model.AuditNonComplianceModel = auditNonCompList;
-
                     return View(model);
                 }
             }
@@ -117,11 +107,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
         [HttpPost]
         public IActionResult GetData([FromBody] List<AuditNonComplianceModel> model)
         {
-
             try
             {
                 if (isAuditor)
@@ -157,17 +145,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName
                             });
                         }
-
                     }
-
                     _auditToolContext.AuditMain.Update(auditMain);
                     _auditToolContext.AuditMainResponse.UpdateRange(auditRes);
                     _auditToolContext.AuditDispute.AddRange(dispute);
-
                     var result = _auditToolContext.SaveChanges();
-
                     FormatAndSendEmail(auditMain.ID);
-
                     return Json(result);
                 }
             }
@@ -176,10 +159,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Index method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.Message });
             }
-            
             return RedirectToAction("Index", "Home");
         }
-
 
         private void FormatAndSendEmail(int mainID)
         {
@@ -193,7 +174,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 var auditDispute = _auditToolContext.AuditDispute.Where(X => X.AuditMainID == mainID).ToList();
                 var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
-
                 var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                 var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketID;
                 //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
@@ -213,19 +193,18 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 {
                     var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
                     var auditResponseObject = _auditToolContext.AuditMainResponse.Where(
-                        x => x.QuestionId == item.QuestionId && 
-                        x.AuditMainID == item.AuditMainID && 
+                        x => x.QuestionId == item.QuestionId &&
+                        x.AuditMainID == item.AuditMainID &&
                         x.isNonCompliant == true).FirstOrDefault();
 
                     if (questionDesc != null)
                     {
                         var gracePeriod = _auditToolContext.ListOfValues.Where(x => x.ID == (int)item.GracePeriodId).FirstOrDefault();
                         var overTurn = _auditToolContext.ListOfValues.Where(x => x.ID == (int)item.OverTurnId).FirstOrDefault();
-
                         var quesSeq = item.QuestionRank;
                         var quesDescription = questionDesc.QuestionDescription;
                         var correctionRequired = auditResponseObject != null && auditResponseObject.isCorrectionRequired ? "Yes" : "No";
-                        var responseComments = auditResponseObject != null? auditResponseObject.NonComplianceComments : String.Empty;
+                        var responseComments = auditResponseObject != null ? auditResponseObject.NonComplianceComments : String.Empty;
                         var gracePeriodDesc = gracePeriod != null ? gracePeriod.Code : String.Empty;
                         var overTurnDesc = overTurn != null ? overTurn.Code : String.Empty;
                         var comments = item.Comments == null ? string.Empty : item.Comments;
@@ -248,12 +227,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     Subject = subject,
                     EmailBody = stringBuilder.ToString()
                 };
-
-                EmailHelper emailHelper = new EmailHelper(config);
-
+                EmailHelper emailHelper = new EmailHelper(config,_log);
                 emailHelper.SendEmailNotification(emailObject);
             }
         }
     }
 }
-

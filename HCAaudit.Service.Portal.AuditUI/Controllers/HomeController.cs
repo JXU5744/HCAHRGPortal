@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
 using HCAaudit.Service.Portal.AuditUI.Services;
@@ -32,9 +31,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _authService = authService;
         }
 
-
-
-        //[Route("category/method")]
         public IActionResult Index()
         {
             bool isAdmin = _authService.CheckAdminUserGroup().Result;
@@ -86,4 +82,3 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
     }     
 }
-
