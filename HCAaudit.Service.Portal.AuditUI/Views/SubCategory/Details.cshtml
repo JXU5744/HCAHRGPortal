@@ -44,12 +44,12 @@
 <div id="popupcontent" title="Add Subcategory" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-6">
-            <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
-            <select name="teams" id="ddlcategory" class="neu-select"></select>
+            <label for="ddlcategory" class="neu-input__label">Service Delivery Group</label>
+            <select name="ddlcategory" id="ddlcategory" class="neu-select"></select>
             <span id="errormsgcategory" class="neu-button--danger neu-button--small">Select Service Delivery Group</span>
         </div>
         <div class="col-sm-6">
-            <label for="format-pdf" class="neu-input__label">Sub Category:</label>
+            <label for="txtsubcategory" class="neu-input__label">Sub Category</label>
             <input id="txtsubcategory" class="neu-input__field" maxlength="50" type="text" />
             <span id="errormsgsubcategory" class="neu-button--danger neu-button--small">Enter Subcategory</span>
         </div>
@@ -66,11 +66,11 @@
 <div id="popupcontentedit" title="Edit Subcategory" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-5">
-            <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
-            <input name="teams" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled" />
+            <label for="txtcategoryreadonly" class="neu-input__label">Service Delivery Group:</label>
+            <input name="txtcategoryreadonly" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled" />
         </div>
         <div class="col-sm-7">
-            <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
+            <label for="txtsubcategoryedit" style="text-align:left;" class="neu-input__label">Sub Category:</label>
             <input id="txtsubcategoryedit" class="neu-input__field" maxlength="50"
                    type="text" />
             <span id="errormsgedit" class="neu-button--danger" />

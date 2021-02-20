@@ -57,46 +57,38 @@
 </div>
 
 <div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
-    <div class="row neu-margin--bottom-1">
-        <div class="col-sm-5">
-            <label class="neu-input__label">Service Delivery Group</label>
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtcategory">Service Delivery Group</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtcategory">
         </div>
-        <div class="col-sm-7">
-            <label class="neu-input__label">Sub Category</label>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-8">
-        <div class="col-sm-5">
-            <input id="txtcategory" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
-        </div>
-        <div class="col-sm-7">
-            <input id="txtsubcategory" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtsubcategory">Sub Category</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtsubcategory">
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-10">
-        <div class="col-sm-2">
-            <label for="txtquestionseq" class="neu-input__label">Sequence</label>
-            <input id="txtquestionseq" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtquestionseq">Question Sequence</label>
+            <input id="txtquestionseq" class="neu-input__field" disabled="disabled" type="text" />
             <input id="hdnAddSubCatId" type="hidden" />
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-14">
-        <div class="col-md-12">
-            <label for="txtquestion" class="neu-input__label">Question Name:</label>
-            <textarea id="txtquestion" class="neu-input__field" rows="2" cols="50" style="resize:none"></textarea>
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestion">Question Name</label>
+            <textarea id="txtquestion" class="neu-input__textarea" rows="2" cols="50" style="resize:none"></textarea>
             <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
-
         </div>
     </div>
 
-    <div class="row neu-margin--bottom-14">
+    <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <label for="txtquestionDescription" class="neu-input__label">Question Description:</label>
+            <label class="neu-input__label" for="txtquestionDescription">Question Description</label>
             <textarea id="txtquestionDescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errormsgquestionDescription" class="neu-button--danger">Please enter Question Description</span>
+            <span id="errormsgquestionDescription" class="neu-button--danger">Please Enter Question Description</span>
         </div>
     </div>
 
@@ -104,70 +96,49 @@
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
             <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
-            <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset Question</button>
+            <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset</button>
         </div>
     </div>
 
 </div>
 
 <div id="popupcontentedit" title="Edit Question Mapping" hidden="hidden" class="container">
-
-    <div class="row neu-margin--bottom-1">
-        <div class="col-sm-5">
-            <label class="neu-input__label">Service Delivery Group</label>
-        </div>
-        <div class="col-sm-7">
-            <label class="neu-input__label">Sub Category</label>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-8">
-        <div class="col-sm-5">
-            <input id="txtcategoryEdit" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
-        </div>
-        <div class="col-sm-7">
-            <input id="txtsubcategoryEdit" class="neu-input__field" disabled="disabled" type="text" style="background-color:lightgray" />
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-1">
-        <div class="col-md-12">
-            <label for="txtquestion" class="neu-input__label">Question Name</label>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-14">
-        <div class="col-md-12">
-            <textarea id="txtquestionEdit" rows="2" cols="70" disabled="disabled" style="resize:none;background-color:lightgray"></textarea>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-1">
-        <div class="col-md-12">
-            <label for="txtquestion" class="neu-input__label">Question Description</label>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-14">
-        <div class="col-md-12">
-            <textarea id="txtquestionDescriptionEdit" rows="5" cols="70" disabled="disabled" style="resize:none;background-color:lightgray"></textarea>
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-10">
+    <div class="row neu-margin--bottom-16">
         <div class="col-sm-6">
-            <label for="lblQuestionedit" class="neu-input__label">Current Question Sequence</label>
-            <input id="lblQuestionedit" class="neu-input__label" type="text" disabled="disabled" />
+            <label class="neu-input__label" for="txtcategoryEdit">Service Delivery Group</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtcategoryEdit">
+        </div>
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtsubcategoryEdit">Sub Category</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtsubcategoryEdit">
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestionEdit">Question Name</label>
+            <textarea id="txtquestionEdit" rows="4" cols="70" disabled="disabled" style="resize:none;"></textarea>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestionDescriptionEdit">Question Description</label>
+            <textarea id="txtquestionDescriptionEdit" rows="4" cols="70" disabled="disabled" style="resize:none;"></textarea>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="lblQuestionedit">Current Question Sequence</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="lblQuestionedit">
             <input id="hdnid" type="hidden" />
             <input id="hdnSubCatId" type="hidden" />
         </div>
-
         <div class="col-sm-6">
-            <input id="hdnid" type="hidden" />
-            <label for="ddlQuestionsqedit" class="neu-input__label">New Question Sequence:</label>
-            <select name="ddlQuestionsqedit" id="ddlQuestionsqedit" class="form-control">
-            </select>
-            <span id="errormsgsqedit" style="color:red">Please choose the Sequence</span>
+            <label class="neu-input__label" for="ddlQuestionsqedit">New Question Sequence</label>
+            <select name="ddlQuestionsqedit" id="ddlQuestionsqedit" class="neu-select"></select>
+            <span id="errormsgsqedit" class="neu-button--danger neu-button--small">Please choose the Sequence</span>
         </div>
     </div>
 
@@ -215,8 +186,8 @@
                 });
             });
             $("#popupcontentedit").dialog({
-                width: 635,
-                height :460,
+                width: 'auto',
+                height :'auto',
                 autoOpen: false,
                 draggable: false,
                 resizable: false

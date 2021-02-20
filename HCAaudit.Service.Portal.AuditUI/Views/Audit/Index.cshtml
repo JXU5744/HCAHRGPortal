@@ -74,17 +74,17 @@
     <div class="card">
         <div class="row">
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Ticket ID</label>
+                <label for="TicketId" class="neu-input__label">Ticket ID</label>
                 @Html.TextBoxFor(m => m.TicketId, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.TicketId)
             </div>
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Agent's 3-4 ID</label>
+                <label for="Agent34Id" class="neu-input__label">Agent's 3-4 ID</label>
                 @Html.TextBoxFor(m => m.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.Agent34Id)
             </div>
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Agent Name</label>
+                <label for="AgentName" class="neu-input__label">Agent Name</label>
                 @Html.TextBoxFor(m => m.AgentName, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.AgentName)
                 @Html.HiddenFor(m => m.AuditorName)
@@ -92,7 +92,7 @@
 
             </div>
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Record Date</label>
+                <label for="TicketDate" class="neu-input__label">Record Date</label>
                 @Html.TextBoxFor(m => m.TicketDate, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.TicketDate)
             </div>
@@ -100,17 +100,17 @@
 
         <div class="row">
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Supervisor</label>
+                <label for="SupervisorName" class="neu-input__label">Supervisor</label>
                 @Html.TextBoxFor(m => m.SupervisorName, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.SupervisorName)
             </div>
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Service Group</label>
+                <label for="ServiceGroupName" class="neu-input__label">Service Group</label>
                 @Html.TextBoxFor(m => m.ServiceGroupName, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.ServiceCatId)
             </div>
             <div class="col-sm-3">
-                <label for="format-pdf" class="neu-input__label">Sub Group</label>
+                <label for="SubCatName" class="neu-input__label">Sub Group</label>
                 @Html.TextBoxFor(m => m.SubCatName, new { @disabled = true, @class = "neu-input__field" })
                 @Html.HiddenFor(m => m.SubCatId)
             </div>
