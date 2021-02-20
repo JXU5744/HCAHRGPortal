@@ -36,6 +36,12 @@
     </div>
 </div>
 
+<div cass="row" style="text-align:center;width:100%;">
+    <div class="col-12">
+        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         function getUrlVars() {
@@ -99,4 +105,10 @@
             }
         });
     });
+
+    $("#btnCancel").click(function (e) {
+        //window.location.href = "/Search/Index"
+        window.location.replace("/Search/Index");
+    });
+
 </script>
