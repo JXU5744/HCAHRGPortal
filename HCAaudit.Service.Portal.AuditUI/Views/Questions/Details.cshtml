@@ -59,17 +59,14 @@
     </div>
 </div>
 
-<div id="popupcontent" title="Add Question" hidden="hidden" class="neu-container">
+<div id="popupcontent" title="Add Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-md-12">
             <label for="txtquestion" class="neu-input__label">Question Name:</label>
             <textarea id="txtquestion" class="neu-input__field" rows="4" cols="50" style="resize:none"></textarea>
-            @*<textarea id="txtQuestion" class="form-control" rows="2" cols="50" style="resize:none"></textarea>*@
             <span id="errormsg" class="neu-button--danger">Please Enter or Select Question</span>
-            @*<textarea name="textarea" style="width:250px;height:150px;"></textarea>*@
         </div>
     </div>
-
 
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
@@ -85,7 +82,6 @@
             <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
         </div>
     </div>
-
 </div>
 
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
@@ -179,7 +175,7 @@
 
         $("#popupcontent").dialog({
             width: 'auto',
-            height: 500,
+            height: 425,
             autoOpen: false,
             draggable: false,
             resizable: false,

@@ -56,6 +56,52 @@
     </div>
 </div>
 
+@*<div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-6">
+                <label class="neu-input__label" for="txtcategory">Service Delivery Group</label>
+                <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtcategory">
+            </div>
+            <div class="col-sm-6">
+                <label class="neu-input__label" for="txtsubcategory">Sub Category</label>
+                <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtsubcategory">
+            </div>
+        </div>
+
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-6">
+                <label class="neu-input__label" for="txtquestionseq">Question Sequence</label>
+                <input id="txtquestionseq" class="neu-input__field" disabled="disabled" type="text" />
+                <input id="hdnAddSubCatId" type="hidden" />
+            </div>
+        </div>
+
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <label class="neu-input__label" for="txtquestion">Question Name</label>
+                <textarea id="txtquestion" class="neu-input__textarea" rows="2" cols="50" style="resize:none"></textarea>
+                <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
+            </div>
+        </div>
+
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <label class="neu-input__label" for="txtquestionDescription">Question Description</label>
+                <textarea id="txtquestionDescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
+                <span id="errormsgquestionDescription" class="neu-button--danger">Please Enter Question Description</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
+                <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+                <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset</button>
+            </div>
+        </div>
+
+    </div>*@
+
 <div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-6">
@@ -69,17 +115,10 @@
     </div>
 
     <div class="row neu-margin--bottom-16">
-        <div class="col-sm-6">
-            <label class="neu-input__label" for="txtquestionseq">Question Sequence</label>
-            <input id="txtquestionseq" class="neu-input__field" disabled="disabled" type="text" />
-            <input id="hdnAddSubCatId" type="hidden" />
-        </div>
-    </div>
-
-    <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label class="neu-input__label" for="txtquestion">Question Name</label>
-            <textarea id="txtquestion" class="neu-input__textarea" rows="2" cols="50" style="resize:none"></textarea>
+            <textarea id="txtquestion" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
+            @*<textarea id="txtquestion" class="neu-input__textarea" rows="2" cols="50" style="resize:none"></textarea>*@
             <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
         </div>
     </div>
@@ -87,8 +126,16 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label class="neu-input__label" for="txtquestionDescription">Question Description</label>
-            <textarea id="txtquestionDescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
+            <textarea id="txtquestionDescription" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
             <span id="errormsgquestionDescription" class="neu-button--danger">Please Enter Question Description</span>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtquestionseq">Current Question Sequence</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtquestionseq">
+            <input id="hdnAddSubCatId" type="hidden" />
         </div>
     </div>
 
@@ -117,14 +164,14 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label class="neu-input__label" for="txtquestionEdit">Question Name</label>
-            <textarea id="txtquestionEdit" rows="4" cols="70" disabled="disabled" style="resize:none;"></textarea>
+            <textarea id="txtquestionEdit" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
         </div>
     </div>
 
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <label class="neu-input__label" for="txtquestionDescriptionEdit">Question Description</label>
-            <textarea id="txtquestionDescriptionEdit" rows="4" cols="70" disabled="disabled" style="resize:none;"></textarea>
+            <textarea id="txtquestionDescriptionEdit" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
         </div>
     </div>
 
@@ -158,7 +205,7 @@
     <div class="row">
         <div class="col-sm-12"><input id="hdndeletecatid" type="hidden" /></div>
         <div class="col-sm-12 neu-text--align-center">
-            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>
             <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
         </div>
     </div>
@@ -172,13 +219,16 @@
 
             $("#popupcontent").dialog({
                 width: 'auto',
+                height: 'auto',
                 autoOpen: false,
                 draggable: false,
                 resizable: false
             });
+
             $("#btncancelpopup").click(function () {
                 $("#popupcontent").dialog('close');
             });
+
             $("#btnopenPopUp").click(function () {
                 $("#popupcontent").dialog({
                     position: 'bottom',
@@ -197,7 +247,6 @@
             });
         });
 
-        //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
 
         $("#btnopenPopUp").click(function () {
             var subCategoryID = $("#SubCatID").val();
@@ -360,7 +409,7 @@
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                
+
                                                   "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
