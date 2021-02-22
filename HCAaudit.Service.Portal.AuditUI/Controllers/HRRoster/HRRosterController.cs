@@ -49,11 +49,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                                 x.EmployeeNumber,
                                                 x.SupervisorLastName,
                                                 x.SupervisorFirstName,
-                                                x.DateHired,
                                                 x.JobCDDesc,
-                                                x.PositionDesc,
-                                                x.EmployeeStatus,
-                                                x.EmployeeStatusDesc,
                                                 x.CreatedDate,
                                                 x.CreatedBy,
                                                 x.ModifiedBy,
@@ -110,11 +106,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             objHROCRoster.SupervisorLastName = hROCRosterViewModel.SupervisorLastName;
                             objHROCRoster.SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName;
                             objHROCRoster.EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower();
-                            objHROCRoster.EmployeeStatus = hROCRosterViewModel.EmployeeStatus;
-                            objHROCRoster.PositionDesc = hROCRosterViewModel.PositionDesc;
                             objHROCRoster.JobCDDesc = hROCRosterViewModel.JobCDDesc;
-                            objHROCRoster.EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc;
-                            objHROCRoster.DateHired = hROCRosterViewModel.DateHired;
                             objHROCRoster.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                             objHROCRoster.ModifiedDate = DateTime.Now;
                             _auditToolContext.HROCRoster.Update(objHROCRoster);
@@ -156,11 +148,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             SupervisorLastName = hROCRosterViewModel.SupervisorLastName,
                             SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName,
                             EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower(),
-                            EmployeeStatus = hROCRosterViewModel.EmployeeStatus,
-                            PositionDesc = hROCRosterViewModel.PositionDesc,
                             JobCDDesc = hROCRosterViewModel.JobCDDesc,
-                            EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
-                            DateHired = hROCRosterViewModel.DateHired,
                             CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                             CreatedDate = DateTime.Now,
                             ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,

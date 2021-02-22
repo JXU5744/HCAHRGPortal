@@ -238,20 +238,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         [Column("Employee 3-4 ID (Lower Case)")]
         public string? EmployeethreefourID { get; set; }
 
-        [Column("Employee Status")]
-        public string? EmployeeStatus { get; set; }
-
-        [Column("Position Desc - Home Curr")]
-        public string? PositionDesc { get; set; }
-
         [Column("Job Cd Desc - Home Curr")]
         public string? JobCDDesc { get; set; }
 
-        [Column("Employee Status Desc")]
-        public string? EmployeeStatusDesc { get; set; }
-
-        [Column("Date Hired")]
-        public DateTime? DateHired { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
