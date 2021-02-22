@@ -230,26 +230,33 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string EmployeeFirstName { get; set; }
 
         [Column("Supervisor Last Name")]
+#nullable enable
         public string? SupervisorLastName { get; set; }
-
+#nullable disable
         [Column("Supervisor First Name")]
+#nullable enable
         public string? SupervisorFirstName { get; set; }
-
+#nullable disable
         [Column("Employee 3-4 ID (Lower Case)")]
+#nullable enable
         public string? EmployeethreefourID { get; set; }
-
+#nullable disable
         [Column("Employee Status")]
+#nullable enable
         public string? EmployeeStatus { get; set; }
-
+#nullable disable
         [Column("Position Desc - Home Curr")]
+#nullable enable
         public string? PositionDesc { get; set; }
-
+#nullable disable
         [Column("Job Cd Desc - Home Curr")]
+#nullable enable
         public string? JobCDDesc { get; set; }
-
+#nullable disable
         [Column("Employee Status Desc")]
+#nullable enable
         public string? EmployeeStatusDesc { get; set; }
-
+#nullable disable
         [Column("Date Hired")]
         public DateTime? DateHired { get; set; }
         public DateTime? CreatedDate { get; set; }
