@@ -104,8 +104,8 @@
                 <div class="row neu-margin--bottom-16">
                     <div class="col-sm-4">
                         <div tabindex="-1" aria-checked="false">
-                            <label class="neu-input__label required">Job Category Description</label>
-                            <input name="txtJobCatDesc" id="txtJobCatDesc" class="neu-input__field" type="text" />
+                            <label for="txtJobCatDesc" class="neu-input__label required">Job Category</label>
+                            <select name="txtJobCatDesc" id="txtJobCatDesc" class="neu-select"></select>
                             <span id="errorMessageJobCatDesc" class="neu-button--danger"></span>
                         </div>
                     </div>
@@ -167,6 +167,26 @@
           href="~/css/daterangepicker.css" />
     <script>
         $(document).ready(function () {
+            $.ajax({
+                type: "POST",
+                url: "/HRRoster/GetCategory",
+                data: null,
+                success: function (response) {
+                    $('#txtJobCatDesc').html('');
+                    var options = '';
+                    options += '<option value="0">Select Category</option>';
+                    for (var i = 0; i < response.length; i++) {
+                        options += '<option value="' + response[i].CatgDescription + '">' + response[i].CatgDescription + '</option>';
+                    }
+                    $('#txtJobCatDesc').append(options);
+                },
+                failure: function (response) {
+                    
+                },
+                error: function (response) {
+
+                }
+            });
 
             $("#txtEmployeeNumber").numeric();
 
@@ -243,18 +263,6 @@
                     $(this).val(char.substring(0, maxLength + 1));
                 } else {
                     $('#errorMessageSupervisorLastName').text('');
-                }
-            });
-
-            $('#txtJobCatDesc').on('keydown keyup change input', function () {
-                var maxLength = 30;
-                var char = $(this).val();
-                var charLength = $(this).val().length;
-                if (charLength > maxLength) {
-                    $('#errorMessageJobCatDesc').text('Length is not valid, maximum ' + maxLength + ' allowed.');
-                    $(this).val(char.substring(0, maxLength + 1));
-                } else {
-                    $('#errorMessageJobCatDesc').text('');
                 }
             });
 
@@ -356,7 +364,7 @@
                         "SupervisorLastName": $("#txtSupervisorLastName").val(),
                         "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
                         "EmployeethreefourID": $("#txtSearch34Id").val(),
-                        "JobCDDesc": $("#txtJobCatDesc").val()
+                        "JobCDDesc": $("#txtJobCatDesc  option:selected").text()
                     };
 
                     $.ajax({
@@ -403,7 +411,7 @@
                         "SupervisorLastName": $("#txtSupervisorLastName").val(),
                         "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
                         "EmployeethreefourID": $("#txtSearch34Id").val(),
-                        "JobCDDesc": $("#txtJobCatDesc").val()
+                        "JobCDDesc": $("#txtJobCatDesc option:selected").text()
                     };
 
                     $.ajax({
@@ -484,7 +492,7 @@
                     isValid = false;
                 }
 
-                if ($("#txtJobCatDesc").val().trim().length == 0) {
+                if ($("#txtJobCatDesc").val() === null || $("#txtJobCatDesc").val() == "0") {
                     $('#errorMessageJobCatDesc').text('Job Category Description Required');
                     isValid = false;
                 }
