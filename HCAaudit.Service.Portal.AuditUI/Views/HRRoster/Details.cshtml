@@ -109,37 +109,6 @@
                             <span id="errorMessageJobCatDesc" class="neu-button--danger"></span>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div tabindex="-1" aria-checked="false">
-                            <label class="neu-input__label required">Position Description</label>
-                            <input name="txtPositionDesc" id="txtPositionDesc" class="neu-input__field" type="text" />
-                            <span id="errorMessagePositionDesc" class="neu-button--danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div tabindex="-1" aria-checked="false">
-                            <label class="neu-input__label required">Employee Status</label>
-                            <input name="txtEmployeeStatus" id="txtEmployeeStatus" class="neu-input__field" type="text" />
-                            <span id="errorMessageEmployeeStatus" class="neu-button--danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row neu-margin--bottom-16">
-                    <div class="col-sm-4">
-                        <div tabindex="-1" aria-checked="false">
-                            <label class="neu-input__label required">Employee Status Description</label>
-                            <input name="txtEmployeeStatusDesc" id="txtEmployeeStatusDesc" class="neu-input__field" type="text" />
-                            <span id="errorMessageEmployeeStatusDesc" class="neu-button--danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div tabindex="-1" aria-checked="false">
-                            <label class="neu-input__label">Date Hired</label>
-                            <input name="txtDateHired" id="txtDateHired" class="neu-input__field" type="text" />
-                            <span id="errorMessageDateHired" class="neu-button--danger"></span>
-                        </div>
-                    </div>
                 </div>
 
                 <div id="divButtonCollection" name="divButtonCollection" class="row neu-margin--bottom-16">
@@ -198,14 +167,6 @@
           href="~/css/daterangepicker.css" />
     <script>
         $(document).ready(function () {
-
-
-            $('input[name="txtDateHired"]').daterangepicker({
-                singleDatePicker: true,
-                showDropdowns: true,
-                minYear: 1901,
-                maxYear: parseInt(moment().format('YYYY'), 10)
-            });
 
             $("#txtEmployeeNumber").numeric();
 
@@ -297,56 +258,6 @@
                 }
             });
 
-
-            $('#txtPositionDesc').on('keydown keyup change input', function () {
-                var maxLength = 30;
-                var char = $(this).val();
-                var charLength = $(this).val().length;
-                if (charLength > maxLength) {
-                    $('#errorMessagePositionDesc').text('Length is not valid, maximum ' + maxLength + ' allowed.');
-                    $(this).val(char.substring(0, maxLength + 1));
-                } else {
-                    $('#errorMessagePositionDesc').text('');
-                }
-            });
-
-
-            $('#txtEmployeeStatus').on('keydown keyup change input', function () {
-                var maxLength = 2;
-                var char = $(this).val();
-                var charLength = $(this).val().length;
-                if (charLength > maxLength) {
-                    $('#errorMessageEmployeeStatus').text('Length is not valid, maximum ' + maxLength + ' allowed.');
-                    $(this).val(char.substring(0, maxLength + 1));
-                } else {
-                    $('#errorMessageEmployeeStatus').text('');
-                }
-            });
-
-            $('#txtEmployeeStatusDesc').on('keydown keyup change input', function () {
-                var maxLength = 30;
-                var char = $(this).val();
-                var charLength = $(this).val().length;
-                if (charLength > maxLength) {
-                    $('#errorMessageEmployeeStatusDesc').text('Length is not valid, maximum ' + maxLength + ' allowed.');
-                    $(this).val(char.substring(0, maxLength));
-                } else {
-                    $('#errorMessageEmployeeStatusDesc').text('');
-                }
-            });
-
-
-            $('#txtDateHired').on('keydown keyup change input', function () {
-
-                var currentDate = new Date();
-                if (new Date(moment(currentDate).format("MM/DD/YYYY")) < new Date($("#txtDateHired").val())) {
-                    $('#errorMessageDateHired').text('Date Hired cannot be future date');
-                }
-                else {
-                    $('#errorMessageDateHired').text('');
-                }
-            });
-
             $('#txtSearch34Id').on('keydown keyup change input', function () {
                 if ($("#txtSearch34Id").val() != "") {
                     $("#errorMessage").text("");
@@ -389,11 +300,6 @@
                                 $("#txtSuperVisorFirstName").val(response[0].SupervisorFirstName);
                                 $("#txtSupervisorLastName").val(response[0].SupervisorLastName);
                                 $("#txtJobCatDesc").val(response[0].JobCDDesc);
-                                $("#txtPositionDesc").val(response[0].PositionDesc);
-                                $("#txtEmployeeStatus").val(response[0].EmployeeStatus);
-                                $("#txtEmployeeStatusDesc").val(response[0].EmployeeStatusDesc);
-                                $("#txtDateHired").val((moment(response[0].DateHired).format("MM/DD/YYYY")));
-
                                 $("#txtSearch34Id").attr("disabled", "disabled")
                                 //$("#txtEmployeeFullName").attr("disabled", "disabled")
                                 $("#employeeForm").show();
@@ -417,17 +323,9 @@
                 }
                 else {
                     $("#errorMessage").text("Employee 3-4 ID Required");
-                    // $("#btnAddEmployee").hide();
                 }
 
             });
-
-            //$("#btnAddEmployee").click(function () {
-            //    $("#employeeForm").show();
-            //    $("#btnSave").show();
-            //    $("#btnUpdate").hide();
-
-            //});
 
             $("#btncancel").click(function () {
                 location.reload();
@@ -458,11 +356,7 @@
                         "SupervisorLastName": $("#txtSupervisorLastName").val(),
                         "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
                         "EmployeethreefourID": $("#txtSearch34Id").val(),
-                        "EmployeeStatus": $("#txtEmployeeStatus").val(),
-                        "PositionDesc": $("#txtPositionDesc").val(),
-                        "JobCDDesc": $("#txtJobCatDesc").val(),
-                        "EmployeeStatusDesc": $("#txtEmployeeStatusDesc").val(),
-                        "DateHired": $("#txtDateHired").val()
+                        "JobCDDesc": $("#txtJobCatDesc").val()
                     };
 
                     $.ajax({
@@ -509,11 +403,7 @@
                         "SupervisorLastName": $("#txtSupervisorLastName").val(),
                         "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
                         "EmployeethreefourID": $("#txtSearch34Id").val(),
-                        "EmployeeStatus": $("#txtEmployeeStatus").val(),
-                        "PositionDesc": $("#txtPositionDesc").val(),
-                        "JobCDDesc": $("#txtJobCatDesc").val(),
-                        "EmployeeStatusDesc": $("#txtEmployeeStatusDesc").val(),
-                        "DateHired": $("#txtDateHired").val()
+                        "JobCDDesc": $("#txtJobCatDesc").val()
                     };
 
                     $.ajax({
@@ -596,32 +486,6 @@
 
                 if ($("#txtJobCatDesc").val().trim().length == 0) {
                     $('#errorMessageJobCatDesc').text('Job Category Description Required');
-                    isValid = false;
-                }
-
-                if ($("#txtPositionDesc").val().trim().length == 0) {
-                    $('#errorMessagePositionDesc').text('Position Description Required');
-                    isValid = false;
-                }
-
-                if ($("#txtEmployeeStatus").val().trim().length == 0) {
-                    $('#errorMessageEmployeeStatus').text('Employee Status Required');
-                    isValid = false;
-                }
-
-                if ($("#txtEmployeeStatusDesc").val().trim().length == 0) {
-                    $('#errorMessageEmployeeStatusDesc').text('Employee Status Description Required');
-                    isValid = false;
-                }
-
-                if ($("#txtDateHired").val().trim().length == 0) {
-                    $('#errorMessageDateHired').text('Employee Status Description Required');
-                    isValid = false;
-                }
-
-                var currentDate = new Date();
-                if (new Date(moment(currentDate).format("MM/DD/YYYY")) < new Date($("#txtDateHired").val())) {
-                    $('#errorMessageDateHired').text('Date Hired cannot be future date');
                     isValid = false;
                 }
 
