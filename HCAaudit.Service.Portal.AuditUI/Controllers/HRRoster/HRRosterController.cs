@@ -84,7 +84,25 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        
+        public IActionResult GetCategory()
+        {
+            try
+            {
+                if (isAdmin)
+                {
+                    var categoryList = _auditToolContext.Categories.Where(a => a.IsActive == true).ToList();
+                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    return Json(categoryList);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetCategory method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetCategory", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         public ActionResult Edit(HROCRosterViewModel hROCRosterViewModel)
         {
