@@ -453,7 +453,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                   select new
                                   {
                                       ticket.TicketCode,
-                                      hrdata.PositionDesc,
+                                      hrdata.JobCDDesc,
                                       ticket.Category,
                                       ticket.SubCategory,
                                       ticket.CloseUserId,
@@ -467,7 +467,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 {
                     BindSearchGrid tempItem = new BindSearchGrid();
                     tempItem.TicketNumber = t.TicketCode;
-                    tempItem.ServiceGroup = t.PositionDesc;
+                    tempItem.ServiceGroup = t.JobCDDesc;
                     tempItem.Category = t.Category;
                     tempItem.Subcategory = t.SubCategory;
                     tempItem.UserThreeFourID = t.CloseUserId;
