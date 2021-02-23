@@ -1,13 +1,13 @@
-﻿using System;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using HCAaudit.Service.Portal.AuditUI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
-using HCAaudit.Service.Portal.AuditUI.Models;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -20,7 +20,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly AuditToolContext _auditToolContext;
         private bool isAdmin = false;
         private IErrorLog _log;
-        
+
         public SubCategoryController(ILogger<SubCategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
@@ -82,7 +82,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             try
             {
                 data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgID == id && x.IsActive == true)
-                                    select subcat).FirstOrDefault();
+                        select subcat).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -130,9 +130,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             foreach (var item in collection)
                             {
                                 if (item.SubCatgDescription.ToLower() == param[1].ToLower().Trim())
-                                { 
-                                    responce = "1"; 
-                                    break; 
+                                {
+                                    responce = "1";
+                                    break;
                                 }
                             }
                             if (string.IsNullOrEmpty(responce.ToString()))

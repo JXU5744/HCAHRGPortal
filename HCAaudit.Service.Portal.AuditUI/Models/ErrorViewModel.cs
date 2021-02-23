@@ -1,5 +1,3 @@
-using System;
-
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
     public class ErrorViewModel

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
@@ -17,7 +14,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int QuestionId { get; set; }
         public int QuestionRank { get; set; }
         public int GracePeriodId { get; set; }
-        public int OverTurnId { get; set; } 
+        public int OverTurnId { get; set; }
         public string Comments { get; set; }
 
         public DateTime? CreatedDate { get; set; }

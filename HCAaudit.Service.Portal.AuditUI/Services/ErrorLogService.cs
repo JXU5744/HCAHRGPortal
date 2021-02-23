@@ -1,12 +1,8 @@
 ﻿using HCAaudit.Service.Portal.AuditUI.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.Services
 {
-    public class ErrorLogService:IErrorLog
+    public class ErrorLogService : IErrorLog
     {
         private AuditToolContext _auditToolContext;
         private readonly IAuthService _authService;

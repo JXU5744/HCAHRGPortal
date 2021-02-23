@@ -1,13 +1,13 @@
-﻿using System;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using HCAaudit.Service.Portal.AuditUI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
-using HCAaudit.Service.Portal.AuditUI.Models;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -66,7 +66,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 data = (from cat in _auditToolContext.Categories.Where(
                 category => category.CatgID == Convert.ToInt32(id) &&
                 category.IsActive == true)
-                            select cat).FirstOrDefault();
+                        select cat).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -327,7 +327,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index_objCategoryMast", ErrorDiscription = ex.Message });
                 }
             }
-            
+
             return RedirectToAction("Index", "Home");
         }
     }

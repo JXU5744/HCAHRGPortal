@@ -1,13 +1,13 @@
-﻿using System;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using HCAaudit.Service.Portal.AuditUI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
-using HCAaudit.Service.Portal.AuditUI.Models;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {

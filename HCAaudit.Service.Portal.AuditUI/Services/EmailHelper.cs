@@ -1,8 +1,8 @@
-﻿using HCAaudit.Service.Portal.AuditUI.ViewModel;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using HCAaudit.Service.Portal.AuditUI.ViewModel;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Net.Mail;
-using HCAaudit.Service.Portal.AuditUI.Models;
 
 namespace HCAaudit.Service.Portal.AuditUI.Services
 {

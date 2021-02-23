@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,17 +15,19 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         [Key]
         public int HRAuditErrorLogId { get; set; }
-        public string ErrorType {
+        public string ErrorType
+        {
             get
             {
-               return _ErrorType;
+                return _ErrorType;
             }
             set
             {
-                _ErrorType = value.Length > 50? value.Substring(0,50):value;
+                _ErrorType = value.Length > 50 ? value.Substring(0, 50) : value;
             }
         }
-        public string SourceLocation {
+        public string SourceLocation
+        {
             get
             {
                 return _SourceLocation;
@@ -36,7 +37,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                 _SourceLocation = value.Length > 200 ? value.Substring(0, 200) : value; ;
             }
         }
-        public string ErrorDescription {
+        public string ErrorDescription
+        {
             get
             {
                 return _ErrorDescription;

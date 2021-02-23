@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
@@ -82,7 +80,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string SubCatgDescription { get; set; }
     }
 
-    
+
     public class AssignedTo
     {
         public int memberID { get; set; }
@@ -210,7 +208,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
     }
-     
+
     [Table("HROCRoster")]
     public class HROCRoster
     {

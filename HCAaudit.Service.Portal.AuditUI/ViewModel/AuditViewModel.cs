@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HCAaudit.Service.Portal.AuditUI.ViewModel
 {
@@ -61,6 +59,6 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
     {
         public bool IsHighImpact { get; set; }
         public bool IsLowImpact { get; set; }
-        
+
     }
 }

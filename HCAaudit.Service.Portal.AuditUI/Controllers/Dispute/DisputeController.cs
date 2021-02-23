@@ -1,15 +1,15 @@
-﻿using System;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using HCAaudit.Service.Portal.AuditUI.Services;
+using HCAaudit.Service.Portal.AuditUI.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using HCAaudit.Service.Portal.AuditUI.Services;
-using HCAaudit.Service.Portal.AuditUI.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
-using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -227,7 +227,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     Subject = subject,
                     EmailBody = stringBuilder.ToString()
                 };
-                EmailHelper emailHelper = new EmailHelper(config,_log);
+                EmailHelper emailHelper = new EmailHelper(config, _log);
                 emailHelper.SendEmailNotification(emailObject);
             }
         }

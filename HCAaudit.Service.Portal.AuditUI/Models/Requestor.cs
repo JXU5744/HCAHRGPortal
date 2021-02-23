@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
@@ -38,6 +35,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         {
             DirectAddress = new List<string>();
         }
-  
+
     }
 }

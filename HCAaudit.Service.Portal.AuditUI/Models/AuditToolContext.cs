@@ -2,10 +2,11 @@
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
-    public class AuditToolContext :DbContext
+    public class AuditToolContext : DbContext
     {
 
-        public AuditToolContext(DbContextOptions<AuditToolContext> options) : base(options) {
+        public AuditToolContext(DbContextOptions<AuditToolContext> options) : base(options)
+        {
             this.Database.SetCommandTimeout(300);
         }
 
@@ -23,5 +24,5 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
         public DbSet<ErrorDetail> ErrorDetails { get; set; }
     }
-    
+
 }
