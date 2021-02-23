@@ -89,15 +89,14 @@
 
 
 <div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
-
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
     </div>
     <div class="row">
         <div class="col-sm-12"><input id="hdndeletecatid" type="hidden" /></div>
         <div class="col-sm-12 neu-text--align-center">
-            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>&nbsp;
-            <button id="btnSubCatdelete" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>
+            <button id="btnSubCatdelete" class="neu-button--primary neu-button neu-button--raised">Yes</button>
             <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
         </div>
     </div>
@@ -164,7 +163,6 @@
             $("#popupcontent").dialog('close');
         });
     })
-   // $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
 
         $("#btnopenPopUp").click(function () {
             $('#errormsgsubcategory').hide();
@@ -190,14 +188,8 @@
                     alert(response.responseText);
                 }
             });
-
-
-
             $("#popupcontent").dialog('open');
         });
-
-    //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
-
 
     $('#txtsubcategory').on('keypress', function (event) {
         $('#errormsgsubcategory').hide();
@@ -244,7 +236,6 @@
                     alert(response.responseText);
                 }
             });
-
     });
 
 

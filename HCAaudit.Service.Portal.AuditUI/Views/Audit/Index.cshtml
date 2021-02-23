@@ -10,6 +10,7 @@
 <link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
 <link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+
 <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="~/js/bootstrap-multiselect.min.js"></script>
 <script src="~/js/bootstrap-datepicker.min.js"></script>
@@ -19,50 +20,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@*<style>
-        * {
-            box-sizing: border-box;
-        }
-
-        #myInput {
-            background-image: url('/css/searchicon.png');
-            background-position: 10px 12px;
-            background-repeat: no-repeat;
-            width: 100%;
-            font-size: 16px;
-            padding: 12px 20px 12px 40px;
-            border: 1px solid #ddd;
-            margin-bottom: 12px;
-        }
-
-        #myUL {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-            #myUL li a {
-                border: 1px solid #ddd;
-                margin-top: -1px; /* Prevent double borders */
-                background-color: #f6f6f6;
-                padding: 12px;
-                text-decoration: none;
-                font-size: 18px;
-                color: black;
-                display: block
-            }
-
-                #myUL li a:hover:not(.header) {
-                    background-color: #eee;
-                }
-
-        textarea {
-            overflow-y: scroll;
-            height: 100px;
-            resize: none; /* Remove this if you want the user to resize the textarea */
-        }
-    </style>*@
-
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
         <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Audit</h3>
@@ -70,7 +27,6 @@
 </div>
 
 <form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit" class="form-inline neu-margin--bottom-16">
-
     <div class="card">
         <div class="row">
             <div class="col-sm-3">
@@ -97,7 +53,6 @@
                 @Html.HiddenFor(m => m.TicketDate)
             </div>
         </div>
-
         <div class="row">
             <div class="col-sm-3">
                 <label for="SupervisorName" class="neu-input__label">Supervisor</label>
@@ -115,7 +70,6 @@
                 @Html.HiddenFor(m => m.SubCatId)
             </div>
         </div>
-
         <div class="row">
             <div class="col-sm-12">
                 <table id="auditDetails" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
@@ -136,7 +90,6 @@
                     @for (int i = 0; i < Model.Question.Count; i++)
                     {
                         <tr class="neu-table__row--large neu-table__row--striped">
-
                             <td>
                                 <div align="center">
                                     @Model.Question[i].QuestionSequence
@@ -146,7 +99,7 @@
                                 </div>
                             </td>
                             <td>
-                                @Html.TextAreaFor(m => m.Question[i].QuestionDescription, new { style = "height:50%;width:100%", @disabled = true })
+                                @Html.TextAreaFor(m => m.Question[i].QuestionDescription, 5, 60, new { style = "resize:none", @disabled = true })
                             </td>
                             <td colspan="3">
                                 <div id="action">
@@ -172,31 +125,25 @@
                                 </div>
                             </td>
                             <td> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
-                            <td>@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:100%;height:50%", disabled = "disabled" })</td>
-
+                            <td>
+                                @Html.TextAreaFor(m => m.Question[i].Comments, 5, 28, new { style = "resize:none", @disabled = true })
+                            </td>
                         </tr>
                     }
                 </table>
             </div>
         </div>
-
-
     </div>
-
     <div class="form-group">
         <label for="auditnotes" class="text-primary">Audit Notes:</label>
-
-        @Html.TextAreaFor(m => m.AuditNote, new { rows = "4", style = "width:100%" })
-
+        @Html.TextAreaFor(m => m.AuditNote, new { rows = "4", style = "resize:none;width:100%" })
         <div class="row">
             <div class="col-sm-12 neu-text--align-center">
                 <button id="btnAnswerYes" class="neu-button--primary neu-button neu-button--raised">Save</button>
                 <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10" onclick="return OpenCancelPopUp(); return false;">Cancel</button>
             </div>
         </div>
-
     </div>
-
     <div id="PopUpCancel" title="Cancel Audit" hidden="hidden" class="container">
         <div class="row neu-margin--bottom-16">
             <div class="col-sm-12">
@@ -211,11 +158,8 @@
                 <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
             </div>
         </div>
-
     </div>
-     
 </form>
-
 
 <!-- Script for the date range picker -->
 <script type="text/javascript" src="~/js/daterangepicker.js"></script>
@@ -224,28 +168,21 @@
       href="~/css/daterangepicker.css" />
 <!-- Script for the date range picker -->
 <script type="text/javascript">
-
     function OpenCancelPopUp() {
         $("#PopUpCancel").dialog({
             autoOpen: false,
             width: 500,
             height: 'auto',
         });
-
         $('#errormsg').hide();
-
         $('.ui-dialog-titlebar-close').hide();
-
         $("#PopUpCancel").dialog('open');
         return false;
     }
 
-
-
     $("#btncancelpopup").click(function () {
         $("#PopUpCancel").dialog('close');
     });
-
 
     $("#btnCancelAudit").click(function () {
         if ($('#AuditorQuitReasonId').val() == 0) {
@@ -269,15 +206,12 @@
         $.ajax({
             type: "POST",
             url: "/Audit/CancelAudit",
-
             data: { "audit": auditparameters },
-
             success: function (response) {
                 if (response == "1") {
                     alert("Please select valid value");
                 }
                 else {
-
                     $("#PopUpCancel").dialog('close');
                     window.location.replace("/Search/Index");
                 }
@@ -290,10 +224,7 @@
                 alert(response.responseText);
             }
         });
-        
     });
-
-
 
     $('.actioncheck').click(function () {
         var $this = $(this);
@@ -312,7 +243,6 @@
             if ($this.prop('checked')) {
                 $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").removeAttr("disabled");
                 $this.closest("tr:not(:has(>td>table))").find("[name$='Comments']").removeAttr("disabled");
-
             }
             else {
                 $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").attr("disabled", true);
@@ -328,26 +258,13 @@
         var name = $(this).attr("id");
         var questionId = name.substring(0, name.indexOf("-"));
         $('[title=' + questionId + '-Impact' + ']').not(this).prop('checked', false);
-
     });
 
-    //$("#ddlcategory").change(function () {
-    //    var catgID = $('#ddlcategory').val();
-    //    if (catgID != "0") { $('#errormsgcategory').hide(); }
-    //});
-
-    //$("#ddlcategory").change(function () {
-    //    var catgID = $('#ddlcategory').val();
-    //    if (catgID != "0") { $('#errormsgcategory').hide(); }
-    //});
-
     $('form').submit(function (e) {
-
         var isActionSelected = false;
         var isimpactChecked = false
 
         $("table[id$='actionTable']").each(function () {
-
             $this = $(this).find("tr");
 
             var comp = $this.find("input[type=checkbox][name$='IsCompliance']");
@@ -355,9 +272,11 @@
             var notApp = $this.find("input[type=checkbox][name$='IsNotApplicable']");
 
             if (comp.prop("checked") == false && nonComp.prop("checked") == false && notApp.prop("checked") == false) {
-
                 isActionSelected = true;
             }
+
+            alert(isActionSelected);
+            e.preventDefault();
 
             if (nonComp.prop("checked")) {
                 var high = nonComp.closest("table tr").find("input[type=checkbox][name$='IsHighImpact']");
@@ -367,7 +286,6 @@
                     isimpactChecked = true;
                 }
             }
-
         });
 
         if (isActionSelected) {
@@ -378,6 +296,5 @@
             alert("Please select Impact for selected Non-Compliances.");
             e.preventDefault();
         }
-
     });
 </script>

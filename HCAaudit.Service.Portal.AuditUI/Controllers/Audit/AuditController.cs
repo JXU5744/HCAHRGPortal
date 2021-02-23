@@ -455,7 +455,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_FormatAndSendEmail", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_FormatAndSendEmail", ErrorDiscription = ex.InnerException.ToString() });
             }
         }
     }

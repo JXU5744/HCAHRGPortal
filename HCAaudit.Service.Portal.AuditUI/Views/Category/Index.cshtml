@@ -176,10 +176,6 @@
             resizable: false
         });
 
-        //$("#btncancelpopupdelete").click(function () {
-        //    $("#popupcontent").dialog('close');
-        //});
-
         $("#btncancelpopup").click(function () {
             $("#popupcontent").dialog('close');
         });
@@ -187,8 +183,6 @@
         $("#btncancelpopupedit").click(function () {
             $("#popupcontentedit").dialog('close');
         });
-       
-        
     });
 
     $("#btnopenPopUp").click(function () {
@@ -216,6 +210,7 @@
             return false;
         }
     });
+
     $('#errormsgedit').hide();
 
     $("#btnaddCategory").click(function () {
@@ -246,7 +241,6 @@
                 }
             });
         }
-
     });
 
     $("#btneditCategory").click(function () {
@@ -276,15 +270,9 @@
                 alert(response.responseText);
             }
         });
-
     });
 
-
-    //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
-
-    //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
     function OpenEditpopup(CatgID) {
-
         $('#errormsgedit').hide();
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
@@ -306,7 +294,6 @@
         });
     }
 
-
     $("#btndeleteCategoryok").click(function () {
         $("#popupcontentdelete").dialog('close');
     });
@@ -317,7 +304,6 @@
             url: "/category/HasDeleteAccess",
             data: { "id": CatgID },
             success: function (response) {
-                //alert(response);
                 if (response == "HasecOrds") {
                     $("#lblcustomtextfor").text("Do you want to Delete this Service Delivery Group?");
                     $("#popupcontentdelete").dialog('open');
@@ -332,8 +318,6 @@
                     $("#btndeleteCategoryok").show();
                     $("#btndeleteCategory").hide();
                     $("#btncancelpopupdelete").hide();
-                    //alert('Entered else');
-                    //return trueOrFalse(false);
                 }
             },
             failure: function (response) {
@@ -365,5 +349,4 @@
             }
         });
     });
-
 </script>

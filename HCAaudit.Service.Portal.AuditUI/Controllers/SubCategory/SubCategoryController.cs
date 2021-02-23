@@ -93,6 +93,27 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
+        public IActionResult delete(int id)
+        {
+            SubCategory objSubCategory = new SubCategory();
+            try
+            {
+                objSubCategory = GetSubCategoryDetailsByID(id);
+                objSubCategory.SubCatgID = id; objSubCategory.IsActive = false;
+                objSubCategory.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                objSubCategory.ModifiedDate = DateTime.Now;
+                _auditToolContext.SubCategories.Update(objSubCategory);
+                _auditToolContext.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_delete", ErrorDiscription = ex.Message });
+            }
+            return View("Details", GetDetails());
+        }
+
+
+        [HttpPost]
         public ActionResult Edit(string id)
         {
             try

@@ -6,6 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
     <link rel="stylesheet" href="~/css/jquery-ui.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
     <link rel="stylesheet" type="text/css" href="~/css/neutron.css" />
@@ -18,25 +19,10 @@
 <body>
     <nav class="neu-topnav neu-fixed--top" role="navigation">
         <div class="neu-topnav__compact">
-            @*@if (auth.CheckAuditorUserGroup().Result)
-        {
-            <a asp-controller="search" asp-action="index" class="d-flex align-items-left "><i class="material-icons neu-margin--right-10">home</i></a>
-        }
-        else
-        {
-            <a asp-controller="home" asp-action="index" class="d-flex align-items-left "><i class="material-icons neu-margin--right-10">home</i></a>
-        }*@
-
-            <!--<div class="logo-title">
-        <cell class="show-for-large"></cell><cell>HR Audit Tool</cell>-->
-            @*<span style="width:100px;display:inline-block"></span>*@
-            <!--</div>-->
-
             <a asp-controller="search" asp-action="index" class="d-flex align-items-center flex-grow-1">
                 <i class="material-icons neu-margin--right-10">home</i>
                 <p class="neu-text--product">HR Audit Tool</p>
             </a>
-
 
             <div style="z-index: 1;">
                 @if (auth.CheckAdminUserGroup().Result)
@@ -46,7 +32,6 @@
                     <a asp-controller="HRRoster" asp-action="Details" class="neu-margin--right-20" style="text-decoration:none">HR Professional</a>
                     <a asp-controller="Questions" asp-action="Details" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
                     <a asp-controller="Questions" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
-                    @*<span style="width:80px;display:inline-block"></span>*@
                 }
             </div>
 
@@ -62,7 +47,6 @@
                 </div>
             </div>
         </div>
-
     </nav>
 
 <main class="container neu-padding--top-90 neu-padding--bottom-60">
@@ -78,7 +62,6 @@
                      height="20px" />
             </a>
         </div>
-
         <div class="col-sm-6">
             <p class="neu-text--caption neu-margin--left-10 neu-footer--compact__right-elem">
                 ©2021 HCA, Inc. or its affiliates
@@ -86,8 +69,6 @@
         </div>
     </div>
 </footer>
-
     @RenderSection("Scripts", required: false)
 </body>
-
 </html>

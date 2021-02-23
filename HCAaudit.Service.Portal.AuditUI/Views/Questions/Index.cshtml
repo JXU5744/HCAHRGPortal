@@ -2,7 +2,6 @@
     ViewData["Title"] = "Questions Mapping";
 }
 
-
 <link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
@@ -56,52 +55,6 @@
     </div>
 </div>
 
-@*<div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
-        <div class="row neu-margin--bottom-16">
-            <div class="col-sm-6">
-                <label class="neu-input__label" for="txtcategory">Service Delivery Group</label>
-                <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtcategory">
-            </div>
-            <div class="col-sm-6">
-                <label class="neu-input__label" for="txtsubcategory">Sub Category</label>
-                <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtsubcategory">
-            </div>
-        </div>
-
-        <div class="row neu-margin--bottom-16">
-            <div class="col-sm-6">
-                <label class="neu-input__label" for="txtquestionseq">Question Sequence</label>
-                <input id="txtquestionseq" class="neu-input__field" disabled="disabled" type="text" />
-                <input id="hdnAddSubCatId" type="hidden" />
-            </div>
-        </div>
-
-        <div class="row neu-margin--bottom-16">
-            <div class="col-sm-12">
-                <label class="neu-input__label" for="txtquestion">Question Name</label>
-                <textarea id="txtquestion" class="neu-input__textarea" rows="2" cols="50" style="resize:none"></textarea>
-                <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
-            </div>
-        </div>
-
-        <div class="row neu-margin--bottom-16">
-            <div class="col-sm-12">
-                <label class="neu-input__label" for="txtquestionDescription">Question Description</label>
-                <textarea id="txtquestionDescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
-                <span id="errormsgquestionDescription" class="neu-button--danger">Please Enter Question Description</span>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 neu-text--align-center">
-                <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
-                <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
-                <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset</button>
-            </div>
-        </div>
-
-    </div>*@
-
 <div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-6">
@@ -118,7 +71,6 @@
         <div class="col-sm-12">
             <label class="neu-input__label" for="txtquestion">Question Name</label>
             <textarea id="txtquestion" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
-            @*<textarea id="txtquestion" class="neu-input__textarea" rows="2" cols="50" style="resize:none"></textarea>*@
             <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
         </div>
     </div>
@@ -146,7 +98,6 @@
             <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset</button>
         </div>
     </div>
-
 </div>
 
 <div id="popupcontentedit" title="Edit Question Mapping" hidden="hidden" class="container">
@@ -195,7 +146,6 @@
             <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
         </div>
     </div>
-
 </div>
 
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
@@ -232,7 +182,6 @@
             $("#btnopenPopUp").click(function () {
                 $("#popupcontent").dialog({
                     position: 'bottom',
-
                 });
             });
             $("#popupcontentedit").dialog({
@@ -246,7 +195,6 @@
                 $("#popupcontentedit").dialog('close');
             });
         });
-
 
         $("#btnopenPopUp").click(function () {
             var subCategoryID = $("#SubCatID").val();
@@ -293,29 +241,15 @@
             $("#popupcontent").dialog('close');
         });
 
-
         $("#btnopenPopUp").hide();
         $('#errormsg').hide();
         $('#errormsgquestion').hide();
         $('#errormsgquestionDescription').hide();
 
-        //
-
-        //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
-
-        //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 400, width: 950 });
-
-
-        //$("#btnresetpopup").click(function () {
-        //    $('#txtquestion').val()="";
-        //    $('#txtquestionDescription').val()="";
-        //});
-
-
         $("#txtquestion").keypress(function (e) {
-
             $("#errormsgquestion").hide();
         });
+
         $("#txtquestionDescription").keypress(function (e) {
             $("#errormsgquestionDescription").hide();
         });
@@ -327,7 +261,6 @@
                 data: { "questionText": $("#txtquestion").val() },
                 success: function (response) {
                     if (response == "nd") {
-                        //$("#txtquestionDescription").val("");
                         $("#txtquestionDescription").prop("disabled", false);
                         $("#txtquestion").prop("disabled", false);
                     } else {
@@ -338,10 +271,6 @@
                     }
                 }
             });
-            //$("#txtquestionDescription").val($("#txtquestion").val());
-            //$("#txtquestionDescription").prop("disabled", true);
-            //$("#txtquestion").prop("disabled", true);
-            //$("#errormsgquestionDescription").hide();
         });
 
         $("#btnresetpopup").click(function () {
@@ -352,7 +281,6 @@
         });
 
         $("#btnaddQuestion").click(function () {
-
             if ($('#txtquestion').val() == "")
             {
                 $('#errormsgquestion').show();
@@ -375,7 +303,6 @@
                     }
                     else {
                         $("#popupcontent").dialog('close');
-                        //location.reload();
                         $(function () {
                             var subCategoryID = $('#SubCatID').val();
                             $.ajax({
@@ -409,7 +336,6 @@
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-
                                                   "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
@@ -432,11 +358,6 @@
                                 }
                             });
                         });
-                        //function OnSuccess(response) {
-                        //    var records = response.length;
-
-
-                        //};
                     }
                 },
                 failure: function (response) {
@@ -472,10 +393,7 @@
                     //alert(response.responseText);
                 }
             });
-
         });
-
-
 
         $("#chkblanksubcat").change(function () {
             if (this.checked) {
@@ -570,24 +488,15 @@
         });
 
         $("#btnupdateQuestion").click(function () {
-
             var selectedQuestionId = $("#hdnid").val();
-
             var oldseqno = $("#lblQuestionedit").val();
-
             var selectedSubCatId = $("#hdnSubCatId").val();
-
             var newquestId = $("#ddlQuestionsqedit").val();
-
             var newseqno = $("#ddlQuestionsqedit option:selected").text();
-
-
 
             if (selectedQuestionId == newquestId) {
                 $("#popupcontentedit").dialog('close');
             }
-
-
 
             $.ajax({
                 type: "POST",
@@ -604,7 +513,7 @@
                     }
                     else {
                         $("#popupcontentedit").dialog('close');
-                        //location.reload();
+
                         $(function () {
                             var subCategoryID = selectedSubCatId;
                             $.ajax({
@@ -660,11 +569,6 @@
                                 }
                             });
                         });
-                        //function OnSuccess(response) {
-                        //    var records = response.length;
-
-
-                        //};
                     }
                 },
                 failure: function (response) {
@@ -676,16 +580,9 @@
             });
         });
 
-        //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 350, width: 650 });
-
         $("#btncancelpopupedit").click(function () {
             $("#popupcontentedit").dialog('close');
         });
-
-
-        //$("#btncancelpopup").click(function () {
-        //    $("#popupcontentdelete").dialog('close');
-        //});
 
         $("#btndeleteQuestion").click(function () {
             var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
@@ -700,7 +597,6 @@
             });
             location.reload();
         });
-
     });
 
     function DeleteData(CatgID) {
@@ -726,10 +622,9 @@
             data: { "id": CatgID, "subcatid": subcatid, "actionQid": CatgID},
             success: function (response) {
                 if (response != null && response != "") {
-                    $('#ddlQuestionsqedit').html(''); //$("#ShowQuestions").hide();
+                    $('#ddlQuestionsqedit').html(''); 
                     var options = ''; var index = 0;
                     for (var i = 0; i < response.length; i++) {
-                        //alert(response[i].QuestionMappingId); alert(response[i].SequenceNo);
                         options += '<option value="' + response[i].QuestionMappingId + '">' + response[i].SequenceNo + '</option>';
                         if (response[i].QuestionMappingId == CatgID) {
                             index = response[i].SequenceNo;
@@ -752,4 +647,3 @@
         });
     }
 </script>
-
