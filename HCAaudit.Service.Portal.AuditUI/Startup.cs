@@ -33,7 +33,7 @@ namespace HCAaudit.Service.Portal.AuditUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddDbContext<AuditToolContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:HRAuditDatabase"]));
+            services.AddDbContext<AuditToolContext>(options => options.UseSqlServer(Configuration["HRAuditDatabaseConnectionString"]));
             services.AddDistributedMemoryCache();
             services.AddHttpContextAccessor();
             services.Configure<IISServerOptions>(options =>
