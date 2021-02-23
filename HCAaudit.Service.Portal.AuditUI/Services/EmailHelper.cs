@@ -16,7 +16,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         {
             _configuration = configuration;
             _log = log;
-            SmtpClient = new SmtpClient(configuration.GetSection("SmtpHost").Value, Convert.ToInt32(configuration.GetSection("SmtpPort").Value));
+            SmtpClient = new SmtpClient(configuration["SmtpHost"], Convert.ToInt32(configuration["SmtpPort"]));
         }
         public void SendEmailNotification(EmailTemplate emailContent)
         {
