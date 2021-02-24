@@ -61,21 +61,19 @@
 
 <div id="popupcontent" title="Add Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
-        <div class="col-md-12">
-            <label for="txtquestion" class="neu-input__label">Question Name:</label>
-            <textarea id="txtquestion" class="neu-input__field" rows="4" cols="50" style="resize:none"></textarea>
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestion">Question Name</label>
+            <textarea id="txtquestion" rows="4" cols="80" style="resize:none"></textarea>
             <span id="errormsg" class="neu-button--danger">Please Enter or Select Question</span>
         </div>
     </div>
-
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <label for="txtdescription" class="neu-input__label">Question Description:</label>
-            <textarea id="txtdescription" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errordescriptionmsg" class="neu-button--danger">Please enter Question Description</span>
+            <label class="neu-input__label" for="txtdescription">Question Description</label>
+            <textarea id="txtdescription" rows="4" cols="80" style="resize:none;"></textarea>
+            <span id="errordescriptionmsg" class="neu-button--danger">Please Enter Question Description</span>
         </div>
     </div>
-
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
@@ -83,26 +81,22 @@
         </div>
     </div>
 </div>
-
 <div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <label for="txtQuestionedit" class="neu-input__label">Question Name:</label>
-            <textarea id="txtQuestionedit" class="neu-input__field" type="text" rows="5" cols="50" style="resize:none"></textarea>
+            <label class="neu-input__label" for="txtQuestionedit">Question Name</label>
+            <textarea id="txtQuestionedit" rows="4" cols="80" style="resize:none"></textarea>
             <span id="errormsgedit" class="neu-button--danger">Please Enter or Select Question</span>
             <input id="hdnid" type="hidden" />
         </div>
-        <div class="col-sm-12"></div>
     </div>
-
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <label for="txtdescriptionedit" class="neu-input__label">Question Description:</label>
-            <textarea id="txtdescriptionedit" class="neu-input__textarea" rows="5" cols="50" style="resize:none"></textarea>
-            <span id="errordescriptionmsgedit" class="neu-button--danger">Please enter Question Description</span>
+            <label class="neu-input__label" for="txtdescriptionedit">Question Description</label>
+            <textarea id="txtdescriptionedit" rows="4" cols="80" style="resize:none;"></textarea>
+            <span id="errordescriptionmsgedit" class="neu-button--danger">Please Enter Question Description</span>
         </div>
     </div>
-
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
             <button id="btnupdateQuestion" class="neu-button--primary neu-button neu-button--raised">Update</button>
@@ -211,9 +205,6 @@
         });
 
         $("#btnupdateQuestion").click(function () {
-            //$('#errormsgedit').hide();
-            //$('#errordescriptionmsgedit').hide();
-
             $("#popupcontentedit").dialog({
                 position: 'bottom'
             });
@@ -241,20 +232,7 @@
         $("#popupcontent").dialog('open');
     });
 
-    $("#txtdescription").click(function (e) {
-        $.ajax({
-            type: "POST",
-            url: "/Questions/GetDesbyQuesText",
-            data: { "questionText": $("#txtquestion").val() },
-            success: function (response) {
-                if (response == "nd") {
-                } else {
-                    $("#txtdescription").val(response);
-                }
-            }
-        });
-    });
-
+    
     $("#txtQuestionedit").keyup(function () {
         if (!this.value) {
 
@@ -281,6 +259,22 @@
 
     $('#txtquestion').on('keypress', function (event) {
         $('#errormsg').hide();
+    });
+
+    $('#txtquestion').on('autocompleteselect', function (e, ui) {
+        //alert(ui.item.value);
+        $.ajax({
+            type: "POST",
+            url: "/Questions/GetDesbyQuesText",
+            data: { "questionText": ui.item.value },
+            success: function (response) {
+                if (response == "nd") {
+                    //$("#txtquestionDescription").val("");
+                } else {
+                    $("#txtdescription").val(response);
+                }
+            }
+        });
     });
 
     $('#txtdescription').on('keypress', function (event) {
