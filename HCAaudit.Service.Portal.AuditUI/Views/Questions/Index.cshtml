@@ -254,24 +254,6 @@
             $("#errormsgquestionDescription").hide();
         });
 
-        $("#txtquestionDescription").click(function (e) {
-            $.ajax({
-                type: "POST",
-                url: "/Questions/GetDesbyQuesText",
-                data: { "questionText": $("#txtquestion").val() },
-                success: function (response) {
-                    if (response == "nd") {
-                        $("#txtquestionDescription").prop("disabled", false);
-                        $("#txtquestion").prop("disabled", false);
-                    } else {
-                        $("#txtquestionDescription").val(response);
-                       // $("#txtquestionDescription").prop("disabled", true);
-                     //   $("#txtquestion").prop("disabled", true);
-                    }
-                }
-            });
-        });
-
         $("#btnresetpopup").click(function () {
             $("#txtquestionDescription").val("");
             $("#txtquestion").val("");
@@ -587,26 +569,6 @@
         $("#btncancelpopupedit").click(function () {
             $("#popupcontentedit").dialog('close');
         });
-
-        @*$("#btndeleteQuestion").click(function () {
-            var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
-            $("#popupcontentdelete").dialog('close');
-            $.post(url, { ID: $("#hdndeletecatid").val(), SubCatId: $('#SubCatID').val() }, function (data) {
-
-
-                if (data) {
-                    oTable = $('#example').DataTable();
-                    oTable.draw();
-                } else {
-                    alert("Something Went Wrong!");
-                }
-
-
-
-            });
-          //  $('#SubCatID').trigger('change');
-            location.reload();
-        });*@
 
         $('#txtquestion').on('autocompleteselect', function (e, ui) {
             //alert(ui.item.value);
