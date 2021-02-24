@@ -2,17 +2,17 @@
 @{
     ViewData["Title"] = "Service Delivery Group";
 }
-@model List<HCAaudit.Service.Portal.AuditUI.Models.Categorys>
+@model List<HCAaudit.Service.Portal.AuditUI.Models.Category>
 
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="~/css/main.css" />
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -21,7 +21,8 @@
 </div>
 
 <div class="row neu-margin--bottom-16">
-    <div class="col-sm-12 d-flex justify-content-end"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Service Delivery Group</button> </div>
+    <div class="col-sm-12 d-flex justify-content-end">
+    <button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Service Delivery Group</button> </div>
 </div>
 
 <div class="row neu-margin--bottom-16">
@@ -30,9 +31,9 @@
             <thead>
                 <tr class="neu-table__row--large">
                     <th>CatgID</th>
-                    <th style="width:70%">Service Delivery Group</th>
-                    <th style="width:15%">Edit</th>
-                    <th style="width:15%">Delete</th>
+                    <th style="width:80%">Service Delivery Group</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:10%">Delete</th>
                 </tr>
             </thead>
         </table>
@@ -42,14 +43,10 @@
 <div id="popupcontent" title="Add Service Delivery Group" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
-            <div tabindex="-1" aria-checked="false">
-                <label class="neu-input__label" for="format-pdf">Service Delivery Group</label>
+                <label class="neu-input__label" for="txtcategory">Service Delivery Group</label>
                 <input class="neu-input__field" aria-disabled="false" maxlength="10" type="text" id="txtcategory">
                 <span id="errormsg" class="neu-button--danger neu-button--small">Please enter Service Delivery Group</span>
-            </div>
-            <div class="col-sm-12">
                 <input id="hdnid" type="hidden" />
-            </div>
         </div>
     </div>
     <div class="row">
@@ -66,7 +63,7 @@
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12">
             <div>
-                <label class="neu-input__label" for="format-pdf">Service Delivery Group</label>
+                <label class="neu-input__label" for="txtcategoryedit">Service Delivery Group</label>
                 <input class="neu-input__field" aria-disabled="false" maxlength="10" type="text" id="txtcategoryedit">
                 <input id="hdnid" type="hidden" />
                 <span id="errormsgedit" class="neu-button--danger neu-button--small">Please enter Service Delivery Group</span>
@@ -115,22 +112,28 @@
             "columnDefs": [{
                 "targets": [0],
                 "visible": false,
-                "searchable":true
-            }],
+                "searchable": true
+            },
+                {
+                    "targets": [0, 2, 3],
+                    "orderable": false
+                }],
             "columns": [
-                { "data": "CatgID", "name": "CatgID", "autoWidth": true },
+                { "data": "CatgId", "name": "CatgID", "autoWidth": true },
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="#" onclick=OpenEditpopup(' + full.CatgID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="javascript:void(0)" onclick=OpenEditpopup(' + full.CatgId + ');>Edit</a>'; }
                 },
                 {
                     data: null,
-                    render: function(data, type, row) {
-                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.CatgID + "'); >Delete</a>";
+                    render: function (data, type, row) {
+                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.CatgId + "'); >Delete</a>";
                     }
                 },
-            ]
-
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('neu-table__row--small');
+            }
         });
     });
 
@@ -140,6 +143,8 @@
         $("#popupcontent").dialog({
             width: 'auto',
             autoOpen: false,
+            draggable: false,
+            resizable: false,
             position: {
                 my: "center",
                 at: "center",
@@ -150,6 +155,8 @@
         $("#popupcontentedit").dialog({
             width: 'auto',
             autoOpen: false,
+            draggable: false,
+            resizable: false,
             position: {
                 my: "center",
                 at: "center",
@@ -165,10 +172,8 @@
                 of: window
             },
             autoOpen: false,
-        });
-
-        $("#btncancelpopupdelete").click(function () {
-            $("#popupcontent").dialog('close');
+            draggable: false,
+            resizable: false
         });
 
         $("#btncancelpopup").click(function () {
@@ -178,27 +183,10 @@
         $("#btncancelpopupedit").click(function () {
             $("#popupcontentedit").dialog('close');
         });
-
-        $("#btnopenPopUp").click(function () {
-            $("#popupcontent").dialog({
-                position: 'bottom'
-            });
-        });
-        $("#btnopenPopUp").click(function () {
-            $("#popupcontentedit").dialog({
-                position: 'bottom'
-            });
-        });
     });
 
-    //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
-
-    //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
-
-    //$("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 190, width: 700 });
-
     $("#btnopenPopUp").click(function () {
-        $('#txtcategory').val(""); $('#errormsgedit').hide();
+        $('#txtcategory').val(""); $('#errormsg').hide();
         $("#popupcontent").dialog('open');
     });
 
@@ -222,6 +210,7 @@
             return false;
         }
     });
+
     $('#errormsgedit').hide();
 
     $("#btnaddCategory").click(function () {
@@ -252,7 +241,6 @@
                 }
             });
         }
-
     });
 
     $("#btneditCategory").click(function () {
@@ -282,15 +270,9 @@
                 alert(response.responseText);
             }
         });
-
     });
 
-
-    //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
-
-    //$("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 240, width: 700 });
     function OpenEditpopup(CatgID) {
-
         $('#errormsgedit').hide();
         $("#hdnid").val(""); $("#hdnid").val(CatgID);
         $.ajax({
@@ -312,7 +294,6 @@
         });
     }
 
-
     $("#btndeleteCategoryok").click(function () {
         $("#popupcontentdelete").dialog('close');
     });
@@ -323,7 +304,6 @@
             url: "/category/HasDeleteAccess",
             data: { "id": CatgID },
             success: function (response) {
-                //alert(response);
                 if (response == "HasecOrds") {
                     $("#lblcustomtextfor").text("Do you want to Delete this Service Delivery Group?");
                     $("#popupcontentdelete").dialog('open');
@@ -338,8 +318,6 @@
                     $("#btndeleteCategoryok").show();
                     $("#btndeleteCategory").hide();
                     $("#btncancelpopupdelete").hide();
-                    //alert('Entered else');
-                    //return trueOrFalse(false);
                 }
             },
             failure: function (response) {
@@ -371,5 +349,4 @@
             }
         });
     });
-
 </script>

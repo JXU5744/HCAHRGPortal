@@ -1,191 +1,163 @@
 ﻿@model HCAaudit.Service.Portal.AuditUI.ViewModel.DisputeModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dispute Page";
 }
+<link href="~/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="~/js/bootstrap-multiselect.min.js"></script>
+<script src="~/js/bootstrap-datepicker.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-    /** {
-        box-sizing: border-box;
-    }
 
-    #myInput {
-        background-image: url('/css/searchicon.png');
-        background-position: 10px 12px;
-        background-repeat: no-repeat;
-        width: 100%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
-    }
-
-    #myUL {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-
-        #myUL li a {
-            border: 1px solid #ddd;
-            margin-top: -1px;*/ /* Prevent double borders */
-    /*background-color: #f6f6f6;
-            padding: 12px;
-            text-decoration: none;
-            font-size: 18px;
-            color: black;
-            display: block
-        }
-
-            #myUL li a:hover:not(.header) {
-                background-color: #eee;
-            }
-
-    textarea {
-        overflow-y: scroll;
-        height: 100px;
-        resize: none;*/ /* Remove this if you want the user to resize the textarea */
-    /*}*/
-
-    th {
-        text-align: center;
-    }
-
-    label {
-        font-weight: normal !important;
-    }
-</style>
-
-
-<div class="col-12" id="DisputeContainer">
-    <div>
-
-        <span class="d-inline-block btn float-right">
-        </span>
-        <span class="d-inline-block h2">Dispute</span>
-
-        @if (Model.AuditNonComplianceModel.Count() > 0 && Model.AuditMain != null)
-        {
-            <div class="panel-group">
-                @Html.HiddenFor(x => Model.AuditMain.TicketID)
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">Audit Details for Ticket : @Model.AuditMain.TicketID </div>
-
-@*<div class="panel-heading">Audit Details for Ticket : 1001 </div>*@
-
-                    <div class="panel-body">
-                        <div class="col-lg-4">
-                            <div>
-                                <span class="d-inline-block"><strong>Agent Name: </strong></span><span>@Model.AuditMain.AgentName</span>
-                            </div>
-                            <br />
-                            <div>
-                                <span class="d-inline-block"><strong>Agent 3/4 ID: </strong> </span><span>@Model.AuditMain.Agent34ID</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div>
-                                <span class="d-inline-block"><strong>Auditor Name: </strong></span><span>@Model.AuditMain.AuditorName </span>
-                            </div>
-                            <br />
-                            <div>
-                                <span class="d-inline-block"><strong>Audit Date: </strong></span><span>@Model.AuditMain.SubmitDT</span>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div>
-                                <span class="d-inline-block"><strong>Service Group Name: </strong></span><span>@Model.ServiceDeliveryGroupName</span>
-                            </div>
-                            <br />
-                            <div>
-                                <span class="d-inline-block"><strong>Sub Category Name: </strong></span><span>@Model.SubCategoryName</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                        <div class="well">
-                            <table class="table table-striped" id="disputeDataTable" style="opacity: 1">
-                                <thead style="align-content:center">
-                                    <tr>
-                                        <th class="text-center" style="display:none;">Question ID</th>
-                                        <th style="width:5%">Question Rank</th>
-                                        <th style="width:25%">Question</th>
-                                        <th style="width:5%">Correction Required</th>
-                                        <th style="width:25%">Comments</th>
-                                        <th style="width:10%">Grace Period</th>
-                                        <th style="width:10%">Overturn</th>
-                                        <th style="width:20%">Dispute Comments</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    @for (int i = 0; i < Model.AuditNonComplianceModel.Count; i++)
-                                    {
-                                        <tr>
-                                            <td class="text-center">
-                                                @Html.HiddenFor(x => x.AuditNonComplianceModel[i].QuestionId)
-                                                @Html.HiddenFor(x => x.AuditNonComplianceModel[i].QuestionRank)
-                                                @Html.DisplayFor(x => x.AuditNonComplianceModel[i].QuestionRank)
-                                            </td>
-                                            <td>
-                                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Question, 2, 3, new { @class = "form-control", @disabled = "disabled", rows = "5", cols = "50", style = "resize:none" })
-                                            </td>
-                                            <td class="text-center">
-                                                @Html.Label((Model.AuditNonComplianceModel[i].IsCorrectionRequired == true ? "Yes" : "No"))
-                                            </td>
-                                            <td>
-                                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].NonComplianceComments, 2, 3, new { @class = "form-control", @disabled = "disabled", rows = "5", cols = "50", style = "resize:none" })
-                                                @*@Html.DisplayFor(x => x.AuditNonComplianceModel[i].NonComplianceComments)*@
-                                            </td>
-                                            <td>
-                                                @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].GracePeriodId, Model.GracePeriod)
-                                            </td>
-                                            <td>
-                                                @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].OverturnId, Model.Overturn)
-                                            </td>
-                                            <td style="width:20%">
-                                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Comment, 2, 3, new { @class = "form-control", rows = "5", cols = "50", style = "resize:none" })
-                                            </td>
-
-                                        </tr>
-
-                                    }
-                                </tbody>
-                                <tfoot></tfoot>
-                            </table>
-                        </div>
-            </div>
-        }
-    </div>
-</div>
-<div class="col-lg-12 float-right">
-    <div class="float-right">
-        <button type="button" id="btnSave" class="btn btn-primary float-right"> Save</button>
-        <button type="button" id="btnCancel" class="btn btn-secondary float-right"> Cancel</button>
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Dispute</h3>
     </div>
 </div>
 
+<div class="card">
+    <div class="row">
+        <div class="col-sm-3">
+            <label for="AuditMain_TicketId" class="neu-input__label">Ticket ID</label>
+            @Html.TextBoxFor(m => Model.AuditMain.TicketId, new { @disabled = true, @class = "neu-input__field" })
+            @Html.HiddenFor(x => Model.AuditMain.TicketId)
+        </div>
+        <div class="col-sm-3">
+            <label for="AuditMain_Agent34Id" class="neu-input__label">Agent's 3-4 ID</label>
+            @Html.TextBoxFor(m => Model.AuditMain.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+        <div class="col-sm-3">
+            <label for="AuditMain_AgentName" class="neu-input__label">Agent Name</label>
+            @Html.TextBoxFor(m => Model.AuditMain.AgentName, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+        <div class="col-sm-3">
+            <label for="AuditMain_TicketDate" class="neu-input__label">Record Date</label>
+            @Html.TextBoxFor(m => Model.AuditMain.TicketDate, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-sm-3">
+            <label for="AuditMain_SubmitDt" class="neu-input__label">Audit Date</label>
+            @Html.TextBoxFor(m => Model.AuditMain.SubmitDt, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+
+        <div class="col-sm-3">
+            <label for="AuditMain_AuditorName" class="neu-input__label">Auditor Name</label>
+            @Html.TextBoxFor(m => Model.AuditMain.AuditorName, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+
+        <div class="col-sm-3">
+            <label for="ServiceDeliveryGroupName" class="neu-input__label">Service Group</label>
+            @Html.TextBoxFor(m => Model.ServiceDeliveryGroupName, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+        <div class="col-sm-3">
+            <label for="SubCategoryName" class="neu-input__label">Sub Group</label>
+            @Html.TextBoxFor(m => Model.SubCategoryName, new { @disabled = true, @class = "neu-input__field" })
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="disputeDataTable" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+                <thead class="neu-table__head neu-text--align-center">
+                    <tr class="neu-table__header neu-table__sort-icon" style="text-align:center">
+                        <th style="display:none">Question ID</th>
+                        <th style="width:5%">Rank</th>
+                        <th style="width:25%">Question Name</th>
+                        <th style="width:5%">Correction Required</th>
+                        <th style="width:25%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comments</th>
+                        <th style="width:10%">Grace Period</th>
+                        <th style="width:10%">Overturn</th>
+                        <th style="width:20%">Dispute Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @for (int i = 0; i < Model.AuditNonComplianceModel.Count; i++)
+                    {
+                        <tr class="neu-table__row--large neu-table__row--striped">
+                            <td class="text-center">
+                                @Html.HiddenFor(x => x.AuditNonComplianceModel[i].QuestionId)
+                                @Html.HiddenFor(x => x.AuditNonComplianceModel[i].QuestionRank)
+                                @Html.DisplayFor(x => x.AuditNonComplianceModel[i].QuestionRank)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Question, 2, 3, new { @class = "neu-input__textarea", @disabled = "disabled", rows = "5", cols = "50", style = "resize:none" })
+                            </td>
+                            <td class="text-center">
+                                @Html.Label((Model.AuditNonComplianceModel[i].IsCorrectionRequired == true ? "Yes" : "No"))
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].NonComplianceComments, 2, 3, new { @class = "neu-input__textarea", @disabled = "disabled", rows = "5", cols = "50", style = "resize:none" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].GracePeriodId, Model.GracePeriod, new { @class = "neu-select" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].OverturnId, Model.Overturn, new { @class = "neu-select" })
+                            </td>
+                            <td style="width:20%">
+                                @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Comment, 2, 3, new { @class = "neu-input__textarea", rows = "5", cols = "50", style = "resize:none" })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row neu-margin--bottom-10">
+    <div class="col-sm-12 neu-text--align-center">
+        <span id="errorMessage" class="neu-button--danger"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 neu-text--align-center">
+        <button id="btnSave" class="neu-button--primary neu-button neu-button--raised">Save</button>
+        <button id="btnCancel" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+    </div>
+</div>
+
+<div id="popupcontentdispute" title="Dispute" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label id="lblcustomtext"></label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btnok" class="neu-button--primary neu-button neu-button--raised">OK</button>
+        </div>
+    </div>
+</div>
+
+<div id="popupcontentcanceldispute" title="Cancel Dispute" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label id="lblcancelcustomtext"></label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btnyes" class="neu-button--primary neu-button neu-button--raised">Yes</button>
+            <button id="btnno" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
+        </div>
+    </div>
+</div>
 
 @section Scripts
     {
@@ -199,21 +171,52 @@
     <script type="text/javascript">
         $(document).ready(function () {
 
+            $("#btnok").click(function (e) {
+                window.location.href = "/Search/Index"
+            });
+
+            $("#btnCancel").click(function (e) {
+                $("#lblcancelcustomtext").text("Do you want to Cancel this Dispute?");
+                $("#popupcontentcanceldispute").dialog('open');
+            });
+
+
+            $("#btnno").click(function (e) {
+                $("#popupcontentcanceldispute").dialog('close')
+            });
+
+            $("#btnyes").click(function (e) {
+                $("#popupcontentcanceldispute").dialog('close');
+                window.location.href = "/Search/Index"
+            });
+
             $("#btnSave").click(function (e) {
                 e.preventDefault();
                 var AuditNonComplianceModel = [];
                 AuditNonComplianceModel.length = 0;
 
+                var isSelected = false;
+
                 $.each($("#disputeDataTable tbody tr"), function () {
+                    var GracePeriodId = $(this).find('[id$="GracePeriodId"]').val();
+                    var OverturnId = $(this).find('[id$="OverturnId"]').val();
+                    if (GracePeriodId > 0 || OverturnId > 0) { isSelected = true; }
+
                     AuditNonComplianceModel.push({
                         QuestionId: $(this).find('[id$="QuestionId"]:hidden').val(),
                         QuestionRank: $(this).find('[id$="QuestionRank"]:hidden').val(),
-                        TicketId: $('[id$="TicketId"]:hidden').val(),
+                        TicketId: $('[id$="AuditMain_TicketId"]:hidden').val(),
                         GracePeriodId: $(this).find('[id$="GracePeriodId"]').val(),
                         OverturnId: $(this).find('[id$="OverturnId"]').val(),
                         Comment: $(this).find('[id$="Comment"]').val()
                     });
                 });
+
+                if (!isSelected) {
+                    $("#errorMessage").text("Please select action for any one question.");
+                    e.preventDefault();
+                    return false;
+                }
 
                 $.ajax({
                     url: '/Dispute/GetData',
@@ -222,13 +225,11 @@
                     data: JSON.stringify(AuditNonComplianceModel),
                     contentType: 'application/json; charset=utf-8',
                     success: function (result) {
-                        if (confirm("Dispute Submitted Sucessfully")) {
-                            window.location.href = "/Search/Index"
-                        }
+                        $("#lblcustomtext").text("Dispute Submitted Sucessfully");
+                        $("#popupcontentdispute").dialog('open');
                     },
-
                     error: function (err) {
-                        alert(err.statusText);
+                        $("#errorMessage").text("Please select action for all questions.");
                     }
                 });
 
@@ -252,6 +253,35 @@
                 else {
                     $this.closest("tr").find('[id$="GracePeriodId"]').prop("disabled", false);
                 }
+            });
+        });
+
+        $(function () {
+            $("#popupcontentdispute").dialog({
+                width: 'auto',
+                position: {
+                    my: "center",
+                    at: "center",
+                    of: window
+                },
+                autoOpen: false,
+                draggable: false,
+                resizable: false
+            });
+        });
+
+
+        $(function () {
+            $("#popupcontentcanceldispute").dialog({
+                width: 'auto',
+                position: {
+                    my: "center",
+                    at: "center",
+                    of: window
+                },
+                autoOpen: false,
+                draggable: false,
+                resizable: false
             });
         });
 

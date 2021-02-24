@@ -1,249 +1,191 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
 using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Http;
-using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text;
 using HCAaudit.Service.Portal.AuditUI.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class HRRosterController : Controller
     {
         private readonly ILogger<HRRosterController> _logger;
-        private readonly IConfiguration config;
-        private IAuthService _authService;
-        private AuditToolContext _auditToolContext;
-        public HRRosterController(ILogger<HRRosterController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
+        private readonly IAuthService _authService;
+        private readonly AuditToolContext _auditToolContext;
+        private readonly bool isAdmin = false;
+        private readonly IErrorLog _log;
+
+        public HRRosterController(ILogger<HRRosterController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
-      //      _authService = authService;
+            _authService = authService;
+            isAdmin = _authService.CheckAdminUserGroup().Result;
+            _log = log;
         }
-
-        //private clstbHROCRosterList GetDetails()
-        //{
-        //    clstbHROCRosterList objclstbHROCRosterList = new clstbHROCRosterList();
-            
-        //    return objclstbHROCRosterList;
-        //}
 
         [HttpPost]
         public JsonResult GetDetailsById(EmployeeIdViewModel employeeIdViewModel)
         {
-            var data = (from hroc in _auditToolContext.HROCRoster select hroc).ToList();
-            var objclstbHROCRoster = data.Where(x => x.EmployeethreefourID.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
-                                    .Select(x => new { x.HROCRosterId, x.EmployeeFullName, x.EmployeeLastName, x.EmployeeFirstName, 
-                                                       x.EmployeethreefourID, x.EmployeeNumber, x.SupervisorLastName,x.SupervisorFirstName,
-                                                       x.DateHired, x.JobCDDesc, x.PositionDesc, x.EmployeeStatus, x.EmployeeStatusDesc
-                                    }).ToList();
-
-            return Json(objclstbHROCRoster);
+            try
+            {
+                if (isAdmin)
+                {
+                    var data = (from hroc in _auditToolContext.HROCRoster select hroc).ToList();
+                    var objclstbHROCRoster = data.Where(x => x.Employee34IdLowerCase.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
+                                            .Select(x => new
+                                            {
+                                                x.HROCRosterId,
+                                                x.EmployeeFullName,
+                                                x.LastName,
+                                                x.FirstName,
+                                                x.Employee34IdLowerCase,
+                                                x.EmployeeNum,
+                                                x.SupervisorLastName,
+                                                x.SupervisorFirstName,
+                                                x.JobCdDescHomeCurr,
+                                                x.CreatedDate,
+                                                x.CreatedBy,
+                                                x.ModifiedBy,
+                                                x.ModifiedDate
+                                            }).ToList();
+                    return Json(objclstbHROCRoster);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetDetailsById method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.Message });
+            }
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
-
-        //[HttpGet]
-        //public IActionResult StatusUpdate(string id)
-        //{
-        //    var data = (from hroc in _auditToolContext.HrocMaster select hroc).ToList();
-        //    clstbHROCRoster objclstbHROCRoster = data.Find(a => a.EmployeethreefourID == id);
-
-        //    if (objclstbHROCRoster.EmployeeStatusDesc.ToLower() == "active full time")
-        //    {
-        //        objclstbHROCRoster.EmployeeStatusDesc = "Non-Facility Paid";
-        //        objclstbHROCRoster.EmployeeStatus = "99";
-        //    }
-        //    else {
-        //        objclstbHROCRoster.EmployeeStatusDesc = "Active Full Time";
-        //        objclstbHROCRoster.EmployeeStatus = "01";
-        //    }
-
-        //    _auditToolContext.HrocMaster.Update(objclstbHROCRoster);
-        //    _auditToolContext.SaveChanges();
-
-        //    return RedirectToAction("details");
-        //}
 
         [HttpGet]
         public IActionResult Details()
         {
-            return View("Details");
+            try
+            {
+                if (isAdmin)
+                {
+                    return View("Details");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in Details method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
-        //[HttpPost]
-        //public IActionResult Details(clstbHROCRosterList objclstbHROCRosterList)
-        //{
-        //    try
-        //    {
-        //        var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
-
-        //        // Skip number of Rows count  
-        //        var start = Request.Form["start"].FirstOrDefault();
-
-        //        // Paging Length 10,20  
-        //        var length = Request.Form["length"].FirstOrDefault();
-
-        //        // Sort Column Name  
-        //        var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-
-        //        // Sort Column Direction (asc, desc)  
-        //        var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-
-        //        // Search Value from (Search box)  
-        //        var searchValue = Request.Form["search[value]"].FirstOrDefault();
-
-        //        //Paging Size (10, 20, 50,100)  
-        //        int pageSize = length != null ? Convert.ToInt32(length) : 0;
-
-        //        int skip = start != null ? Convert.ToInt32(start) : 0;
-
-        //        int recordsTotal = 0;
-
-        //        objclstbHROCRosterList._hrocrosterList = new List<clstbHROCRoster>();
-        //        objclstbHROCRosterList._hrocrosterList = (from hroc in _auditToolContext.HrocMaster select hroc).ToList();
-
-        //        // getting all Customer data  
-        //        var customerData = (from tempcustomer in objclstbHROCRosterList._hrocrosterList
-        //                            select tempcustomer);
-
-        //        //Sorting  
-        //        if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-        //        {
-        //            switch (sortColumn)
-        //            {
-        //                case "EmployeeFullName":
-        //                    if (sortColumnDirection == "desc")
-        //                    {
-        //                        customerData = customerData.OrderByDescending(s => s.EmployeeFullName);
-        //                    }
-        //                    else
-        //                    {
-        //                        customerData = customerData.OrderBy(s => s.EmployeeFullName);
-        //                    }
-        //                    break;
-        //                case "EmployeethreefourID":
-        //                    if (sortColumnDirection == "desc")
-        //                    {
-        //                        customerData = customerData.OrderByDescending(s => s.EmployeethreefourID);
-        //                    }
-        //                    else
-        //                    {
-        //                        customerData = customerData.OrderBy(s => s.EmployeethreefourID);
-        //                    }
-        //                    break;
-        //            }
-        //        }
-        //        //Search  
-        //        if (!string.IsNullOrEmpty(searchValue))
-        //        {
-        //            customerData = customerData.Where(m => m.EmployeethreefourID.StartsWith(searchValue));
-        //        }
-
-        //        //total number of rows counts   
-        //        recordsTotal = customerData.Count();
-        //        //Paging   
-        //        var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
-        //        //Returning Json Data  
-        //        return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
-
+        public IActionResult GetCategory()
+        {
+            try
+            {
+                if (isAdmin)
+                {
+                    var categoryList = _auditToolContext.Category.Where(a => a.IsActive == true).ToList();
+                    _logger.LogInformation($"No of records: {categoryList.Count}");
+                    return Json(categoryList);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in GetCategory method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetCategory", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
+        }
 
         [HttpPost]
         public ActionResult Edit(HROCRosterViewModel hROCRosterViewModel)
         {
-            object resp = "";
-            try
+            if (isAdmin)
             {
-                if (hROCRosterViewModel.HROCRosterId > 0)
+                object resp = "";
+                try
+                {
+                    if (hROCRosterViewModel.HROCRosterId > 0)
+                    {
+                        HROCRoster objHROCRoster = _auditToolContext.HROCRoster.Where
+                            (x => x.HROCRosterId == hROCRosterViewModel.HROCRosterId).FirstOrDefault();
+                        if (objHROCRoster != null)
+                        {
+                            objHROCRoster.EmployeeNum = hROCRosterViewModel.EmployeeNumber;
+                            objHROCRoster.EmployeeFullName = hROCRosterViewModel.EmployeeFullName;
+                            objHROCRoster.LastName = hROCRosterViewModel.EmployeeLastName;
+                            objHROCRoster.FirstName = hROCRosterViewModel.EmployeeFirstName;
+                            objHROCRoster.SupervisorLastName = hROCRosterViewModel.SupervisorLastName;
+                            objHROCRoster.SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName;
+                            objHROCRoster.Employee34IdLowerCase = hROCRosterViewModel.EmployeethreefourID.ToLower();
+                            objHROCRoster.JobCdDescHomeCurr = hROCRosterViewModel.JobCDDesc;
+                            objHROCRoster.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                            objHROCRoster.ModifiedDate = DateTime.Now;
+                            _auditToolContext.HROCRoster.Update(objHROCRoster);
+                            _auditToolContext.SaveChanges();
+                            resp = "Success";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation($"Exception in Edit method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.Message });
+                }
+                return Json(resp);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Insert(HROCRosterViewModel hROCRosterViewModel)
+        {
+            if (isAdmin)
+            {
+                object resp = "";
+                try
                 {
                     if (string.IsNullOrEmpty(resp.ToString()))
                     {
                         HROCRoster objHROCRoster = new HROCRoster
                         {
-                            //objCategorys = GetSingleCategoryByid(param[0]);
-                            EmployeeNumber = hROCRosterViewModel.EmployeeNumber,
+                            HROCRosterId = 0,
+                            EmployeeNum = hROCRosterViewModel.EmployeeNumber,
                             EmployeeFullName = hROCRosterViewModel.EmployeeFullName,
-                            EmployeeLastName = hROCRosterViewModel.EmployeeLastName,
-                            EmployeeFirstName = hROCRosterViewModel.EmployeeFirstName,
+                            LastName = hROCRosterViewModel.EmployeeLastName,
+                            FirstName = hROCRosterViewModel.EmployeeFirstName,
                             SupervisorLastName = hROCRosterViewModel.SupervisorLastName,
                             SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName,
-                            EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower(),
-                            EmployeeStatus = hROCRosterViewModel.EmployeeStatus,
-                            PositionDesc = hROCRosterViewModel.PositionDesc,
-                            JobCDDesc = hROCRosterViewModel.JobCDDesc,
-                            EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
-                            DateHired = hROCRosterViewModel.DateHired
+                            Employee34IdLowerCase = hROCRosterViewModel.EmployeethreefourID.ToLower(),
+                            JobCdDescHomeCurr = hROCRosterViewModel.JobCDDesc,
+                            CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            CreatedDate = DateTime.Now,
+                            ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            ModifiedDate = DateTime.Now
                         };
-                        _auditToolContext.HROCRoster.Update(objHROCRoster);
+                        _auditToolContext.HROCRoster.Add(objHROCRoster);
                         _auditToolContext.SaveChanges();
-                        
                         resp = "Success";
                     }
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogInformation($"Exception in Insert method");
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.Message });
+                }
+                return Json(resp);
             }
-            catch (Exception ex)
+            else
             {
-                resp = "Error : " + ex;
+                return RedirectToAction("Index", "Home");
             }
-            return Json(resp);
         }
-
-
-        [HttpPost]
-        public ActionResult Insert(HROCRosterViewModel hROCRosterViewModel)
-        {
-            object resp = "";
-            try
-            {
-                    if (string.IsNullOrEmpty(resp.ToString()))
-                    {
-                    HROCRoster objHROCRoster = new HROCRoster
-                    {
-                        HROCRosterId = 0,
-                        EmployeeNumber = hROCRosterViewModel.EmployeeNumber,
-                        EmployeeFullName = hROCRosterViewModel.EmployeeFullName,
-                        EmployeeLastName = hROCRosterViewModel.EmployeeLastName,
-                        EmployeeFirstName = hROCRosterViewModel.EmployeeFirstName,
-                        SupervisorLastName = hROCRosterViewModel.SupervisorLastName,
-                        SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName,
-                        EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower(),
-                        EmployeeStatus = hROCRosterViewModel.EmployeeStatus,
-                        PositionDesc = hROCRosterViewModel.PositionDesc,
-                        JobCDDesc = hROCRosterViewModel.JobCDDesc,
-                        EmployeeStatusDesc = hROCRosterViewModel.EmployeeStatusDesc,
-                        DateHired = hROCRosterViewModel.DateHired
-                    };
-                    _auditToolContext.HROCRoster.Add(objHROCRoster);
-                        _auditToolContext.SaveChanges();
-
-                        resp = "Success";
-                    }
-            }
-            catch (Exception ex)
-            {
-                resp = "Error : " + ex;
-            }
-            return Json(resp);
-        }
-
     }
-
 }
-

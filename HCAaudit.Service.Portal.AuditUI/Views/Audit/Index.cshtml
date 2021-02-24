@@ -1,216 +1,165 @@
 ﻿@model HCAaudit.Service.Portal.AuditUI.ViewModel.AuditViewModel
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Audit Page";
 }
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
+<link href="~/css/font-awesome.min.css" rel="stylesheet" />
+<link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
+<link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="~/js/bootstrap-multiselect.min.js"></script>
+<script src="~/js/bootstrap-datepicker.min.js"></script>
+<script src="~/js/jquery-ui.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-    * {
-        box-sizing: border-box;
-    }
 
-    #myInput {
-        background-image: url('/css/searchicon.png');
-        background-position: 10px 12px;
-        background-repeat: no-repeat;
-        width: 100%;
-        font-size: 16px;
-        padding: 12px 20px 12px 40px;
-        border: 1px solid #ddd;
-        margin-bottom: 12px;
-    }
+<div class="row neu-margin--bottom-16">
+    <div class="col-12">
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Audit</h3>
+    </div>
+</div>
 
-    #myUL {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-
-        #myUL li a {
-            border: 1px solid #ddd;
-            margin-top: -1px; /* Prevent double borders */
-            background-color: #f6f6f6;
-            padding: 12px;
-            text-decoration: none;
-            font-size: 18px;
-            color: black;
-            display: block
-        }
-
-            #myUL li a:hover:not(.header) {
-                background-color: #eee;
-            }
-
-    textarea {
-        overflow-y: scroll;
-        height: 100px;
-        resize: none; /* Remove this if you want the user to resize the textarea */
-    }
-</style>
-
-<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit">
-    
-        <div class="card">
-            <div class="row">
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Ticket ID</label>
-                    @Html.TextBoxFor(m => m.TicketId, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.TicketId)
-                </div>
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Agent's 3-4 ID</label>
-                    @Html.TextBoxFor(m => m.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.Agent34Id)
-                </div>
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Agent Name</label>
-                    @Html.TextBoxFor(m => m.AgentName, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.AgentName)
-                    @Html.HiddenFor(m => m.AuditorName)
-                    @Html.HiddenFor(m => m.EnvironmentType)
-
-                </div>
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Date of Auditor</label>
-                    @Html.TextBoxFor(m => m.TicketDate, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.TicketDate)
-                </div>
+<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit" class="form-inline neu-margin--bottom-16">
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="TicketId" class="neu-input__label">Ticket ID</label>
+                @Html.TextBoxFor(m => m.TicketId, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.TicketId)
             </div>
-            <div class="row">
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Supervisor</label>
-                    @Html.TextBoxFor(m => m.SupervisorName, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.SupervisorName)
-                </div>
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Service Group</label>
-                    @Html.TextBoxFor(m => m.ServiceGroupName, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.ServiceCatId)
-                </div>
-                <div class="col-sm-3">
-                    <label for="format-pdf" class="neu-input__label">Sub Group</label>
-                    @Html.TextBoxFor(m => m.SubCatName, new { @disabled = true, @class = "neu-input__field" })
-                    @Html.HiddenFor(m => m.SubCatId)
-                </div>
+            <div class="col-sm-3">
+                <label for="Agent34Id" class="neu-input__label">Agent's 3-4 ID</label>
+                @Html.TextBoxFor(m => m.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.Agent34Id)
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <table id="auditDetails" class="neu-table" width="100%" cellspacing="0">
-                        <thead class="neu-table__head">
-                            <tr class="neu-table__header neu-table__sort-icon">
-                                <th style="width:5%" rowspan="2">Question Sequence</th>
-                                <th style="width:40%" rowspan="2">Question Description</th>
-                                <th style="width:28%" colspan="3">Action</th>
-                                <th style="width:5%" rowspan="2">Correction Required</th>
-                                <th style="width:22%" rowspan="2">Comment</th>
-                            </tr>
-                            <tr>
-                                <th style="width:9%">Compliance</th>
-                                <th style="width:10%">Non Compliance</th>
-                                <th style="width:9%">Not Applicable</th>
-                            </tr>
-                        </thead>
-                        @for (int i = 0; i < Model.Question.Count; i++)
-                        {
-                            <tr>
-                                <td style="width:5%">
-                                    <div align="center">
-                                        @Model.Question[i].QuestionSequence
-                                        @Html.HiddenFor(m => m.Question[i].QuestionSequence)
-                                        @Html.HiddenFor(m => m.Question[i].QuestionId)
-                                        @Html.HiddenFor(m => m.Question[i].QuestionName)
-                                    </div>
-                                </td>
-                                <td style="width:40%">
-                                    @Html.TextAreaFor(m => m.Question[i].QuestionName, new { style = "height:50%;width:100%", @disabled = true })
-                                </td>
-                                <td style="width:28%">
-                                    <div id="action">
-                                        <table id="actionTable">
-                                            <tr style=" border: 1px solid #ddd">
-                                                <td style="border-right: 1px solid #ddd;width:9%" align="center" >
-                                                    <div>
-                                                        @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                                        @*<label style="white-space:nowrap"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.Compliance" name='@Model.Question[i].QuestionId-Action' @(Model.Question[i].Action.Compliance == true ? "checked" : "") />Compliance</label>*@
-                                                    </div>
-                                                </td>
-                                                <td style=" border-right: 1px solid #ddd;width:10%" align="center">
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                                    @*<label style="white-space:nowrap;padding-right:3%"> <input type="checkbox" id="nonCompliance" class="actioncheck" value="@Model.Question[i].Action.NonCompliance" name='@Model.Question[i].QuestionId-Action' />Non Compliance</label>*@
-                                                    <br />
-                                                    <table width="100%" style="border: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance" align="center">
-                                                        <tr>
-                                                            <td style=" border-right: 1px solid #ddd;width:5%" align="center">
-                                                                @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
+            <div class="col-sm-3">
+                <label for="AgentName" class="neu-input__label">Agent Name</label>
+                @Html.TextBoxFor(m => m.AgentName, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.AgentName)
+                @Html.HiddenFor(m => m.AuditorName)
+                @Html.HiddenFor(m => m.EnvironmentType)
 
-                                                            </td>
-                                                            <td align="center" style="width:5%">
-                                                                @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
-
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                                <td align="center" style="width:9%">
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
-                                                    @*<label style="white-space:nowrap;padding-right:3%"><input type="checkbox" class="actioncheck" value="@Model.Question[i].Action.NotApplicable" name='@Model.Question[i].QuestionId-Action' />Not Applicable</label>*@
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </td>
-                                <td align="center" style="width:5%"> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
-                                <td style="width:22%">@Html.TextAreaFor(m => m.Question[i].Comments, new { style = "width:80%;height:50%", disabled = "disabled" })</td>
-
-                            </tr>
-                        }
-                    </table>
-                </div>
+            </div>
+            <div class="col-sm-3">
+                <label for="TicketDate" class="neu-input__label">Record Date</label>
+                @Html.TextBoxFor(m => m.TicketDate, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.TicketDate)
             </div>
         </div>
-
-        <div class="row"></div>
-        <div class="form-group">
-            <label for="auditnotes" class="text-primary">Audit Notes:</label>
-
-            @Html.TextAreaFor(m => m.AuditNote, new { rows = "4", style = "width:100%" })
-            <div class="row">
-                <div class="col">
-                    @*<button id="btnAnswerNo" class="btn btn-primary">
-                            Return to Toolbox (Will NOT Submit Audit)
-                        </button>*@
-                </div>
-                <div class="col"></div>
-                <div class="col"></div>
-                <div class="col">
-                    <button id="btnAnswerYes" class="btn btn-success">
-                        Submit Audit
-                    </button>
-                </div>
-                <div class="col"></div>
-                <div class="col"></div>
-                <div class="col"></div>
-                <div class="col">
-
-                </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="SupervisorName" class="neu-input__label">Supervisor</label>
+                @Html.TextBoxFor(m => m.SupervisorName, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.SupervisorName)
+            </div>
+            <div class="col-sm-3">
+                <label for="ServiceGroupName" class="neu-input__label">Service Group</label>
+                @Html.TextBoxFor(m => m.ServiceGroupName, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.ServiceCatId)
+            </div>
+            <div class="col-sm-3">
+                <label for="SubCatName" class="neu-input__label">Sub Group</label>
+                @Html.TextBoxFor(m => m.SubCatName, new { @disabled = true, @class = "neu-input__field" })
+                @Html.HiddenFor(m => m.SubCatId)
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="auditDetails" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+                    <thead class="neu-table__head">
+                        <tr class="neu-table__header neu-table__sort-icon" style="text-align:center">
+                            <th style="width:5%;text-align:center" rowspan="2">Question Sequence</th>
+                            <th style="width:40%;text-align:center" rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Question Description</th>
+                            <th style="width:28%;text-align:center" colspan="3">Action</th>
+                            <th style="width:5%;text-align:center" rowspan="2">Correction Required</th>
+                            <th style="width:22%;text-align:center" rowspan="2">Comment</th>
+                        </tr>
+                        <tr>
+                            <th>Compliance</th>
+                            <th>Non Compliance</th>
+                            <th>Not Applicable</th>
+                        </tr>
+                    </thead>
+                    @for (int i = 0; i < Model.Question.Count; i++)
+                    {
+                        <tr class="neu-table__row--large neu-table__row--striped">
+                            <td>
+                                <div align="center">
+                                    @Model.Question[i].QuestionSequence
+                                    @Html.HiddenFor(m => m.Question[i].QuestionSequence)
+                                    @Html.HiddenFor(m => m.Question[i].QuestionId)
+                                    @Html.HiddenFor(m => m.Question[i].QuestionName)
+                                </div>
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(m => m.Question[i].QuestionDescription, 5, 60, new { style = "resize:none", @disabled = true })
+                            </td>
+                            <td colspan="3">
+                                <div id="action">
+                                    <div id="actionTable" class="row">
+                                        <div class="col-sm-4 neu-text--align-center">
+                                            @Html.CheckBoxFor(m => m.Question[i].Action.IsCompliance, new { id = Model.Question[i].QuestionId + "-compliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
+                                        </div>
+                                        <div class="col-sm-4 neu-text--align-center">
+                                            @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
+                                            <div class="row neu-padding--top-10" style="border-top: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
+                                                <div class="col-sm-6">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 neu-text--align-center">
+                                            @Html.CheckBoxFor(m => m.Question[i].Action.IsNotApplicable, new { id = Model.Question[i].QuestionId + "-notapplicable", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
+                            <td>
+                                @Html.TextAreaFor(m => m.Question[i].Comments, 5, 28, new { style = "resize:none", @disabled = true })
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="auditnotes" class="text-primary">Audit Notes:</label>
+        @Html.TextAreaFor(m => m.AuditNote, new { rows = "4", style = "resize:none;width:100%" })
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btnAnswerYes" class="neu-button--primary neu-button neu-button--raised">Save</button>
+                <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10" onclick="return OpenCancelPopUp(); return false;">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div id="PopUpCancel" title="Cancel Audit" hidden="hidden" class="container">
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <label class="neu-input__label" for="AuditorQuitReasonId"> Cancellation Reason </label>
+                @Html.DropDownListFor(x => x.AuditorQuitReasonId, Model.CancellationReason, new { @class = "neu-select" })
+                <span id="errormsg" class="neu-button--danger neu-button--small"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btnCancelAudit" class="neu-button--primary neu-button neu-button--raised">Save</button>
+                <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+            </div>
+        </div>
+    </div>
 </form>
-
 
 <!-- Script for the date range picker -->
 <script type="text/javascript" src="~/js/daterangepicker.js"></script>
@@ -219,6 +168,64 @@
       href="~/css/daterangepicker.css" />
 <!-- Script for the date range picker -->
 <script type="text/javascript">
+    function OpenCancelPopUp() {
+        $("#PopUpCancel").dialog({
+            autoOpen: false,
+            width: 500,
+            height: 'auto',
+        });
+        $('#errormsg').hide();
+        $('.ui-dialog-titlebar-close').hide();
+        $("#PopUpCancel").dialog('open');
+        return false;
+    }
+
+    $("#btncancelpopup").click(function () {
+        $("#PopUpCancel").dialog('close');
+    });
+
+    $("#btnCancelAudit").click(function () {
+        if ($('#AuditorQuitReasonId').val() == 0) {
+            $('#errormsg').show();
+            $('#errormsg').text('Please select cancel reason');
+            return false;
+        }
+
+        var auditparameters = {
+            "TicketID": $('#TicketId').val(),
+            "Agent34ID": $('#Agent34Id').val(),
+            "AgentName": $('#AgentName').val(),
+            "AuditorName": $('#AuditorName').val(),
+            "EnvironmentType": $('#EnvironmentType').val(),
+            "ServiceCatId": $('#ServiceCatId').val(),
+            "SubCatId": $('#SubCatId').val(),
+            "TicketDate": $('#TicketDate').val(),
+            "AuditorQuitReasonId": $('#AuditorQuitReasonId').val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Audit/CancelAudit",
+            data: { "audit": auditparameters },
+            success: function (response) {
+                if (response == "1") {
+                    alert("Please select valid value");
+                }
+                else {
+                    $("#PopUpCancel").dialog('close');
+                    window.location.replace("/Search/Index");
+                }
+            },
+
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    });
+
     $('.actioncheck').click(function () {
         var $this = $(this);
         var name = $(this).attr("id");
@@ -236,7 +243,6 @@
             if ($this.prop('checked')) {
                 $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").removeAttr("disabled");
                 $this.closest("tr:not(:has(>td>table))").find("[name$='Comments']").removeAttr("disabled");
-
             }
             else {
                 $this.closest("tr:not(:has(>td>table))").find("input[type=checkbox][name ='optradio']").attr("disabled", true);
@@ -252,16 +258,13 @@
         var name = $(this).attr("id");
         var questionId = name.substring(0, name.indexOf("-"));
         $('[title=' + questionId + '-Impact' + ']').not(this).prop('checked', false);
-
     });
 
     $('form').submit(function (e) {
-
         var isActionSelected = false;
         var isimpactChecked = false
 
         $("table[id$='actionTable']").each(function () {
-
             $this = $(this).find("tr");
 
             var comp = $this.find("input[type=checkbox][name$='IsCompliance']");
@@ -269,9 +272,11 @@
             var notApp = $this.find("input[type=checkbox][name$='IsNotApplicable']");
 
             if (comp.prop("checked") == false && nonComp.prop("checked") == false && notApp.prop("checked") == false) {
-
                 isActionSelected = true;
             }
+
+            alert(isActionSelected);
+            e.preventDefault();
 
             if (nonComp.prop("checked")) {
                 var high = nonComp.closest("table tr").find("input[type=checkbox][name$='IsHighImpact']");
@@ -281,7 +286,6 @@
                     isimpactChecked = true;
                 }
             }
-
         });
 
         if (isActionSelected) {
@@ -292,6 +296,5 @@
             alert("Please select Impact for selected Non-Compliances.");
             e.preventDefault();
         }
-
     });
 </script>

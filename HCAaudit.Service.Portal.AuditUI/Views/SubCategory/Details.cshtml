@@ -3,17 +3,15 @@
 }
 @model List<HCAaudit.Service.Portal.AuditUI.Models.CatSubCatJoinMast>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-@*<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">*@
+<script src="~/lib/jquery/jquery.min.js"></script>
 
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/jquery-ui.css" />
 <link rel="stylesheet" href="~/css/main.css" />
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-
-<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -21,17 +19,22 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-sm-12 d-flex justify-content-end neu-margin--bottom-16"><button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Subcategory</button> </div>
-    <div class="col-sm-12 neu-margin--bottom-16">
-        <table id="example" class="neu-table" width="100%" cellspacing="0">
-            <thead class="neu-table__head">
-                <tr class="neu-table__header neu-table__sort-icon">
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12 d-flex justify-content-end">
+        <button type="button" id="btnopenPopUp" class="neu-button--primary neu-button neu-button--raised">Add Sub Category</button>
+    </div>
+</div>
+
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12">
+        <table id="example" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+            <thead>
+                <tr class="neu-table__row--large">
                     <th>SubCatID</th>
-                    <th>Service Delivery Group</th>
-                    <th>Sub Category Name</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th style="width:15%">Service Delivery Group</th>
+                    <th style="width:65%">Sub Category Name</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:10%">Delete</th>
                 </tr>
             </thead>
         </table>
@@ -41,12 +44,12 @@
 <div id="popupcontent" title="Add Subcategory" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-6">
-            <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
-            <select name="teams" id="ddlcategory" class="neu-select"></select>
+            <label for="ddlcategory" class="neu-input__label">Service Delivery Group</label>
+            <select name="ddlcategory" id="ddlcategory" class="neu-select"></select>
             <span id="errormsgcategory" class="neu-button--danger neu-button--small">Select Service Delivery Group</span>
         </div>
         <div class="col-sm-6">
-            <label for="format-pdf" class="neu-input__label">Sub Category:</label>
+            <label for="txtsubcategory" class="neu-input__label">Sub Category</label>
             <input id="txtsubcategory" class="neu-input__field" maxlength="50" type="text" />
             <span id="errormsgsubcategory" class="neu-button--danger neu-button--small">Enter Subcategory</span>
         </div>
@@ -54,7 +57,7 @@
 
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
-            <button id="btnaddSubCategory" class="neu-button--primary neu-button neu-button--raised">Save</button>&nbsp;
+            <button id="btnaddSubCategory" class="neu-button--primary neu-button neu-button--raised">Save</button>
             <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
         </div>
     </div>
@@ -62,12 +65,12 @@
 
 <div id="popupcontentedit" title="Edit Subcategory" hidden="hidden" class="container">
     <div class="row neu-margin--bottom-16">
-        <div class="col-sm-6">
-            <label for="format-pdf" class="neu-input__label">Service Delivery Group:</label>
-            <input name="teams" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled" />
+        <div class="col-sm-5">
+            <label for="txtcategoryreadonly" class="neu-input__label">Service Delivery Group:</label>
+            <input name="txtcategoryreadonly" id="txtcategoryreadonly" class="neu-input__field" disabled="disabled" />
         </div>
-        <div class="col-sm-6">
-            <label for="format-pdf" style="text-align:left;" class="neu-input__label">Sub Category:</label>
+        <div class="col-sm-7">
+            <label for="txtsubcategoryedit" style="text-align:left;" class="neu-input__label">Sub Category:</label>
             <input id="txtsubcategoryedit" class="neu-input__field" maxlength="50"
                    type="text" />
             <span id="errormsgedit" class="neu-button--danger" />
@@ -86,17 +89,15 @@
 
 
 <div id="popupcontentdelete" title="Delete Subcategory" hidden="hidden" class="container">
-
     <div class="row neu-margin--bottom-16">
         <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
     </div>
     <div class="row">
         <div class="col-sm-12"><input id="hdndeletecatid" type="hidden" /></div>
         <div class="col-sm-12 neu-text--align-center">
-            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>&nbsp;
-            <button id="btnSubCatdelete" class="neu-button--primary neu-button neu-button--raised">Yes</button>&nbsp;
+            <button id="btndeleteCategoryok" class="neu-button--primary neu-button neu-button--raised">OK</button>
+            <button id="btnSubCatdelete" class="neu-button--primary neu-button neu-button--raised">Yes</button>
             <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
-
         </div>
     </div>
 </div>
@@ -114,17 +115,22 @@
                 "type": "POST",
                 "datatype": "json"
             },
+
             "columnDefs": [{
                 "targets": [0],
                 "visible": false,
                 "searchable": false
-            }],
+            },
+                {
+                    "targets": [0, 3, 4],
+                    "orderable": false
+                }],
             "columns": [
                 { "data": "SubCatgID", "name": "SubCatgID", "autoWidth": true },
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 { "data": "SubCatgDescription", "name": "SubCatgDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="#" onclick=OpenEditpopup(' + full.SubCatgID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="javascript:void(0)" onclick=OpenEditpopup(' + full.SubCatgID + ');>Edit</a>'; }
                 },
                 {
                     data: null,
@@ -132,15 +138,19 @@
                         return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.SubCatgID + "'); >Delete</a>";
                     }
                 }
-            ]
-
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $(row).addClass('neu-table__row--small');
+            }
         });
     });
 
     $(function () {
         $("#popupcontent").dialog({
-            width: 700,
+            width: 800,
             autoOpen: false,
+            draggable: false,
+            resizable: false,
         });
 
         $("#btnopenPopUp").click(function () {
@@ -153,7 +163,6 @@
             $("#popupcontent").dialog('close');
         });
     })
-   // $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
 
         $("#btnopenPopUp").click(function () {
             $('#errormsgsubcategory').hide();
@@ -167,7 +176,7 @@
                     var options = '';
                     options += '<option value="0">Select Service Delivery Group</option>';
                     for (var i = 0; i < response.length; i++) {
-                        options += '<option value="' + response[i].CatgID + '">' + response[i].CatgDescription + '</option>';
+                        options += '<option value="' + response[i].CatgId + '">' + response[i].CatgDescription + '</option>';
                     }
                     $('#ddlcategory').append(options);
                     $("#popupcontent").dialog('open');
@@ -179,14 +188,8 @@
                     alert(response.responseText);
                 }
             });
-
-
-
             $("#popupcontent").dialog('open');
         });
-
-    //$("#popupcontent").dialog({ autoOpen: false, modal: true, height: 300, width: 700 });
-
 
     $('#txtsubcategory').on('keypress', function (event) {
         $('#errormsgsubcategory').hide();
@@ -233,12 +236,13 @@
                     alert(response.responseText);
                 }
             });
-
     });
 
 
     $("#popupcontentdelete").dialog({
-        autoOpen: false
+        autoOpen: false,
+        draggable: false,
+        resizable: false
     });
 
 
@@ -248,7 +252,9 @@
         });
     });
 
-    $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, width: 'auto' });
+    $("#popupcontentdelete").dialog({
+        autoOpen: false, modal: true, width: 'auto', draggable: false,
+        resizable: false });
 
     $("#btncancelpopupdelete").click(function () {
         $("#popupcontentdelete").dialog('close');
@@ -313,14 +319,19 @@
     $('#errormsgedit').hide();
 
     $("#popupcontentedit").dialog({
-        autoOpen: false
+        width: 800,
+        autoOpen: false,
+        draggable: false,
+        resizable: false,
     });
 
     $("#btncancelpopupedit").click(function () {
         $("#popupcontentedit").dialog('close');
     });
 
-    $("#popupcontentedit").dialog({ autoOpen: false, modal: true, width: 'auto' });
+    //$("#popupcontentedit").dialog({
+    //    autoOpen: false, modal: true, width: 'auto', draggable: false,
+    //    resizable: false});
 
     $('#txtsubcategoryedit').on('keypress', function (event) {
         $('#errormsgedit').hide();
@@ -363,9 +374,11 @@
 
     });
 
-    $("#popupcontentedit").dialog({
-        position: 'bottom'
-    });
+    //$("#popupcontentedit").dialog({
+    //    position: 'bottom',
+    //    draggable: false,
+    //    resizable: false
+    //});
 
 
 

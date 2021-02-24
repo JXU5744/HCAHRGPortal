@@ -2,16 +2,15 @@
     ViewData["Title"] = "Questions Mapping";
 }
 
+<link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+<link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
 
-<link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.bootstrap.min.css" rel="stylesheet" />
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-
-@model List<HCAaudit.Service.Portal.AuditUI.Models.QuestionMaster>
+@model List<HCAaudit.Service.Portal.AuditUI.Models.QuestionMapping>
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
@@ -25,129 +24,139 @@
             <div class="col-sm-4">
                 <label for="CatgID" class="neu-input__label">Service Delivery Group</label>
                 <select name="teams" id="CatgID" class="neu-select" title="select"
-                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
+                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgId", "CatgDescription"))">
                 </select>
             </div>
             <div class="col-sm-4">
-                <label for="SubCatID" class="neu-input__label">Subcategory</label>
+                <label for="SubCatID" class="neu-input__label">Sub Category</label>
                 <select name="teams" id="SubCatID" class="neu-select">
                 </select>
             </div>
-            <div class="col-sm-4"><button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button> </div>
+            <div class="col-sm-4">
+                <button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button>
+            </div>
         </div>
     </form>
 </div>
-<div class="col-sm-12 d-flex justify-content-end neu-margin--bottom-16">
-    <div class="col-sm-12 neu-margin--bottom-16">
-        <table id="tblquestions" class="neu-table" width="100%" cellspacing="0">
-            <thead class="neu-table__head">
-                <tr class="neu-table__header neu-table__sort-icon">
+
+<div class="row neu-margin--bottom-16">
+    <div class="col-sm-12">
+        <table id="tblquestions" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+            <thead>
+                <tr class="neu-table__row--large">
                     <th>Question Master ID</th>
-                    <th>Question Sequence</th>
-                    <th>Question Name</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th style="width:10%">Question Sequence</th>
+                    <th style="width:70%">Question Name</th>
+                    <th style="width:10%">Edit</th>
+                    <th style="width:10%">Delete</th>
                 </tr>
             </thead>
         </table>
     </div>
-
 </div>
 
-<div id="popupcontent" title="Map Question" hidden="hidden" class="container">
-    <div class="row">
-        <div class="col-sm-3"> <label class="input-group">Service Delivery Group:</label></div>
-        <div class="col-sm-2">
-            <input id="txtcategory" class="form-control form-control-sm" type="text" disabled="disabled" />
+<div id="popupcontent" title="Add Question Mapping" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtcategory">Service Delivery Group</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtcategory">
         </div>
-        <div class="col-sm-7"></div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-3"> <label class="input-group">Sub Category:</label></div>
-        <div class="col-sm-7">
-            <input id="txtsubcategory" class="form-control form-control-sm" type="text" disabled="disabled" />
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtsubcategory">Sub Category</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtsubcategory">
         </div>
-        <div class="col-sm-2"></div>
     </div>
-    <br />
-    <div class="row">
 
-        <div class="col-sm-3"><label class="input-group">Question Seq:</label></div>
-        <div class="col-sm-1">
-            <input id="txtquestionseq" disabled="disabled" maxlength="2" class="form-control form-control-sm"
-                   type="text" /><span id="errormsgqseq" style="color:red"></span>
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestion">Question Name</label>
+            <textarea id="txtquestion" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
+            <span id="errormsgquestion" class="neu-button--danger">Please Enter or Select Question</span>
         </div>
-        <div class="col-sm-8"></div>
     </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-3"> <label class="input-group">Question Text:</label></div>
-        <div class="col-sm-8">
-            <input id="txtquestion" class="form-control form-control-sm"
-                   type="text" />
-            <span id="errormsgquestion" style="color:red">Select Appropiate Question</span>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestionDescription">Question Description</label>
+            <textarea id="txtquestionDescription" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
+            <span id="errormsgquestionDescription" class="neu-button--danger">Please Enter Question Description</span>
         </div>
-        <div class="col-sm-1"></div>
     </div>
-    <br />
-   
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtquestionseq">Current Question Sequence</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtquestionseq">
+            <input id="hdnAddSubCatId" type="hidden" />
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-sm-12 neu-text--align-center">
-            <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>&nbsp;
+            <button id="btnaddQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
             <button id="btncancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+            <button id="btnresetpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Reset</button>
         </div>
     </div>
-
 </div>
 
-<div id="popupcontentedit" title="Edit Question" hidden="hidden" class="container">
-
-    <div class="row">
-        <div class="col-sm-3"> <label for="lblQuestionedit" class="input-group">Sequence:</label></div>
-        <div class="col-sm-3">
-            <label id="lblQuestionedit" class="input-group"></label>
+<div id="popupcontentedit" title="Edit Question Mapping" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtcategoryEdit">Service Delivery Group</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtcategoryEdit">
         </div>
-        <div class="col-sm-6"><input id="hdnid" type="hidden" /></div>
-        <div class="col-sm-6"><input id="hdnSubCatId" type="hidden" /></div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-2"> <label for="ddlQuestionsqedit" class="input-group">Question Sequence:</label></div>
-        <div class="col-sm-7">
-            <select name="ddlQuestionsqedit" id="ddlQuestionsqedit" class="form-control">
-            </select>
-            <span id="errormsgsqedit" style="color:red">Please choose the Sequence</span>
-        </div>
-        <div class="col-sm-3"><input id="hdnid" type="hidden" /></div>
-    </div>
-    <br />
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-3"></div>
-        <div class="col-sm-5">
-            <button id="btnupdateQuestion" class="btn btn-primary">Update</button>&nbsp;
-            <button id="btncancelpopupedit" class="btn btn-danger">Cancel</button>
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="txtsubcategoryEdit">Sub Category</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtsubcategoryEdit">
         </div>
     </div>
 
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestionEdit">Question Name</label>
+            <textarea id="txtquestionEdit" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="txtquestionDescriptionEdit">Question Description</label>
+            <textarea id="txtquestionDescriptionEdit" rows="4" cols="80" disabled="disabled" style="resize:none;"></textarea>
+        </div>
+    </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="lblQuestionedit">Current Question Sequence</label>
+            <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="lblQuestionedit">
+            <input id="hdnid" type="hidden" />
+            <input id="hdnSubCatId" type="hidden" />
+        </div>
+        <div class="col-sm-6">
+            <label class="neu-input__label" for="ddlQuestionsqedit">New Question Sequence</label>
+            <select name="ddlQuestionsqedit" id="ddlQuestionsqedit" class="neu-select"></select>
+            <span id="errormsgsqedit" class="neu-button--danger neu-button--small">Please choose the Sequence</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btnupdateQuestion" class="neu-button--primary neu-button neu-button--raised">Update</button>
+            <button id="btncancelpopupedit" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+        </div>
+    </div>
 </div>
 
 <div id="popupcontentdelete" title="Delete Question" hidden="hidden" class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            <label id="lblcustomtextfor"></label>
-        </div>
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12"><label id="lblcustomtextfor"></label></div>
     </div>
-    <br />
     <div class="row">
-        <div class="col-sm-4"><input id="hdndeletecatid" type="hidden" /></div>
-        <div class="col-sm-2">
-        </div>
-        <div class="col-sm-6">
-            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised neu-button--large">Yes</button>&nbsp;
-            <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-button--large neu-margin--left-10">No</button>
+        <div class="col-sm-12"><input id="hdndeletecatid" type="hidden" /></div>
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btndeleteQuestion" class="neu-button--primary neu-button neu-button--raised">Yes</button>
+            <button id="btncancelpopupdelete" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">No</button>
         </div>
     </div>
 </div>
@@ -159,33 +168,54 @@
             $('#CatgID').trigger('change');
 
             $("#popupcontent").dialog({
-                autoOpen: false
+                width: 'auto',
+                height: 'auto',
+                autoOpen: false,
+                draggable: false,
+                resizable: false
             });
+
             $("#btncancelpopup").click(function () {
                 $("#popupcontent").dialog('close');
             });
+
             $("#btnopenPopUp").click(function () {
                 $("#popupcontent").dialog({
-                    position: 'bottom'
+                    position: 'bottom',
                 });
             });
             $("#popupcontentedit").dialog({
-                autoOpen: false
+                width: 'auto',
+                height :'auto',
+                autoOpen: false,
+                draggable: false,
+                resizable: false
             });
             $("#btncancelpopupedit").click(function () {
                 $("#popupcontentedit").dialog('close');
             });
         });
 
-        $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 210, width: 700 });
-
         $("#btnopenPopUp").click(function () {
-            var subCategoryID = $("#SubCatID").val(); $("#txtquestion").val("");
+            var subCategoryID = $("#SubCatID").val();
+            $("#txtquestion").val("");
+            $("#txtquestionDescription").val("");
+            $("#txtquestionDescription").prop("disabled", false);
+            $("#txtquestion").prop("disabled", false);
             var subCategoryname = $("#SubCatID option:selected").text();
             var categoryname = $("#CatgID option:selected").text();
             $('#txtcategory').val(categoryname);
             $('#txtsubcategory').val(subCategoryname);
             $('#errormsgquestion').hide();
+            $('#errormsgquestionDescription').hide();
+            $('#hdnAddSubCatId').val(subCategoryID);
+            var tblRowCount = $('#tblquestions').DataTable();
+            var rowCount = tblRowCount.rows().count();
+
+            if (!tblRowCount.data().any()) {
+                rowCount = 0
+            }
+                $('#txtquestionseq').val(rowCount + 1);
 
             $.ajax({
                 type: "POST",
@@ -214,18 +244,36 @@
         $("#btnopenPopUp").hide();
         $('#errormsg').hide();
         $('#errormsgquestion').hide();
+        $('#errormsgquestionDescription').hide();
 
-        $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 190, width: 650 });
+        $("#txtquestion").keypress(function (e) {
+            $("#errormsgquestion").hide();
+        });
 
-        $("#popupcontent").dialog({ autoOpen: false, modal: true, height: 400, width: 950 });
+        $("#txtquestionDescription").keypress(function (e) {
+            $("#errormsgquestionDescription").hide();
+        });
+
+        $("#btnresetpopup").click(function () {
+            $("#txtquestionDescription").val("");
+            $("#txtquestion").val("");
+            $("#txtquestionDescription").prop("disabled", false);
+            $("#txtquestion").prop("disabled", false);
+        });
 
         $("#btnaddQuestion").click(function () {
-
-            if ($('#txtquestion').val() == "") {
-                $('#errormsgquestion').show(); return false;
+            if ($('#txtquestion').val() == "")
+            {
+                $('#errormsgquestion').show();
+                     return false;
             }
 
-            var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionvolumn").val() + "^" + $("#txtquestionseq").val();
+            if ($('#txtquestionDescription').val() == "") {
+                $('#errormsgquestionDescription').show();
+                 return false;
+            }
+
+            var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionDescription").val() + "^" + $("#txtquestionseq").val();
             $.ajax({
                 type: "POST",
                 url: "/Questions/SaveQuestionForMaster",
@@ -236,7 +284,7 @@
                     }
                     else {
                         $("#popupcontent").dialog('close');
-                        //location.reload();
+
                         $(function () {
                             var subCategoryID = $('#SubCatID').val();
                             $.ajax({
@@ -260,20 +308,28 @@
                                                 "targets": [0],
                                                 "visible": false,
                                                 "searchable": false
-                                            }],
+                                            },
+                                                {
+                                                    "targets": [0, 3, 4],
+                                                    "orderable": false
+                                                }],
 
-                                            columns: [{ 'data': 'QuestionMasterId' },
-                                                { 'data': 'SeqNumber' },
+                                            columns: [{ 'data': 'QuestionMappingId' },
+                                                { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMasterId + '">Edit</a>'; }
+                                                  "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
-                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
-                                            },]
+                                                },
+                                            ],
+                                            "createdRow": function (row, data, dataIndex) {
+                                                $(row).addClass('neu-table__row--small');
+                                            }
                                         });
                                 },
                                 failure: function (response) {
@@ -284,11 +340,6 @@
                                 }
                             });
                         });
-                        //function OnSuccess(response) {
-                        //    var records = response.length;
-
-
-                        //};
                     }
                 },
                 failure: function (response) {
@@ -298,7 +349,6 @@
                     //alert(response.responseText);
                 }
             });
-
         });
 
         $("#CatgID").change(function () {
@@ -312,7 +362,7 @@
                     var options = '';
                     options += '<option value="Select">Select SubCategory</option>';
                     for (var i = 0; i < response.length; i++) {
-                        options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
+                        options += '<option value="' + response[i].SubCatgId + '">' + response[i].SubCatgDescription + '</option>';
                     }
                     $('#SubCatID').append(options);
                     $("#SubCatID").prop("selectedIndex", 1);
@@ -325,32 +375,6 @@
                     //alert(response.responseText);
                 }
             });
-
-        });
-
-        $("#txtquestionvolumn").keypress(function (e) {
-            //if the letter is not digit then display error and don't type anything
-            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-                //display error message
-                $('#errormsg').html("Digits Only").show().fadeOut("slow");
-                return false;
-            } else { $("#errormsg").hide(); }
-        });
-
-        $("#txtquestionseq").keypress(function (e) {
-            var data = $("#txtquestionseq").val();
-            alert(data.length);
-            //if the letter is not digit then display error and don't type anything
-            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-                $('#errormsgqseq').html("Digits Only").show().fadeOut("slow");
-                return false;
-            }
-            else if (data.length > 0 && (e.which > 48 || e.which < 57)) {
-                $("#errormsgqseq").html("Seq can'nt exide 10").show().fadeOut("slow");
-            }
-            else {
-                $("#errormsgqseq").hide();
-            }
         });
 
         $("#chkblanksubcat").change(function () {
@@ -385,55 +409,71 @@
                                 "targets": [0],
                                 "visible": false,
                                 "searchable": false
-                            }],
+                            },
+                                {
+                                    "targets": [0, 3, 4],
+                                    "orderable": false
+                                }],
 
-                            columns: [{ 'data': 'QuestionMasterId' },
-                                { 'data': 'SeqNumber' },
+                            columns: [{ 'data': 'QuestionMappingId' },
+                                { 'data': 'SequenceNo' },
                                 { 'data': 'QuestionText' },
                             {
-                                "render": function (data, type, full, meta) { return "<a href='#' class='btn btn-info'  onclick=OpenEditpopup('" + full.QuestionMasterId + "');>Edit</a>"; }
+                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                             },
                             {
                                 data: null,
                                 render: function (data, type, row) {
-                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
+                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                 }
-                            },]
+                                },
+                            ],
+                            "createdRow": function (row, data, dataIndex) {
+                                $(row).addClass('neu-table__row--small');
+                            }
                         });
                 },
             });
         });
 
         $("#popupcontentdelete").dialog({
-            autoOpen: false
+            autoOpen: false,
+            draggable: false,
+            resizable: false
         });
+
+
+        $("#btncancelpopupdelete").click(function () {
+            $("#popupcontentdelete").dialog('close');
+        });
+
 
         $("#btndeleteQuestion").click(function () {
             $("#popupcontentdelete").dialog({
-                position: 'bottom'
+                position: 'bottom',
+                draggable: false,
+                resizable: false
             });
         });
 
-        $("#popupcontentdelete").dialog({ autoOpen: false, modal: true, height: 150, width: 650 });
+        $("#popupcontentdelete").dialog({
+            autoOpen: false, modal: true, width: 'auto' , draggable: false,
+            resizable: false});
 
         $("#btncancelpopup").click(function () {
             $("#popupcontentdelete").dialog('close');
         });
 
         $("#popupcontentedit").dialog({
-            autoOpen: false
+            autoOpen: false, draggable: false,
+            resizable: false
         });
 
         $("#btnupdateQuestion").click(function () {
-
             var selectedQuestionId = $("#hdnid").val();
-
-            var oldseqno = $("#lblQuestionedit").text();
-
+            var oldseqno = $("#lblQuestionedit").val();
             var selectedSubCatId = $("#hdnSubCatId").val();
-
             var newquestId = $("#ddlQuestionsqedit").val();
-
             var newseqno = $("#ddlQuestionsqedit option:selected").text();
 
 
@@ -441,8 +481,6 @@
             if (selectedQuestionId == newquestId) {
                 $("#popupcontentedit").dialog('close');
             }
-
-
 
             $.ajax({
                 type: "POST",
@@ -459,7 +497,7 @@
                     }
                     else {
                         $("#popupcontentedit").dialog('close');
-                        //location.reload();
+
                         $(function () {
                             var subCategoryID = selectedSubCatId;
                             $.ajax({
@@ -483,22 +521,31 @@
                                                 "targets": [0],
                                                 "visible": false,
                                                 "searchable": false
-                                            }],
+                                            },
+                                                {
+                                                    "targets": [0, 3, 4],
+                                                    "orderable": false
+                                                }],
 
                                             columns: [
-                                                { 'data': 'QuestionMasterId' },
-                                                { 'data': 'SeqNumber' },
+                                                { 'data': 'QuestionMappingId' },
+                                                { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
                                             {
-                                                "render": function (data, type, full, meta) { return '<a class="btn btn-info" href="/Questions/Edit/' + full.QuestionMasterId + '">Edit</a>'; }
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
-                                                    return "<a href='#' class='btn btn-danger' onclick=DeleteData('" + row.QuestionMasterId + "'); >Delete</a>";
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
-                                            },]
+                                                },],
+                                            "createdRow": function (row, data, dataIndex) {
+                                                $(row).addClass('neu-table__row--small');
+                                            }
                                         });
+
+                                    $('#SubCatID').trigger('change');
                                 },
                                 failure: function (response) {
                                     // alert(response.d);
@@ -508,11 +555,6 @@
                                 }
                             });
                         });
-                        //function OnSuccess(response) {
-                        //    var records = response.length;
-
-
-                        //};
                     }
                 },
                 failure: function (response) {
@@ -524,29 +566,95 @@
             });
         });
 
-        $("#popupcontentedit").dialog({ autoOpen: false, modal: true, height: 350, width: 650 });
-
         $("#btncancelpopupedit").click(function () {
             $("#popupcontentedit").dialog('close');
         });
 
-
-        //$("#btncancelpopup").click(function () {
-        //    $("#popupcontentdelete").dialog('close');
-        //});
-
-        $("#btndeleteQuestion").click(function () {
-            var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
-            $("#popupcontentdelete").dialog('close');
-            $.post(url, { ID: $("#hdndeletecatid").val() , SubCatId: $('#SubCatID').val() }, function (data) {
-                if (data) {
-                    oTable = $('#example').DataTable();
-                    oTable.draw();
-                } else {
-                    alert("Something Went Wrong!");
+        $('#txtquestion').on('autocompleteselect', function (e, ui) {
+            //alert(ui.item.value);
+            $.ajax({
+                type: "POST",
+                url: "/Questions/GetDesbyQuesText",
+                data: { "questionText": ui.item.value },
+                success: function (response) {
+                    if (response == "nd") {
+                        //$("#txtquestionDescription").val("");
+                    } else {
+                        $("#txtquestionDescription").val(response);
+                    }
                 }
             });
-            location.reload();
+        });
+
+        $("#btndeleteQuestion").click(function () {
+            $("#popupcontentdelete").dialog('close');
+
+            $.ajax({
+                type: "POST",
+                url: "/questions/DeleteQuestionMaster",
+                data: {
+                    id: $("#hdndeletecatid").val()
+                },
+                success: function (response) {
+                    if (response == "2") {
+                    }
+                    else {
+                        var subCategoryID = $('#SubCatID').val();
+                        $.ajax({
+                            type: "Get",
+                            url: "/Questions/BindGrid",
+                            data: { "subCategoryID": subCategoryID },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response) {
+                                $("#tblquestions").DataTable(
+                                    {
+                                        destroy: true,
+                                        bLengthChange: false,
+                                        lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                                        bFilter: false,
+                                        bSort: true,
+                                        bPaginate: false,
+                                        data: response,
+
+                                        "columnDefs": [{
+                                            "targets": [0],
+                                            "visible": false,
+                                            "searchable": false
+                                        },
+                                        {
+                                            "targets": [0, 3, 4],
+                                            "orderable": false
+                                        }],
+
+                                        columns: [
+                                            { 'data': 'QuestionMappingId' },
+                                            { 'data': 'SequenceNo' },
+                                            { 'data': 'QuestionText' },
+                                            {
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                            },
+                                            {
+                                                data: null,
+                                                render: function (data, type, row) {
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                }
+                                            },],
+                                        "createdRow": function (row, data, dataIndex) {
+                                            $(row).addClass('neu-table__row--small');
+                                        }
+                                    });
+                            },
+                            failure: function (response) {
+                                // alert(response.d);
+                            },
+                            error: function (response) {
+                                // alert(response.d);
+                            }
+                        });
+                    }
+                }
+            });
         });
     });
 
@@ -558,7 +666,10 @@
 
     function OpenEditpopup(CatgID) {
         var subCategoryID = $('#SubCatID').val();
-        //$('#errormsgedit').hide();
+        var subCategoryname = $("#SubCatID option:selected").text();
+        var categoryname = $("#CatgID option:selected").text();
+        $('#txtcategoryEdit').val(categoryname);
+        $('#txtsubcategoryEdit').val(subCategoryname);
         $("#hdnid").val("");
         $("#hdnid").val(CatgID);
         $("#hdnSubCatId").val(subCategoryID);
@@ -570,16 +681,15 @@
             data: { "id": CatgID, "subcatid": subcatid, "actionQid": CatgID},
             success: function (response) {
                 if (response != null && response != "") {
-                    $('#ddlQuestionsqedit').html(''); //$("#ShowQuestions").hide();
+                    $('#ddlQuestionsqedit').html('');
                     var options = ''; var index = 0;
                     for (var i = 0; i < response.length; i++) {
-                        //alert(response[i].QuestionMasterId); alert(response[i].SeqNumber);
-                        options += '<option value="' + response[i].QuestionMasterId + '">' + response[i].SeqNumber + '</option>';
-                        if (response[i].QuestionMasterId == CatgID) {
-                            index = response[i].SeqNumber;
-                            $("#lblQuestionedit").text(response[i].SeqNumber);
-                            //var cseqno = response[i].SeqNumber;
-                            //alert(cseqno);
+                        options += '<option value="' + response[i].QuestionMappingId + '">' + response[i].SequenceNo + '</option>';
+                        if (response[i].QuestionMappingId == CatgID) {
+                            index = response[i].SequenceNo;
+                            $("#txtquestionEdit").val(response[i].QuestionText);
+                            $("#txtquestionDescriptionEdit").val(response[i].QuestionDesc);
+                            $("#lblQuestionedit").val(response[i].SequenceNo);
                         }
                     }
                     $('#ddlQuestionsqedit').append(options);
@@ -595,10 +705,4 @@
             }
         });
     }
-
-    $("#ddlQuestionsqedit").change(function () {
-
-    });
-
 </script>
-

@@ -1,211 +1,335 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
 using HCAaudit.Service.Portal.AuditUI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using HCAaudit.Service.Portal.AuditUI.Models;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ILogger<CategoryController> _logger;
         private readonly IConfiguration config;
-        private IAuthService _authService;
-        List<CategoryMast> masterCategory = null;
-        private AuditToolContext _auditToolContext;
-        public CategoryController(ILogger<CategoryController> logger, IConfiguration configuration, AuditToolContext audittoolc)//, IAuthService authService)
+        private readonly IAuthService _authService;
+        private readonly AuditToolContext _auditToolContext;
+        private readonly bool isAdmin;
+        private readonly IErrorLog _log;
+        public CategoryController(ILogger<CategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
             config = configuration;
-      //      _authService = authService;
+            _authService = authService;
+            isAdmin = _authService.CheckAdminUserGroup().Result;
+            _log = log;
         }
 
         [HttpPost]
         public ActionResult GetCategoryByid(string id)
         {
-            object response = "";
-            if (string.IsNullOrEmpty(id))
+            _logger.LogInformation($"Entering GetCategoryByid Request for Category with CategoryID: {id}");
+            try
             {
-                return Json(response);
+                if (isAdmin)
+                {
+                    object response = "";
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        _logger.LogInformation($"Returning Response with CategoryID is null or empty");
+                        return Json(response);
+                    }
+                    _logger.LogInformation($"Requesting Method GetSingleCategoryByid for CategoryID as {id}");
+                    return Json(GetSingleCategoryByid(id));
+                }
             }
-            return Json(GetSingleCategoryByid(id));
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in getting Category for CategoryID as {id}");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetCategoryByid", ErrorDiscription = ex.Message });
+            }
+            _logger.LogInformation($"Returning from GetCategoryByid Action to Home Page {id}");
+            return RedirectToAction("Index", "Home");
         }
-        Categorys GetSingleCategoryByid(string id)
+
+        private Category GetSingleCategoryByid(string id)
         {
-            var data = (from cat in _auditToolContext.Categories select cat).ToList();
-            Categorys objCategorys = data.Find(category => category.CatgID == Convert.ToInt32(id));
-            return objCategorys;
+            _logger.LogInformation($"Entering GetSingleCategoryByid method with CategoryID: {id}");
+            Category data = null;
+            try
+            {
+                data = (from cat in _auditToolContext.Category.Where(
+                category => category.CatgId == Convert.ToInt32(id) &&
+                category.IsActive == true)
+                        select cat).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in getting Category in GetSingleCategoryByid method for CategoryID as {id}");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetSingleCategoryByid", ErrorDiscription = ex.Message });
+            }
+            _logger.LogInformation($"Exiting GetSingleCategoryByid method with data: {data}");
+            return data;
         }
+
         [HttpPost]
         public ActionResult Edit(string id)
         {
-            object resp = "";
-            if (!string.IsNullOrEmpty(id))
+            try
             {
-                string[] param = id.Split('$');
-                if (param.Count() > 0)
+                if (isAdmin)
                 {
-                    var collection = GetDetails(); 
-                    foreach (var item in collection)
+                    object resp = "";
+                    if (!string.IsNullOrEmpty(id))
                     {
-                        if (item.CatgDescription.ToLower() == param[1].ToLower().Trim())
-                        { resp = "1"; break; }
+                        string[] param = id.Split('$');
+                        if (param.Any())
+                        {
+                            var collection = GetDetails();
+                            foreach (var item in collection)
+                            {
+                                if (item.CatgDescription.ToLower() == param[1].ToLower().Trim())
+                                { resp = "1"; break; }
+                            }
+                            if (string.IsNullOrEmpty(resp.ToString()))
+                            {
+                                Category objCategorys = GetSingleCategoryByid(param[0]);
+                                if (objCategorys != null)
+                                {
+                                    objCategorys.CatgDescription = param[1];
+                                    objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                    objCategorys.ModifiedDate = DateTime.Now;
+                                    _auditToolContext.Category.Update(objCategorys);
+                                    _auditToolContext.SaveChanges();
+                                }
+                            }
+                        }
                     }
-                    if (string.IsNullOrEmpty(resp.ToString()))
-                    {
-                        Categorys objCategorys = new Categorys();
-                        objCategorys = GetSingleCategoryByid(param[0]);
-                        objCategorys.CatgDescription = param[1];
-                        _auditToolContext.Categories.Update(objCategorys);
-                        _auditToolContext.SaveChanges();
-                    }
+                    return Json(resp);
                 }
             }
-            return Json(resp);
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Edit", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public ActionResult Insert(string CategoryName)
         {
-            var collection = GetDetails(); object responce = "";
-            foreach (var item in collection)
+            try
             {
-                if (item.CatgDescription.ToLower() == CategoryName.ToLower().Trim())
-                { responce = "1"; break; }
+                if (isAdmin)
+                {
+                    if (IsCategoryNameExists(CategoryName))
+                    {
+                        return Json("1");
+                    }
+                    else
+                    {
+                        Category objCategorys = new Category();
+                        objCategorys.CatgDescription = CategoryName;
+                        objCategorys.IsActive = true;
+                        objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        objCategorys.CreatedDate = DateTime.Now;
+                        objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                        objCategorys.ModifiedDate = DateTime.Now;
+                        _auditToolContext.Category.Add(objCategorys);
+                        _auditToolContext.SaveChanges();
+                        return RedirectToAction("index");
+                    }
+                }
             }
-            if (string.IsNullOrEmpty(responce.ToString()))
+            catch (Exception ex)
             {
-                Categorys objCategorys = new Categorys(); objCategorys.CatgDescription = CategoryName;
-                _auditToolContext.Categories.Add(objCategorys);
-                _auditToolContext.SaveChanges();
-                return RedirectToAction("index");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Insert", ErrorDiscription = ex.Message });
             }
-            return Json(responce);
+            return RedirectToAction("Index", "Home");
         }
-       
+
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            var data = (from cat in _auditToolContext.Categories select cat).ToList();
-            Categorys objCategorys = data.Find(category => category.CatgID == id);
-            _auditToolContext.Categories.Remove(objCategorys); _auditToolContext.SaveChanges();
-            return RedirectToAction("Index",GetDetails());
+            try
+            {
+                if (isAdmin)
+                {
+                    var data = (from cat in _auditToolContext.Category select cat).ToList();
+                    Category objCategorys = data.Find(category => category.CatgId == id);
+                    objCategorys.IsActive = false;
+                    objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    objCategorys.ModifiedDate = DateTime.Now;
+                    _auditToolContext.Category.Update(objCategorys);
+                    _auditToolContext.SaveChanges();
+                    return RedirectToAction("Index", GetDetails());
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Delete", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
-        List<Categorys> GetDetails()
+        private bool IsCategoryNameExists(string inputcategoryname)
         {
-            var data = _auditToolContext.Categories.ToList();
+            bool result = false;
+            try
+            {
+                var data = (from cat in _auditToolContext.Category.Where(x => x.CatgDescription.ToLower() == inputcategoryname.ToLower()
+                        && x.IsActive == true)
+                            select cat).FirstOrDefault();
+
+                if (data != null) result = true;
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_IsCategoryNameExists", ErrorDiscription = ex.Message });
+            }
+            return result;
+        }
+
+        private List<Category> GetDetails()
+        {
+            var data = new List<Category>();
+            try
+            {
+                data = _auditToolContext.Category.Where(x => x.IsActive == true).ToList();
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetDetails", ErrorDiscription = ex.Message });
+            }
             return data;
         }
+
         [HttpPost]
         public ActionResult HasDeleteAccess(int id)
         {
-            object response;
-            var data = (from cat in _auditToolContext.SubCategories select cat).ToList();
-            SubCategory obj = data.Find(a => a.CatgID ==  id);
-            response = obj == null ? "HasecOrds" : "NoRecOrds";
-            return Json(response);
+            try
+            {
+                if (isAdmin)
+                {
+                    object response;
+                    var data = (from cat in _auditToolContext.SubCategory.Where(x => x.IsActive == true) select cat).ToList();
+                    SubCategory obj = data.Find(a => a.CatgId == id);
+                    response = obj == null ? "HasecOrds" : "NoRecOrds";
+                    return Json(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_HasDeleteAccess", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            return View("Index", GetDetails());
+            try
+            {
+                if (isAdmin)
+                {
+                    return View("Index", GetDetails());
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index", ErrorDiscription = ex.Message });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public IActionResult Index(CategoryMast objCategoryMast)
         {
-            try
+            if (isAdmin)
             {
-                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
-
-                // Skip number of Rows count  
-                var start = Request.Form["start"].FirstOrDefault();
-
-                // Paging Length 10,20  
-                var length = Request.Form["length"].FirstOrDefault();
-
-                // Sort Column Name  
-                var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-
-                // Sort Column Direction (asc, desc)  
-                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
-
-                // Search Value from (Search box)  
-                var searchValue = Request.Form["search[value]"].FirstOrDefault();
-
-                //Paging Size (10, 20, 50,100)  
-                int pageSize = length != null ? Convert.ToInt32(length) : 0;
-
-                int skip = start != null ? Convert.ToInt32(start) : 0;
-
-                int recordsTotal = 0;                              
-
-                var data = (from cat in _auditToolContext.Categories select cat).ToList();
-                objCategoryMast = new CategoryMast();
-                objCategoryMast._categoryList = new List<Category>();
-                foreach (var item in data)
+                try
                 {
-                    Category objCategory = new Category();
-                    objCategory.CatgID = item.CatgID; objCategory.CatgDescription = item.CatgDescription;
-                    objCategoryMast._categoryList.Add(objCategory);
-                }
+                    var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
 
-                // getting all Customer data  
-                var customerData = (from tempcustomer in objCategoryMast._categoryList
-                                    select tempcustomer);
+                    // Skip number of Rows count  
+                    var start = Request.Form["start"].FirstOrDefault();
 
-                //Sorting  
-                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
-                {
-                    switch (sortColumn)
+                    // Paging Length 10,20  
+                    var length = Request.Form["length"].FirstOrDefault();
+
+                    // Sort Column Name  
+                    var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+
+                    // Sort Column Direction (asc, desc)  
+                    var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                    // Search Value from (Search box)  
+                    var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
+                    //Paging Size (10, 20, 50,100)  
+                    int pageSize = length != null ? Convert.ToInt32(length) : 0;
+
+                    int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                    int recordsTotal = 0;
+
+                    var data = _auditToolContext.Category.Where(x => x.IsActive == true).ToList();
+                    objCategoryMast = new CategoryMast();
+                    objCategoryMast.CategoryList = new List<Category>();
+                    foreach (var item in data)
                     {
-                        case "CatgDescription":
-                            if (sortColumnDirection == "desc")
-                            {
-                                customerData = customerData.OrderByDescending(s => s.CatgDescription);
-                            }
-                            else
-                            {
-                                customerData = customerData.OrderBy(s => s.CatgDescription);
-                            }
-                            break;
+                        Category objCategory = new Category();
+                        objCategory.CatgId = item.CatgId; 
+                        objCategory.CatgDescription = item.CatgDescription;
+                        objCategoryMast.CategoryList.Add(objCategory);
                     }
+
+                    // getting all Customer data  
+                    var customerData = (from tempcustomer in objCategoryMast.CategoryList
+                                        select tempcustomer);
+
+                    //Sorting  
+                    if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                    {
+                        switch (sortColumn)
+                        {
+                            case "CatgDescription":
+                                if (sortColumnDirection == "desc")
+                                {
+                                    customerData = customerData.OrderByDescending(s => s.CatgDescription);
+                                }
+                                else
+                                {
+                                    customerData = customerData.OrderBy(s => s.CatgDescription);
+                                }
+                                break;
+                        }
+                    }
+                    //Search  
+                    if (!string.IsNullOrEmpty(searchValue))
+                    {
+                        customerData = customerData.Where(m => m.CatgDescription.ToLower().StartsWith(searchValue.ToLower()));
+                    }
+
+                    //total number of rows counts   
+                    recordsTotal = customerData.Count();
+                    //Paging   
+                    var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
+                    //Returning Json Data  
+                    return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
                 }
-                //Search  
-                if (!string.IsNullOrEmpty(searchValue))
+                catch (Exception ex)
                 {
-                    customerData = customerData.Where(m => m.CatgDescription.ToLower().StartsWith(searchValue.ToLower()));
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index_objCategoryMast", ErrorDiscription = ex.Message });
                 }
-
-                //total number of rows counts   
-                recordsTotal = customerData.Count();
-                //Paging   
-                var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
-                //Returning Json Data  
-                return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
-
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
-   
 }
-

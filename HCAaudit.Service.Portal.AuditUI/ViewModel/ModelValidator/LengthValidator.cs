@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace HCAaudit.Service.Portal.AuditUI.ViewModel.ModelValidator
@@ -14,7 +11,7 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel.ModelValidator
         public LengthValidator()
             : base(DefaultErrorMessage)
         {
-          
+
         }
         public override string FormatErrorMessage(string name)
         {
@@ -29,7 +26,7 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel.ModelValidator
                 return ValidationResult.Success;
             }
             thisValue = thisValue.Trim().Replace(" ", "").Replace("-", "").Replace("(", "").Replace(")", "").Replace(".", "");
-            
+
             if (thisValue.Length != 10)
             {
                 return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace HCAaudit.Service.Portal.AuditUI.Models
+﻿namespace HCAaudit.Service.Portal.AuditUI.Models
 {
     public class LoggedInUserDetails
     {

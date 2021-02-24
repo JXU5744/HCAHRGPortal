@@ -13,13 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\Evaluation\EvaluationController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="MailkitTools" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
@@ -27,12 +26,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Owin.Security.OpenIdConnect" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.12" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
-    <PackageReference Include="System.Linq.Dynamic" Version="1.0.7" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.6" />
   </ItemGroup>
 
@@ -106,8 +104,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\Evaluation\" />
     <Folder Include="wwwroot\assets\fonts\Glyphicons Halflings\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\Home.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Models\AuditDispute.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 </Project>

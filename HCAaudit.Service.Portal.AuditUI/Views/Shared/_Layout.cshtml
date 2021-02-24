@@ -6,7 +6,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+    
+    <link rel="stylesheet" href="~/css/jquery-ui.css" />
     <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
     <link rel="stylesheet" type="text/css" href="~/css/neutron.css" />
     <link rel="stylesheet" type="text/css" href="~/css/main.css" />
@@ -18,57 +19,40 @@
 <body>
     <nav class="neu-topnav neu-fixed--top" role="navigation">
         <div class="neu-topnav__compact">
-            <a asp-controller="search" asp-action="index" class="d-flex align-items-center flex-grow-1"><i class="material-icons neu-margin--right-10">home</i><p class="neu-text--product">HR Audit Tool</p></a>
+            <a asp-controller="search" asp-action="index" class="d-flex align-items-center flex-grow-1">
+                <i class="material-icons neu-margin--right-10">home</i>
+                <p class="neu-text--product">HR Audit Tool</p>
+            </a>
 
             <div style="z-index: 1;">
-                <a asp-controller="category" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Service Delivery Group</a>
-                <a asp-controller="subcategory" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Subcategory</a>
-                <a asp-controller="HRRoster" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">HR Professional</a>
-                <a asp-controller="Questions" asp-action="details" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
-                <a asp-controller="Questions" asp-action="index" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
+                @if (auth.CheckAdminUserGroup().Result)
+                {
+                    <a asp-controller="Category" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Service Delivery Group</a>
+                    <a asp-controller="Subcategory" asp-action="Details" class="neu-margin--right-20" style="text-decoration:none">Sub Category</a>
+                    <a asp-controller="HRRoster" asp-action="Details" class="neu-margin--right-20" style="text-decoration:none">HR Professional</a>
+                    <a asp-controller="Questions" asp-action="Details" class="neu-margin--right-20" style="text-decoration:none">Question Master</a>
+                    <a asp-controller="Questions" asp-action="Index" class="neu-margin--right-20" style="text-decoration:none">Question Mapping</a>
+                }
             </div>
 
             <!-- User Controls -->
             <div class="neu-user-controls">
                 <div>
-                    @*<p>@auth.LoggedInUserInfo().Result.LoggedInFullName</p>*@
+                    <p>@auth.LoggedInUserInfo().Result.LoggedInFullName</p>
                     <p></p>
                 </div>
                 <div class="neu-avatar neu-avatar--init neu-margin--left-10"
                      tabindex="0">
-                    @*<small aria-label="user initials here" class="neu-avatar--init__text">@auth.LoggedInUserInfo().Result.Initials</small>*@
-                    <small aria-label="user initials here" class="neu-avatar--init__text"></small>
+                    <small aria-label="user initials here" class="neu-avatar--init__text">@auth.LoggedInUserInfo().Result.Initials</small>
                 </div>
             </div>
         </div>
-
     </nav>
-    @*<div class="neu-topnav">
-        </div>*@
 
-
-<main class="container-fluid neu-padding--top-90 neu-padding--bottom-60">
+<main class="container neu-padding--top-90 neu-padding--bottom-60">
     @RenderBody()
 </main>
     
-
-    @*<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>
-        <script type="text/javascript" src="~/js/moment.min.js"></script>
-        <link href="~/css/gridstyle.css" rel="stylesheet" />
-        <script src="~/js/neutron.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <link href="~/css/jquery-ui.css" rel="stylesheet" />*@
-
-
-
-    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>*@
-
-
 <footer class="neu-footer--compact neu-footer--compact__navy mt-auto py-3 neu-fixed--bottom">
     <div class="row" role="navigation" id="a11y-menu">
         <div class="col-sm-6">
@@ -78,7 +62,6 @@
                      height="20px" />
             </a>
         </div>
-
         <div class="col-sm-6">
             <p class="neu-text--caption neu-margin--left-10 neu-footer--compact__right-elem">
                 ©2021 HCA, Inc. or its affiliates
@@ -86,8 +69,6 @@
         </div>
     </div>
 </footer>
-
     @RenderSection("Scripts", required: false)
 </body>
-
 </html>

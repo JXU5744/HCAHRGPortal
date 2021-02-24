@@ -1,22 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using HCAaudit.Service.Portal.AuditUI.Models;
 using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.Owin.Security.OpenIdConnect;
-using HCAaudit.Service.Portal.AuditUI.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json; 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI
 {
@@ -33,19 +28,7 @@ namespace HCAaudit.Service.Portal.AuditUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                    .AddJsonOptions(jsonOptions =>
-                    {
-                        jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
-                    });
-            services.AddControllers().AddNewtonsoftJson( options =>
-            {
-                options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-            });
-            services.AddMvc(options => options.EnableEndpointRouting = false);
-
             services.AddLogging();
-            services.AddDbContext<AuditToolContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:HRAuditDatabase"]));
             services.AddDistributedMemoryCache();
             services.AddHttpContextAccessor();
             services.Configure<IISServerOptions>(options =>
@@ -93,7 +76,6 @@ namespace HCAaudit.Service.Portal.AuditUI
                     //Logout handler
                     options.Events.OnRedirectToIdentityProviderForSignOut = context =>
                     {
-                        //TODO: Log this.
                         var logoutUri = GetAbsoluteUri(Configuration["OidcLogoutEndpoint"], Configuration["OidcAuthority"]);
                         context.Response.Redirect(logoutUri);
                         context.HandleResponse();
@@ -102,25 +84,21 @@ namespace HCAaudit.Service.Portal.AuditUI
                     //Initiating OAuth authorization request handler
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                     //Authentication Failed handler (this shouldn't happen with current HCA IDP solution)
                     options.Events.OnAuthenticationFailed = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                     //Authorization Code received handler
                     options.Events.OnAuthorizationCodeReceived = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                     //Tokens received handler
                     options.Events.OnTokenResponseReceived = context =>
                     {
-                        //TODO: Log this.
                         if (!String.IsNullOrEmpty(context.TokenEndpointResponse?.AccessToken))
                         {
                             // store and update access token value for ADAPI
@@ -136,14 +114,26 @@ namespace HCAaudit.Service.Portal.AuditUI
                     //Tokens validated handler
                     options.Events.OnTokenValidated = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                 });
             services.AddAuthorization();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDbContext<AuditToolContext>();
             services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<IErrorLog, ErrorLogService>();
+            services.AddMvc()
+                    .AddJsonOptions(jsonOptions =>
+                    {
+                        jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+                    });
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+            });
+            services.AddMvc(options => options.EnableEndpointRouting = false);
+
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
@@ -154,7 +144,7 @@ namespace HCAaudit.Service.Portal.AuditUI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             HostEnvironment = env;
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -167,17 +157,17 @@ namespace HCAaudit.Service.Portal.AuditUI
             }
             app.UseStaticFiles();
             app.UseRouting();
-            //app.UseSession();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
-            //app.UseHttpsRedirection();
-            //app.UseCookiePolicy();
+            app.UseSession();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseHttpsRedirection();
+            app.UseCookiePolicy();
 
             app.UseEndpoints(endpoint =>
             {
                 endpoint.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Search}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
 

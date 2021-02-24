@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
@@ -99,7 +96,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         /// <summary>
         /// Status
         /// </summary>
-        public string Status { get; set;}
+        public string Status { get; set; }
 
         /// <summary>
         /// StatusDescription
