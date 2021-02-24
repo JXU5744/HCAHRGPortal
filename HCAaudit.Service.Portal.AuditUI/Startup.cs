@@ -29,7 +29,6 @@ namespace HCAaudit.Service.Portal.AuditUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddDbContext<AuditToolContext>(options => options.UseSqlServer(Configuration["HRAuditDatabaseConnectionString"]));
             services.AddDistributedMemoryCache();
             services.AddHttpContextAccessor();
             services.Configure<IISServerOptions>(options =>
@@ -121,6 +120,7 @@ namespace HCAaudit.Service.Portal.AuditUI
             services.AddAuthorization();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDbContext<AuditToolContext>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IErrorLog, ErrorLogService>();
             services.AddMvc()

@@ -18,8 +18,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
-        private bool isAdmin = false;
-        private IErrorLog _log;
+        private readonly bool isAdmin = false;
+        private readonly IErrorLog _log;
 
         public SubCategoryController(ILogger<SubCategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
@@ -39,7 +39,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (isAdmin)
                 {
                     var categoryList = GetCategoryDetails();
-                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    _logger.LogInformation($"No of records: {categoryList.Count}");
                     return Json(categoryList);
                 }
             }
@@ -81,7 +81,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             SubCategory data = null;
             try
             {
-                data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgID == id && x.IsActive == true)
+                data = (from subcat in _auditToolContext.SubCategory.Where(x => x.SubCatgId == id && x.IsActive == true)
                         select subcat).FirstOrDefault();
             }
             catch (Exception ex)
@@ -95,15 +95,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         [HttpPost]
         public IActionResult delete(int id)
         {
-            SubCategory objSubCategory = new SubCategory();
             try
             {
-                objSubCategory = GetSubCategoryDetailsByID(id);
-                objSubCategory.SubCatgID = id; objSubCategory.IsActive = false;
-                objSubCategory.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                objSubCategory.ModifiedDate = DateTime.Now;
-                _auditToolContext.SubCategories.Update(objSubCategory);
-                _auditToolContext.SaveChanges();
+                var objSubCategory = GetSubCategoryDetailsByID(id);
+                if (objSubCategory != null)
+                {
+                    objSubCategory.IsActive = false;
+                    objSubCategory.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    objSubCategory.ModifiedDate = DateTime.Now;
+                    _auditToolContext.SubCategory.Update(objSubCategory);
+                    _auditToolContext.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
@@ -124,7 +126,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     if (!string.IsNullOrEmpty(id))
                     {
                         string[] param = id.Split('$');
-                        if (param.Count() > 0)
+                        if (param.Any())
                         {
                             var collection = GetDetails();
                             foreach (var item in collection)
@@ -143,7 +145,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     objCategorys.SubCatgDescription = param[1];
                                     objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                                     objCategorys.ModifiedDate = DateTime.Now;
-                                    _auditToolContext.SubCategories.Update(objCategorys);
+                                    _auditToolContext.SubCategory.Update(objCategorys);
                                     _auditToolContext.SaveChanges();
                                 }
                             }
@@ -169,21 +171,25 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 {
                     object responce = "";
 
-                    if (IsSubcategoryNameExists(Int32.Parse(catgID), subCategoryName)) { responce = "1"; }
+                    if (IsSubcategoryNameExists(Int32.Parse(catgID), subCategoryName))
+                    {
+                        responce = "1";
+                    }
                     else
                     {
                         SubCategory objCategorys = new SubCategory();
-                        objCategorys.CatgID = Convert.ToInt32(catgID);
+                        objCategorys.CatgId = Convert.ToInt32(catgID);
                         objCategorys.SubCatgDescription = subCategoryName;
                         objCategorys.IsActive = true;
                         objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                         objCategorys.CreatedDate = DateTime.Now;
                         objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                         objCategorys.ModifiedDate = DateTime.Now;
-                        _auditToolContext.SubCategories.Add(objCategorys);
+                        _auditToolContext.SubCategory.Add(objCategorys);
                         _auditToolContext.SaveChanges();
                         return RedirectToAction("Details");
                     }
+                    
                     return Json(responce);
                 }
             }
@@ -192,6 +198,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Insert method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Insert", ErrorDiscription = ex.Message });
             }
+            
             return RedirectToAction("Index", "Home");
         }
 
@@ -225,17 +232,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     int skip = start != null ? Convert.ToInt32(start) : 0;
 
                     int recordsTotal = 0;
-
-                    var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
-                        .Join(_auditToolContext.Categories, subCategories => subCategories.CatgID,
-                                categories => categories.CatgID,
-                                (subCategories, categories) => new
-                                {
-                                    CatgID = categories.CatgID,
-                                    SubCatID = subCategories.SubCatgID,
-                                    CatgDescription = categories.CatgDescription,
-                                    SubCatgDescription = subCategories.SubCatgDescription
-                                }).ToList();
 
                     // getting all Customer data  
                     var customerData = (from tempcustomer in GetDetails()
@@ -303,8 +299,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             bool result = false;
             try
             {
-                var data = (from subcat in _auditToolContext.SubCategories.Where(x => x.SubCatgDescription.ToLower() == subcategoryname.ToLower()
-                         && x.CatgID == categoryid && x.IsActive == true)
+                var data = (from subcat in _auditToolContext.SubCategory.Where(x => x.SubCatgDescription.ToLower() == subcategoryname.ToLower()
+                         && x.CatgId == categoryid && x.IsActive == true)
                             select subcat).FirstOrDefault();
                 if (data != null) result = true;
             }
@@ -320,15 +316,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         {
             try
             {
-                var query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
+                var query = _auditToolContext.SubCategory.Where(x => x.IsActive == true)
                 .Join(
-                    _auditToolContext.Categories,
-                    subCategories => subCategories.CatgID,
-                    categories => categories.CatgID,
+                    _auditToolContext.Category,
+                    subCategories => subCategories.CatgId,
+                    categories => categories.CatgId,
                     (subCategories, categories) => new
                     {
-                        CatgID = categories.CatgID,
-                        SubCatID = subCategories.SubCatgID,
+                        CatgID = categories.CatgId,
+                        SubCatID = subCategories.SubCatgId,
                         CatgDescription = categories.CatgDescription,
                         SubCatgDescription = subCategories.SubCatgDescription
                     })
@@ -355,15 +351,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             CatSubCatJoinMast query = null;
             try
             {
-                query = _auditToolContext.SubCategories.Where(x => x.IsActive == true)
+                query = _auditToolContext.SubCategory.Where(x => x.IsActive == true)
                 .Join(
-                    _auditToolContext.Categories,
-                    subCategories => subCategories.CatgID,
-                    categories => categories.CatgID,
+                    _auditToolContext.Category,
+                    subCategories => subCategories.CatgId,
+                    categories => categories.CatgId,
                     (subCategories, categories) => new
                     {
-                        CatgID = categories.CatgID,
-                        SubCatID = subCategories.SubCatgID,
+                        CatgID = categories.CatgId,
+                        SubCatID = subCategories.SubCatgId,
                         CatgDescription = categories.CatgDescription,
                         SubCatgDescription = subCategories.SubCatgDescription
                     })
@@ -384,9 +380,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return query;
         }
 
-        List<Categorys> GetCategoryDetails()
+        List<Category> GetCategoryDetails()
         {
-            return (from subCat in _auditToolContext.Categories.Where(a => a.IsActive == true) select subCat).ToList();
+            return (from subCat in _auditToolContext.Category.Where(a => a.IsActive == true) select subCat).ToList();
         }
 
         [HttpPost]

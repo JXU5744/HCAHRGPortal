@@ -176,7 +176,7 @@
                     var options = '';
                     options += '<option value="0">Select Service Delivery Group</option>';
                     for (var i = 0; i < response.length; i++) {
-                        options += '<option value="' + response[i].CatgID + '">' + response[i].CatgDescription + '</option>';
+                        options += '<option value="' + response[i].CatgId + '">' + response[i].CatgDescription + '</option>';
                     }
                     $('#ddlcategory').append(options);
                     $("#popupcontent").dialog('open');

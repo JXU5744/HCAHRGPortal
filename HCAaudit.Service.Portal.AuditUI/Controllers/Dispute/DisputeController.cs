@@ -19,9 +19,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly ILogger<DisputeController> _logger;
         private readonly IConfiguration config;
         private readonly IAuthService _authService;
-        private AuditToolContext _auditToolContext;
-        private bool isAuditor;
-        private IErrorLog _log;
+        private readonly AuditToolContext _auditToolContext;
+        private readonly bool isAuditor;
+        private readonly IErrorLog _log;
 
         public DisputeController(ILogger<DisputeController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
@@ -40,37 +40,37 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (isAuditor)
                 {
-                    var disp = _auditToolContext.AuditMain.Where(y => y.ID == (int)AuditMainId &&
-                            y.isDisputed == true).FirstOrDefault();
+                    var disp = _auditToolContext.AuditMain.Where(y => y.Id == AuditMainId &&
+                            y.IsDisputed == true).FirstOrDefault();
 
                     if (disp != null)
                         return RedirectToAction("Index", "Search");
 
                     var model = new DisputeModel();
                     //need check for isDisputed
-                    model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.ID == AuditMainId);
-                    var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainID == AuditMainId &&
-                        x.isNonCompliant == true).ToList();
-                    var subcategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == model.AuditMain.SubcategoryID).FirstOrDefault();
-                    var category = _auditToolContext.Categories.Where(x => x.CatgID == model.AuditMain.ServiceGroupID).FirstOrDefault();
+                    model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.Id == AuditMainId);
+                    var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == AuditMainId &&
+                        x.IsNonCompliant == true).ToList();
+                    var subcategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == model.AuditMain.SubcategoryId).FirstOrDefault();
+                    var category = _auditToolContext.Category.Where(x => x.CatgId == model.AuditMain.ServiceGroupId).FirstOrDefault();
 
                     model.ServiceDeliveryGroupName = category == null ? string.Empty : category.CatgDescription;
                     model.SubCategoryName = subcategory == null ? string.Empty : subcategory.SubCatgDescription;
 
-                    var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive).ToList();
+                    var listOfValues = _auditToolContext.ListOfValue.Where(x => x.IsActive == true).ToList();
 
                     var gracePeriod = new List<SelectListItem>();
                     gracePeriod.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
                     foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Grace Period"))
                     {
-                        gracePeriod.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                        gracePeriod.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
                     }
 
                     var overturn = new List<SelectListItem>();
                     overturn.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
                     foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Over Turn"))
                     {
-                        overturn.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                        overturn.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
                     }
 
                     var auditNonCompList = new List<AuditNonComplianceModel>();
@@ -84,12 +84,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             {
                                 QuestionId = auditRes.QuestionId,
                                 Question = questionText.QuestionDescription, //need to call service to get the question
-                                IsCompliant = auditRes.isCompliant,
-                                IsNonCompliant = auditRes.isNonCompliant,
-                                IsCorrectionRequired = auditRes.isCorrectionRequired,
+                                IsCompliant = (bool)auditRes.IsCompliant,
+                                IsNonCompliant = (bool)auditRes.IsNonCompliant,
+                                IsCorrectionRequired = (bool)auditRes.IsCorrectionRequired,
                                 NonComplianceComments = auditRes.NonComplianceComments,
-                                TicketId = auditRes.TicketID,
-                                QuestionRank = auditRes.QuestionRank
+                                TicketId = auditRes.TicketId,
+                                QuestionRank = (int)auditRes.QuestionRank
                             });
                         }
                     }
@@ -116,24 +116,24 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 {
                     //Not handled error and logs
                     var ticketId = model.First().TicketId;
-                    var auditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.TicketID == ticketId);
-                    auditMain.isDisputed = true;
+                    var auditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.TicketId == ticketId);
+                    auditMain.IsDisputed = true;
                     auditMain.DisputeDate = DateTime.Now;
                     auditMain.ModifiedDate = DateTime.Now;
                     auditMain.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                    auditMain.DisputeAuditor34ID = _authService.LoggedInUserInfo().Result.HcaId;
+                    auditMain.DisputeAuditor34Id = _authService.LoggedInUserInfo().Result.HcaId;
 
-                    var auditRes = _auditToolContext.AuditMainResponse.Where(x => x.TicketID == ticketId);
+                    var auditRes = _auditToolContext.AuditMainResponse.Where(x => x.TicketId == ticketId);
                     var dispute = new List<AuditDispute>();
                     foreach (var ques in model)
                     {
                         if (Convert.ToInt32(ques.GracePeriodId) > 0 || Convert.ToInt32(ques.OverturnId) > 0)
                         {
-                            auditRes.First(x => x.QuestionId == ques.QuestionId).isNonCompliant = false;
+                            auditRes.First(x => x.QuestionId == ques.QuestionId).IsNonCompliant = false;
                             dispute.Add(new AuditDispute()
                             {
-                                TicketID = ques.TicketId,
-                                AuditMainID = auditMain.ID,
+                                TicketId = ques.TicketId,
+                                AuditMainId = auditMain.Id,
                                 GracePeriodId = Convert.ToInt32(ques.GracePeriodId),
                                 OverTurnId = Convert.ToInt32(ques.OverturnId),
                                 QuestionId = Convert.ToInt32(ques.QuestionId),
@@ -150,7 +150,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.AuditMainResponse.UpdateRange(auditRes);
                     _auditToolContext.AuditDispute.AddRange(dispute);
                     var result = _auditToolContext.SaveChanges();
-                    FormatAndSendEmail(auditMain.ID);
+                    FormatAndSendEmail(auditMain.Id);
                     return Json(result);
                 }
             }
@@ -169,19 +169,19 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             var cellStartTag = "<td>";
             var cellEndTag = "</td>";
 
-            var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
+            var auditMain = _auditToolContext.AuditMain.Where(x => x.Id == mainID).FirstOrDefault();
             if (auditMain != null)
             {
-                var auditDispute = _auditToolContext.AuditDispute.Where(X => X.AuditMainID == mainID).ToList();
-                var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
+                var auditDispute = _auditToolContext.AuditDispute.Where(X => X.AuditMainId == mainID).ToList();
+                var subCategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == auditMain.SubcategoryId).FirstOrDefault();
                 var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
-                var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketID;
-                //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
+                var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketId;
+                
                 var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
                 var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
                 var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
 
-                var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is the Case Management Audit Dispute and Resolution for Ticket #<b>" + auditMain.TicketID + "</b><br>";
+                var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is the Case Management Audit Dispute and Resolution for Ticket #<b>" + auditMain.TicketId + "</b><br>";
 
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("<html><Body>");
@@ -194,16 +194,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
                     var auditResponseObject = _auditToolContext.AuditMainResponse.Where(
                         x => x.QuestionId == item.QuestionId &&
-                        x.AuditMainID == item.AuditMainID &&
-                        x.isNonCompliant == true).FirstOrDefault();
+                        x.AuditMainId == item.AuditMainId &&
+                        x.IsNonCompliant == true).FirstOrDefault();
 
                     if (questionDesc != null)
                     {
-                        var gracePeriod = _auditToolContext.ListOfValues.Where(x => x.ID == (int)item.GracePeriodId).FirstOrDefault();
-                        var overTurn = _auditToolContext.ListOfValues.Where(x => x.ID == (int)item.OverTurnId).FirstOrDefault();
+                        var gracePeriod = _auditToolContext.ListOfValue.Where(x => x.Id == (int)item.GracePeriodId).FirstOrDefault();
+                        var overTurn = _auditToolContext.ListOfValue.Where(x => x.Id == (int)item.OverTurnId).FirstOrDefault();
                         var quesSeq = item.QuestionRank;
                         var quesDescription = questionDesc.QuestionDescription;
-                        var correctionRequired = auditResponseObject != null && auditResponseObject.isCorrectionRequired ? "Yes" : "No";
+                        var correctionRequired = auditResponseObject != null && auditResponseObject.IsCorrectionRequired == true ? "Yes" : "No";
                         var responseComments = auditResponseObject != null ? auditResponseObject.NonComplianceComments : String.Empty;
                         var gracePeriodDesc = gracePeriod != null ? gracePeriod.Code : String.Empty;
                         var overTurnDesc = overTurn != null ? overTurn.Code : String.Empty;

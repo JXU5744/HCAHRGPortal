@@ -5,22 +5,19 @@ using System.Collections.Generic;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
-    public partial class AuditDispute
+    public partial class QuestionMapping
     {
-        public int Id { get; set; }
-        public int AuditMainId { get; set; }
-        public string TicketId { get; set; }
+        public int QuestionMappingId { get; set; }
+        public int SubCatgId { get; set; }
         public int QuestionId { get; set; }
-        public int? QuestionRank { get; set; }
-        public int? GracePeriodId { get; set; }
-        public int? OverTurnId { get; set; }
-        public string Comments { get; set; }
+        public int SeqNumber { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
 
-        public virtual AuditMain AuditMain { get; set; }
         public virtual QuestionBank Question { get; set; }
+        public virtual SubCategory SubCatg { get; set; }
     }
 }

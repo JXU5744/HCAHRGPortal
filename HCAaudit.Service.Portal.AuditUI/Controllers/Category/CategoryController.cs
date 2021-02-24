@@ -16,10 +16,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     {
         private readonly ILogger<CategoryController> _logger;
         private readonly IConfiguration config;
-        private IAuthService _authService;
-        private AuditToolContext _auditToolContext;
-        private bool isAdmin;
-        private IErrorLog _log;
+        private readonly IAuthService _authService;
+        private readonly AuditToolContext _auditToolContext;
+        private readonly bool isAdmin;
+        private readonly IErrorLog _log;
         public CategoryController(ILogger<CategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
@@ -57,14 +57,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private Categorys GetSingleCategoryByid(string id)
+        private Category GetSingleCategoryByid(string id)
         {
             _logger.LogInformation($"Entering GetSingleCategoryByid method with CategoryID: {id}");
-            Categorys data = null;
+            Category data = null;
             try
             {
-                data = (from cat in _auditToolContext.Categories.Where(
-                category => category.CatgID == Convert.ToInt32(id) &&
+                data = (from cat in _auditToolContext.Category.Where(
+                category => category.CatgId == Convert.ToInt32(id) &&
                 category.IsActive == true)
                         select cat).FirstOrDefault();
             }
@@ -88,7 +88,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     if (!string.IsNullOrEmpty(id))
                     {
                         string[] param = id.Split('$');
-                        if (param.Count() > 0)
+                        if (param.Any())
                         {
                             var collection = GetDetails();
                             foreach (var item in collection)
@@ -98,13 +98,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             }
                             if (string.IsNullOrEmpty(resp.ToString()))
                             {
-                                Categorys objCategorys = GetSingleCategoryByid(param[0]);
+                                Category objCategorys = GetSingleCategoryByid(param[0]);
                                 if (objCategorys != null)
                                 {
                                     objCategorys.CatgDescription = param[1];
                                     objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                                     objCategorys.ModifiedDate = DateTime.Now;
-                                    _auditToolContext.Categories.Update(objCategorys);
+                                    _auditToolContext.Category.Update(objCategorys);
                                     _auditToolContext.SaveChanges();
                                 }
                             }
@@ -133,14 +133,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     else
                     {
-                        Categorys objCategorys = new Categorys();
+                        Category objCategorys = new Category();
                         objCategorys.CatgDescription = CategoryName;
                         objCategorys.IsActive = true;
                         objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                         objCategorys.CreatedDate = DateTime.Now;
                         objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                         objCategorys.ModifiedDate = DateTime.Now;
-                        _auditToolContext.Categories.Add(objCategorys);
+                        _auditToolContext.Category.Add(objCategorys);
                         _auditToolContext.SaveChanges();
                         return RedirectToAction("index");
                     }
@@ -160,12 +160,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (isAdmin)
                 {
-                    var data = (from cat in _auditToolContext.Categories select cat).ToList();
-                    Categorys objCategorys = data.Find(category => category.CatgID == id);
+                    var data = (from cat in _auditToolContext.Category select cat).ToList();
+                    Category objCategorys = data.Find(category => category.CatgId == id);
                     objCategorys.IsActive = false;
                     objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                     objCategorys.ModifiedDate = DateTime.Now;
-                    _auditToolContext.Categories.Update(objCategorys);
+                    _auditToolContext.Category.Update(objCategorys);
                     _auditToolContext.SaveChanges();
                     return RedirectToAction("Index", GetDetails());
                 }
@@ -182,7 +182,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             bool result = false;
             try
             {
-                var data = (from cat in _auditToolContext.Categories.Where(x => x.CatgDescription.ToLower() == inputcategoryname.ToLower()
+                var data = (from cat in _auditToolContext.Category.Where(x => x.CatgDescription.ToLower() == inputcategoryname.ToLower()
                         && x.IsActive == true)
                             select cat).FirstOrDefault();
 
@@ -195,12 +195,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return result;
         }
 
-        private List<Categorys> GetDetails()
+        private List<Category> GetDetails()
         {
-            var data = new List<Categorys>();
+            var data = new List<Category>();
             try
             {
-                data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
+                data = _auditToolContext.Category.Where(x => x.IsActive == true).ToList();
             }
             catch (Exception ex)
             {
@@ -217,8 +217,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (isAdmin)
                 {
                     object response;
-                    var data = (from cat in _auditToolContext.SubCategories.Where(x => x.IsActive == true) select cat).ToList();
-                    SubCategory obj = data.Find(a => a.CatgID == id);
+                    var data = (from cat in _auditToolContext.SubCategory.Where(x => x.IsActive == true) select cat).ToList();
+                    SubCategory obj = data.Find(a => a.CatgId == id);
                     response = obj == null ? "HasecOrds" : "NoRecOrds";
                     return Json(response);
                 }
@@ -278,13 +278,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     int recordsTotal = 0;
 
-                    var data = _auditToolContext.Categories.Where(x => x.IsActive == true).ToList();
+                    var data = _auditToolContext.Category.Where(x => x.IsActive == true).ToList();
                     objCategoryMast = new CategoryMast();
                     objCategoryMast.CategoryList = new List<Category>();
                     foreach (var item in data)
                     {
                         Category objCategory = new Category();
-                        objCategory.CatgID = item.CatgID; objCategory.CatgDescription = item.CatgDescription;
+                        objCategory.CatgId = item.CatgId; 
+                        objCategory.CatgDescription = item.CatgDescription;
                         objCategoryMast.CategoryList.Add(objCategory);
                     }
 

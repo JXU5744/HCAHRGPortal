@@ -8,13 +8,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
 {
     public class EmailHelper
     {
-        public static SmtpClient SmtpClient;
-        public IConfiguration _configuration { get; }
-        private IErrorLog _log;
+        public readonly SmtpClient SmtpClient;
+        private readonly IErrorLog _log;
 
         public EmailHelper(IConfiguration configuration, IErrorLog log)
         {
-            _configuration = configuration;
             _log = log;
             SmtpClient = new SmtpClient(configuration["SmtpHost"], Convert.ToInt32(configuration["SmtpPort"]));
         }
@@ -30,9 +28,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                 if (!string.IsNullOrEmpty(emailContent.SendTo))
                 {
                     message.To.Add(emailContent.SendTo);
-                    //message.To.Add("sanjeev.agarwal@hcahealthcare.com");
                     message.To.Add("girish.chavan@hcahealthcare.com");
-                    //message.To.Add("ojl8871@hca.corpad.net");
                 }
                 message.From = new MailAddress(emailContent.SendFrom, emailContent.SendFromName);
                 message.Subject = emailContent.Subject;
