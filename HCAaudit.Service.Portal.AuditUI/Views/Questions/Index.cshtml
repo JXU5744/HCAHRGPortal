@@ -45,8 +45,8 @@
             <thead>
                 <tr class="neu-table__row--large">
                     <th>Question Master ID</th>
-                    <th style="width:10%">Question Sequence</th>
-                    <th style="width:70%">Question Name</th>
+                    <th>Question Sequence</th>
+                    <th>Question Name</th>
                     <th style="width:10%">Edit</th>
                     <th style="width:10%">Delete</th>
                 </tr>
@@ -186,7 +186,7 @@
             });
             $("#popupcontentedit").dialog({
                 width: 'auto',
-                height :'auto',
+                height: 'auto',
                 autoOpen: false,
                 draggable: false,
                 resizable: false
@@ -215,7 +215,7 @@
             if (!tblRowCount.data().any()) {
                 rowCount = 0
             }
-                $('#txtquestionseq').val(rowCount + 1);
+            $('#txtquestionseq').val(rowCount + 1);
 
             $.ajax({
                 type: "POST",
@@ -262,15 +262,14 @@
         });
 
         $("#btnaddQuestion").click(function () {
-            if ($('#txtquestion').val() == "")
-            {
+            if ($('#txtquestion').val() == "") {
                 $('#errormsgquestion').show();
-                     return false;
+                return false;
             }
 
             if ($('#txtquestionDescription').val() == "") {
                 $('#errormsgquestionDescription').show();
-                 return false;
+                return false;
             }
 
             var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionDescription").val() + "^" + $("#txtquestionseq").val();
@@ -309,23 +308,27 @@
                                                 "visible": false,
                                                 "searchable": false
                                             },
-                                                {
-                                                    "targets": [0, 3, 4],
-                                                    "orderable": false
-                                                }],
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
+                                            {
+                                                "targets": [0, 3, 4],
+                                                "orderable": false
+                                            }],
 
                                             columns: [{ 'data': 'QuestionMappingId' },
-                                                { 'data': 'SequenceNo' },
-                                                { 'data': 'QuestionText' },
+                                            { 'data': 'SequenceNo' },
+                                            { 'data': 'QuestionText' },
                                             {
-                                                  "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
                                                     return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
-                                                },
+                                            },
                                             ],
                                             "createdRow": function (row, data, dataIndex) {
                                                 $(row).addClass('neu-table__row--small');
@@ -333,17 +336,17 @@
                                         });
                                 },
                                 failure: function (response) {
-                                   // alert(response.d);
+                                    // alert(response.d);
                                 },
                                 error: function (response) {
-                                   // alert(response.d);
+                                    // alert(response.d);
                                 }
                             });
                         });
                     }
                 },
                 failure: function (response) {
-                   // alert(response.responseText);
+                    // alert(response.responseText);
                 },
                 error: function (response) {
                     //alert(response.responseText);
@@ -410,14 +413,18 @@
                                 "visible": false,
                                 "searchable": false
                             },
-                                {
-                                    "targets": [0, 3, 4],
-                                    "orderable": false
-                                }],
+                            {
+                                "targets": [1, 3, 4],
+                                "width": "10%"
+                            },
+                            {
+                                "targets": [0, 3, 4],
+                                "orderable": false
+                            }],
 
                             columns: [{ 'data': 'QuestionMappingId' },
-                                { 'data': 'SequenceNo' },
-                                { 'data': 'QuestionText' },
+                            { 'data': 'SequenceNo' },
+                            { 'data': 'QuestionText' },
                             {
                                 "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                             },
@@ -426,7 +433,7 @@
                                 render: function (data, type, row) {
                                     return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                 }
-                                },
+                            },
                             ],
                             "createdRow": function (row, data, dataIndex) {
                                 $(row).addClass('neu-table__row--small');
@@ -457,8 +464,9 @@
         });
 
         $("#popupcontentdelete").dialog({
-            autoOpen: false, modal: true, width: 'auto' , draggable: false,
-            resizable: false});
+            autoOpen: false, modal: true, width: 'auto', draggable: false,
+            resizable: false
+        });
 
         $("#btncancelpopup").click(function () {
             $("#popupcontentdelete").dialog('close');
@@ -490,7 +498,7 @@
                     "newsequenceno": newseqno,
                     "cquestionid": selectedQuestionId,
                     "csequenceno": oldseqno
-                    },
+                },
                 success: function (response) {
                     if (response == "2") {
                         $('#errormsgsqedit').show(); $('#errormsgsqedit').text("Invalid Sequence");
@@ -522,23 +530,27 @@
                                                 "visible": false,
                                                 "searchable": false
                                             },
-                                                {
-                                                    "targets": [0, 3, 4],
-                                                    "orderable": false
-                                                }],
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
+                                            {
+                                                "targets": [0, 3, 4],
+                                                "orderable": false
+                                            }],
 
                                             columns: [
                                                 { 'data': 'QuestionMappingId' },
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
-                                            {
-                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
-                                            },
-                                            {
-                                                data: null,
-                                                render: function (data, type, row) {
-                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
-                                                }
+                                                {
+                                                    "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                                },
+                                                {
+                                                    data: null,
+                                                    render: function (data, type, row) {
+                                                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                    }
                                                 },],
                                             "createdRow": function (row, data, dataIndex) {
                                                 $(row).addClass('neu-table__row--small');
@@ -622,6 +634,10 @@
                                             "visible": false,
                                             "searchable": false
                                         },
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
                                         {
                                             "targets": [0, 3, 4],
                                             "orderable": false
@@ -660,7 +676,7 @@
 
     function DeleteData(CatgID) {
         $("#lblcustomtextfor").text("Do you want to Delete this Question Mapping");
-       $("#popupcontentdelete").dialog('open');
+        $("#popupcontentdelete").dialog('open');
         $("#hdndeletecatid").val(CatgID);
     }
 
@@ -678,7 +694,7 @@
         $.ajax({
             type: "POST",
             url: "/questions/GetQuestionSeqByid",
-            data: { "id": CatgID, "subcatid": subcatid, "actionQid": CatgID},
+            data: { "id": CatgID, "subcatid": subcatid, "actionQid": CatgID },
             success: function (response) {
                 if (response != null && response != "") {
                     $('#ddlQuestionsqedit').html('');
