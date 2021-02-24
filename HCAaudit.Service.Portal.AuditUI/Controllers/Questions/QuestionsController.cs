@@ -1,13 +1,13 @@
-﻿using HCAaudit.Service.Portal.AuditUI.Models;
-using HCAaudit.Service.Portal.AuditUI.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using HCAaudit.Service.Portal.AuditUI.Services;
+using Microsoft.AspNetCore.Http;
+using HCAaudit.Service.Portal.AuditUI.Models;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -18,8 +18,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
-        private readonly bool isAdmin;
-        private readonly IErrorLog _log;
+        private bool isAdmin;
+        private IErrorLog _log;
         public QuestionsController(ILogger<QuestionsController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
@@ -168,7 +168,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                               IsActive = (bool)x.IsActive
                           }
                          )
-                          .Where(a => a.SubCatID == subcatid && a.IsActive)
+                          .Where(a => a.SubCatID == subcatid && a.IsActive == true)
                          .OrderBy(a => a.SequenceNo)
                          .ToList();
                     return Json(query);
@@ -210,7 +210,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     if (!string.IsNullOrEmpty(id))
                     {
                         string[] param = id.Split('$');
-                        if (param.Any() && param.Count() == 3)
+                        if (param.Count() > 0 && param.Count() == 3)
                         {
                             QuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
 
@@ -263,10 +263,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (isAdmin)
                 {
-                    var filteredSubCategoryList = _auditToolContext.SubCategory
-                                                 .Where(x => x.CatgId == Convert.ToInt32(categoryID) && x.IsActive == true)
-                                                 .Select(x => new { x.SubCatgId, x.SubCatgDescription }).ToList();
-                    _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count}");
+                    var filteredSubCategoryList = _auditToolContext.SubCategories
+                                                 .Where(x => x.CatgID == Convert.ToInt32(categoryID) && x.IsActive == true)
+                                                 .Select(x => new { x.SubCatgID, x.SubCatgDescription }).ToList();
+                    _logger.LogInformation($"No of SubCategoryListrecords: {filteredSubCategoryList.Count()}");
                     return Json(filteredSubCategoryList);
                 }
             }
@@ -288,8 +288,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     if (subcatgid.Contains('^'))
                     {
                         string[] data = subcatgid.Split('^');
-                        if (data.Any() && data[0] != null && data[1] != null && data[2] != null && data[3] != null)
+                        if (data.Count() > 0 && data[0] != null && data[1] != null && data[2] != null && data[3] != null)
                         {
+                            object response = "";
+
                             var questionbankdata = _auditToolContext.QuestionBank.Where(x => x.QuestionName.Trim() == data[1].ToString().Trim() &&
                                 x.IsActive == true).FirstOrDefault();
                             if (questionbankdata == null)//condition to restrict questions which is not available in questionBank table
@@ -346,6 +348,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         List<QuestionBank> GetDetails()
         {
             List<QuestionBank> data = new List<QuestionBank>();
+
             try
             {
                 data = _auditToolContext.QuestionBank.Where(a => a.IsActive == true).ToList();
@@ -382,11 +385,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (isAdmin)
                 {
-                    var categoryList = _auditToolContext.Category
+                    var categoryList = _auditToolContext.Categories
                                        .Where(x => x.IsActive == true)
                                        .ToList();
-                    _logger.LogInformation($"No of records: {categoryList.Count}");
-                    categoryList.Insert(0, new Category { CatgId = 0, CatgDescription = "Select" });
+                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    categoryList.Insert(0, new Categorys { CatgID = 0, CatgDescription = "Select" });
                     ViewBag.ListOfCategory = categoryList;
                     return View();
                 }
@@ -433,7 +436,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                           IsActive = (bool)x.IsActive
                       }
                      )
-                      .Where(a => a.SubCatID == Int32.Parse(subCategoryID) && a.IsActive)
+                      .Where(a => a.SubCatID == Int32.Parse(subCategoryID) && a.IsActive == true)
                      .OrderBy(a => a.SequenceNo)
                      .ToList();
                     return Json(query);
@@ -487,11 +490,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                      .Where(a => a.SubCatgId == Convert.ToInt32(subCategoryID) && a.IsActive == true)
                                      .ToList();
                     var dataBank = GetDetails();
-                    if (dataMaster.Any())
+                    if (dataMaster.Count() > 0)
                     {
                         foreach (var item in dataMaster)
                         {
-                            var objtblQuestionBank = dataBank.Where(a => a.QuestionId == item.QuestionId).FirstOrDefault();
+                            QuestionBank objtblQuestionBank = new QuestionBank();
+                            objtblQuestionBank = dataBank.Where(a => a.QuestionId == item.QuestionId).SingleOrDefault();
                             if (objtblQuestionBank != null)
                             {
                                 dataBank.Remove(objtblQuestionBank);
@@ -604,7 +608,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult DeleteQuestionMaster(int id, int SubCatId)
+        [HttpPost]
+        public IActionResult DeleteQuestionMaster(int id)
         {
             try
             {
@@ -633,7 +638,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         _auditToolContext.SaveChanges();
                     }
-                    return View("index", GetDetails());
+                    return Json("Success");
                 }
             }
             catch (Exception ex)
@@ -641,7 +646,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in DeleteQuestionMaster method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionMaster", ErrorDiscription = ex.Message });
             }
-            return RedirectToAction("Index", "Home");
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         [HttpGet]
