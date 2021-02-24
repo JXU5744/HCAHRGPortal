@@ -302,6 +302,7 @@
                     }
                     else {
                         $("#popupcontent").dialog('close');
+
                         $(function () {
                             var subCategoryID = $('#SubCatID').val();
                             $.ajax({
@@ -493,6 +494,8 @@
             var newquestId = $("#ddlQuestionsqedit").val();
             var newseqno = $("#ddlQuestionsqedit option:selected").text();
 
+            
+
             if (selectedQuestionId == newquestId) {
                 $("#popupcontentedit").dialog('close');
             }
@@ -559,6 +562,8 @@
                                                 $(row).addClass('neu-table__row--small');
                                             }
                                         });
+
+                                    $('#SubCatID').trigger('change');
                                 },
                                 failure: function (response) {
                                     // alert(response.d);
@@ -586,14 +591,20 @@
         $("#btndeleteQuestion").click(function () {
             var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
             $("#popupcontentdelete").dialog('close');
-            $.post(url, { ID: $("#hdndeletecatid").val() , SubCatId: $('#SubCatID').val() }, function (data) {
+            $.post(url, { ID: $("#hdndeletecatid").val(), SubCatId: $('#SubCatID').val() }, function (data) {
+
+
                 if (data) {
                     oTable = $('#example').DataTable();
                     oTable.draw();
                 } else {
                     alert("Something Went Wrong!");
                 }
+
+
+
             });
+          //  $('#SubCatID').trigger('change');
             location.reload();
         });
     });
