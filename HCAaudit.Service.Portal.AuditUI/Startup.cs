@@ -1,21 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using HCAaudit.Service.Portal.AuditUI.Models;
 using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using System.IdentityModel.Tokens.Jwt;
-using HCAaudit.Service.Portal.AuditUI.Models;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json; 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI
 {
@@ -33,7 +29,6 @@ namespace HCAaudit.Service.Portal.AuditUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddDbContext<AuditToolContext>(options => options.UseSqlServer(Configuration["HRAuditDatabaseConnectionString"]));
             services.AddDistributedMemoryCache();
             services.AddHttpContextAccessor();
             services.Configure<IISServerOptions>(options =>
@@ -81,7 +76,6 @@ namespace HCAaudit.Service.Portal.AuditUI
                     //Logout handler
                     options.Events.OnRedirectToIdentityProviderForSignOut = context =>
                     {
-                        //TODO: Log this.
                         var logoutUri = GetAbsoluteUri(Configuration["OidcLogoutEndpoint"], Configuration["OidcAuthority"]);
                         context.Response.Redirect(logoutUri);
                         context.HandleResponse();
@@ -90,25 +84,21 @@ namespace HCAaudit.Service.Portal.AuditUI
                     //Initiating OAuth authorization request handler
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                     //Authentication Failed handler (this shouldn't happen with current HCA IDP solution)
                     options.Events.OnAuthenticationFailed = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                     //Authorization Code received handler
                     options.Events.OnAuthorizationCodeReceived = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                     //Tokens received handler
                     options.Events.OnTokenResponseReceived = context =>
                     {
-                        //TODO: Log this.
                         if (!String.IsNullOrEmpty(context.TokenEndpointResponse?.AccessToken))
                         {
                             // store and update access token value for ADAPI
@@ -124,13 +114,13 @@ namespace HCAaudit.Service.Portal.AuditUI
                     //Tokens validated handler
                     options.Events.OnTokenValidated = context =>
                     {
-                        //TODO: Log this.
                         return Task.CompletedTask;
                     };
                 });
             services.AddAuthorization();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddDbContext<AuditToolContext>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IErrorLog, ErrorLogService>();
             services.AddMvc()
@@ -154,7 +144,7 @@ namespace HCAaudit.Service.Portal.AuditUI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             HostEnvironment = env;
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -27,13 +27,13 @@
 <div class="card">
     <div class="row">
         <div class="col-sm-3">
-            <label for="AuditMain_TicketID" class="neu-input__label">Ticket ID</label>
-            @Html.TextBoxFor(m => Model.AuditMain.TicketID, new { @disabled = true, @class = "neu-input__field" })
-            @Html.HiddenFor(x => Model.AuditMain.TicketID)
+            <label for="AuditMain_TicketId" class="neu-input__label">Ticket ID</label>
+            @Html.TextBoxFor(m => Model.AuditMain.TicketId, new { @disabled = true, @class = "neu-input__field" })
+            @Html.HiddenFor(x => Model.AuditMain.TicketId)
         </div>
         <div class="col-sm-3">
-            <label for="AuditMain_Agent34ID" class="neu-input__label">Agent's 3-4 ID</label>
-            @Html.TextBoxFor(m => Model.AuditMain.Agent34ID, new { @disabled = true, @class = "neu-input__field" })
+            <label for="AuditMain_Agent34Id" class="neu-input__label">Agent's 3-4 ID</label>
+            @Html.TextBoxFor(m => Model.AuditMain.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
         </div>
         <div class="col-sm-3">
             <label for="AuditMain_AgentName" class="neu-input__label">Agent Name</label>
@@ -47,8 +47,8 @@
 
     <div class="row">
         <div class="col-sm-3">
-            <label for="AuditMain_SubmitDT" class="neu-input__label">Audit Date</label>
-            @Html.TextBoxFor(m => Model.AuditMain.SubmitDT, new { @disabled = true, @class = "neu-input__field" })
+            <label for="AuditMain_SubmitDt" class="neu-input__label">Audit Date</label>
+            @Html.TextBoxFor(m => Model.AuditMain.SubmitDt, new { @disabled = true, @class = "neu-input__field" })
         </div>
 
         <div class="col-sm-3">
@@ -205,7 +205,7 @@
                     AuditNonComplianceModel.push({
                         QuestionId: $(this).find('[id$="QuestionId"]:hidden').val(),
                         QuestionRank: $(this).find('[id$="QuestionRank"]:hidden').val(),
-                        TicketId: $('[id$="AuditMain_TicketID"]:hidden').val(),
+                        TicketId: $('[id$="AuditMain_TicketId"]:hidden').val(),
                         GracePeriodId: $(this).find('[id$="GracePeriodId"]').val(),
                         OverturnId: $(this).find('[id$="OverturnId"]').val(),
                         Comment: $(this).find('[id$="Comment"]').val()

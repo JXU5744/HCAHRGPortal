@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Service Delivery Group";
 }
-@model List<HCAaudit.Service.Portal.AuditUI.Models.Categorys>
+@model List<HCAaudit.Service.Portal.AuditUI.Models.Category>
 
 <link href="~/lib/DataTables/DataTables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 <link href="~/css/responsive.bootstrap4.min.css" rel="stylesheet" />
@@ -119,15 +119,15 @@
                     "orderable": false
                 }],
             "columns": [
-                { "data": "CatgID", "name": "CatgID", "autoWidth": true },
+                { "data": "CatgId", "name": "CatgID", "autoWidth": true },
                 { "data": "CatgDescription", "name": "CatgDescription", "autoWidth": true },
                 {
-                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="javascript:void(0)" onclick=OpenEditpopup(' + full.CatgID + ');>Edit</a>'; }
+                    "render": function (data, type, full, meta) { return '<a class="neu-button--primary neu-button neu-button--link" href="javascript:void(0)" onclick=OpenEditpopup(' + full.CatgId + ');>Edit</a>'; }
                 },
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.CatgID + "'); >Delete</a>";
+                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.CatgId + "'); >Delete</a>";
                     }
                 },
             ],

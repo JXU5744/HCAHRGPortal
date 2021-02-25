@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
@@ -20,7 +18,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
     [Table("Usp_GetHRAuditSearchResult")]
     [Keyless]
-    public class Usp_GetHRAuditSearchResult
+    public class UspGetHRAuditSearchResult
     {
         public string TicketCode { get; set; }
         public string ServiceDeliveryGroup { get; set; }
@@ -36,29 +34,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string ClosedDate { get; set; }
         public string Topic { get; set; }
         public string Url { get; set; }
-    }
-
-    [Table("AuditMainResponse")]
-    public class AuditMainResponse
-    {
-        [Key]
-        public int Id { get; set; }
-        public int AuditMainID { get; set; }
-        public string TicketID { get; set; }
-        public int QuestionId { get; set; }
-        public int QuestionRank { get; set; }
-        public bool isCompliant { get; set; }
-        public bool isNonCompliant { get; set; }
-        public bool isNA { get; set; }
-        public bool isHighNonComplianceImpact { get; set; }
-        public bool isLowNonComplianceImpact { get; set; }
-        public bool isCorrectionRequired { get; set; }
-        public string NonComplianceComments { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
-
     }
 
     public class QuesBankMasterJoinMast
@@ -82,7 +57,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string SubCatgDescription { get; set; }
     }
 
-    
+
     public class AssignedTo
     {
         public int memberID { get; set; }
@@ -121,7 +96,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     {
         public string CatgID { get; set; }
         public string CatgDescription { get; set; }
-        //public List<Category> _categoryList { get; set; }
     }
     //[Table("SubCategory")]
     public class CategoryMast
@@ -132,229 +106,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public List<Category> CategoryList { get; set; }
     }
 
-    [Table("Category")]
-    public class Categorys
+    public class ClsGroupCatSubcat
     {
-        [Key]
-        public int CatgID { get; set; }
-        public string CatgDescription { get; set; }
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
+        public List<ClsCatSubcat> CatSubCatGroup { get; set; }
     }
-
-
-    public class clsGroupCatSubcat
-    {
-        public List<clsCatSubcat> CatSubCatGroup { get; set; }
-    }
-    public class clsCatSubcat
+    public class ClsCatSubcat
     {
         public int CatgID { get; set; }
         public string CatgDescription { get; set; }
         public int SubCatID { get; set; }
         public string SubCatgDescription { get; set; }
     }
-
-    public class Category
-    {
-        [Key]
-        public int CatgID { get; set; }
-        public string CatgDescription { get; set; }
-        public int SubCatID { get; set; }
-        public int QuestionId { get; set; }
-    }
-
-    [Table("SubCategory")]
-    public class SubCategory
-    {
-        [Key]
-        public int SubCatgID { get; set; }
-        public int CatgID { get; set; }
-        public string SubCatgDescription { get; set; }
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
-    }
-
-    [Table("QuestionMapping")]
-    public class QuestionMapping
-    {
-        [Key]
-        public int QuestionMappingId { get; set; }
-        public int QuestionId { get; set; }
-        public int SeqNumber { get; set; }
-        public int SubCatgId { get; set; }
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
-
-    }
-
-    [Table("QuestionBank")]
-    public class QuestionBank
-    {
-        [Key]
-        public int QuestionId { get; set; }
-        public string QuestionName { get; set; }
-        public string QuestionDescription { get; set; }
-        public bool? IsActive { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
-    }
-     
-    [Table("HROCRoster")]
-    public class HROCRoster
-    {
-        [Key]
-        [Column("HROCRosterId")]
-        public int HROCRosterId { get; set; }
-
-        [Column("Employee Num")]
-        public double? EmployeeNumber { get; set; }
-        [Column("Employee Full Name")]
-        public string EmployeeFullName { get; set; }
-
-        [Column("Last Name")]
-        public string EmployeeLastName { get; set; }
-
-        [Column("First Name")]
-        public string EmployeeFirstName { get; set; }
-
-        [Column("Supervisor Last Name")]
-#nullable enable
-        public string? SupervisorLastName { get; set; }
-#nullable disable
-        [Column("Supervisor First Name")]
-#nullable enable
-        public string? SupervisorFirstName { get; set; }
-#nullable disable
-        [Column("Employee 3-4 ID (Lower Case)")]
-#nullable enable
-        public string? EmployeethreefourID { get; set; }
-#nullable disable
-        [Column("Employee Status")]
-#nullable enable
-        public string? EmployeeStatus { get; set; }
-#nullable disable
-        [Column("Position Desc - Home Curr")]
-#nullable enable
-        public string? PositionDesc { get; set; }
-#nullable disable
-        [Column("Job Cd Desc - Home Curr")]
-#nullable enable
-        public string? JobCDDesc { get; set; }
-#nullable disable
-        [Column("Employee Status Desc")]
-#nullable enable
-        public string? EmployeeStatusDesc { get; set; }
-#nullable disable
-        [Column("Date Hired")]
-        public DateTime? DateHired { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime? ModifiedDate { get; set; }
-        public string ModifiedBy { get; set; }
-    }
-
-    [Table("TicketsViaSSIS")]
-    public partial class TicketsViaSSIS
-    {
-        [Key]
-        public string TicketCode { get; set; }
-        public DateTime LastEditDateTime { get; set; }
-        public string AboutEe { get; set; }
-        public bool? Archived { get; set; }
-        public string CaseType { get; set; }
-        public string Category { get; set; }
-        public string ChatAgentUserId { get; set; }
-        public DateTime? ClosedDateTime { get; set; }
-        public string CloseUserId { get; set; }
-        public string ContactMethod { get; set; }
-        public string ContactName { get; set; }
-        public string ContactRelationshipName { get; set; }
-        public DateTime? CreatedDateTime { get; set; }
-        public string CreatorFirstName { get; set; }
-        public string CreatorLastName { get; set; }
-        public string CreatorName { get; set; }
-        public string CreatorUserId { get; set; }
-        public bool? CustomCheckBox1 { get; set; }
-        public bool? CustomCheckBox2 { get; set; }
-        public bool? CustomCheckBox3 { get; set; }
-        public bool? CustomCheckBox4 { get; set; }
-        public bool? CustomCheckBox5 { get; set; }
-        public bool? CustomCheckBox6 { get; set; }
-        public DateTime? CustomDate1 { get; set; }
-        public DateTime? CustomDate2 { get; set; }
-        public DateTime? CustomDate3 { get; set; }
-        public DateTime? CustomDate4 { get; set; }
-        public DateTime? CustomDate5 { get; set; }
-        public DateTime? CustomDate6 { get; set; }
-        public string CustomSelect1 { get; set; }
-        public string CustomSelect2 { get; set; }
-        public string CustomSelect3 { get; set; }
-        public string CustomSelect4 { get; set; }
-        public string CustomSelect5 { get; set; }
-        public string CustomSelect6 { get; set; }
-        public string CustomString1 { get; set; }
-        public string CustomString2 { get; set; }
-        public string CustomString3 { get; set; }
-        public string CustomString4 { get; set; }
-        public string CustomString5 { get; set; }
-        public string CustomString6 { get; set; }
-        public string Email { get; set; }
-        public string FirstName { get; set; }
-        public string IsFirstCallResolution { get; set; }
-        public string Issue { get; set; }
-        public string KnowledgeDomain { get; set; }
-        public string LastEditUserId { get; set; }
-        public string LastName { get; set; }
-        public string OwnerUserId { get; set; }
-        public string Population { get; set; }
-        public string Priority { get; set; }
-        public short? ProcessTime { get; set; }
-        public string RegardingUserId { get; set; }
-        public DateTime? ReminderDateTime { get; set; }
-        public string ReminderEmail { get; set; }
-        public string ReminderNote { get; set; }
-        public string ReminderPhone { get; set; }
-        public string Resolution { get; set; }
-        public DateTime? ResolvedDateTime { get; set; }
-        public string Secure { get; set; }
-        public string ServiceGroup { get; set; }
-        public string ShowToEe { get; set; }
-        public DateTime? Sla { get; set; }
-        public string Source { get; set; }
-        public string SubCategory { get; set; }
-        public string Subject { get; set; }
-        public string SubStatus { get; set; }
-        public string SurveyAgreementResponse { get; set; }
-        public string SurveyAnswer1 { get; set; }
-        public string SurveyAnswer2 { get; set; }
-        public string SurveyAnswer3 { get; set; }
-        public string SurveyAnswer4 { get; set; }
-        public string SurveyAnswer5 { get; set; }
-        public string SurveyCommentResponse { get; set; }
-        public DateTime? SurveyDateTime { get; set; }
-        public string SurveyFollowup { get; set; }
-        public string SurveyId { get; set; }
-        public string SurveyScore { get; set; }
-        public string TicketStatus { get; set; }
-        public string Topic { get; set; }
-        public string UserId { get; set; }
-        public DateTime? CreateDate { get; set; }
-        public DateTime? Sladate { get; set; }
-        public DateTime? ClosedDate { get; set; }
-        public DateTime? LoadStamp { get; set; }
-        public string SourceFileStamp { get; set; }
-    }
-
 }

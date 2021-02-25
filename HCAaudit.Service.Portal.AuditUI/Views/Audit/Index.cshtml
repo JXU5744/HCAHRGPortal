@@ -110,11 +110,15 @@
                                         <div class="col-sm-4 neu-text--align-center">
                                             @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
                                             <div class="row neu-padding--top-10" style="border-top: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
-                                                <div class="col-sm-6">
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>High</label>
+                                                <div class="col-sm-12">
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) 
+                                                    <span style="width:30px;display:inline-block"></span>
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" })
                                                 </div>
-                                                <div class="col-sm-6">
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) <label>Low</label>
+                                                <div>
+                                                    <label>High</label>
+                                                    <span style="width:30px;display:inline-block"></span>
+                                                    <label>Low</label>
                                                 </div>
                                             </div>
                                         </div>

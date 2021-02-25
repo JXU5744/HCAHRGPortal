@@ -1,7 +1,7 @@
 ﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HCAaudit.Service.Portal.AuditUI.ViewModel
 {

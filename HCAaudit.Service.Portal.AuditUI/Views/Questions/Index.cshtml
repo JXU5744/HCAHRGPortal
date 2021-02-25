@@ -24,7 +24,7 @@
             <div class="col-sm-4">
                 <label for="CatgID" class="neu-input__label">Service Delivery Group</label>
                 <select name="teams" id="CatgID" class="neu-select" title="select"
-                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
+                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgId", "CatgDescription"))">
                 </select>
             </div>
             <div class="col-sm-4">
@@ -45,8 +45,8 @@
             <thead>
                 <tr class="neu-table__row--large">
                     <th>Question Master ID</th>
-                    <th style="width:10%">Question Sequence</th>
-                    <th style="width:70%">Question Name</th>
+                    <th>Question Sequence</th>
+                    <th>Question Name</th>
                     <th style="width:10%">Edit</th>
                     <th style="width:10%">Delete</th>
                 </tr>
@@ -186,7 +186,7 @@
             });
             $("#popupcontentedit").dialog({
                 width: 'auto',
-                height :'auto',
+                height: 'auto',
                 autoOpen: false,
                 draggable: false,
                 resizable: false
@@ -215,7 +215,7 @@
             if (!tblRowCount.data().any()) {
                 rowCount = 0
             }
-                $('#txtquestionseq').val(rowCount + 1);
+            $('#txtquestionseq').val(rowCount + 1);
 
             $.ajax({
                 type: "POST",
@@ -254,24 +254,6 @@
             $("#errormsgquestionDescription").hide();
         });
 
-        $("#txtquestionDescription").click(function (e) {
-            $.ajax({
-                type: "POST",
-                url: "/Questions/GetDesbyQuesText",
-                data: { "questionText": $("#txtquestion").val() },
-                success: function (response) {
-                    if (response == "nd") {
-                        $("#txtquestionDescription").prop("disabled", false);
-                        $("#txtquestion").prop("disabled", false);
-                    } else {
-                        $("#txtquestionDescription").val(response);
-                       // $("#txtquestionDescription").prop("disabled", true);
-                     //   $("#txtquestion").prop("disabled", true);
-                    }
-                }
-            });
-        });
-
         $("#btnresetpopup").click(function () {
             $("#txtquestionDescription").val("");
             $("#txtquestion").val("");
@@ -280,15 +262,14 @@
         });
 
         $("#btnaddQuestion").click(function () {
-            if ($('#txtquestion').val() == "")
-            {
+            if ($('#txtquestion').val() == "") {
                 $('#errormsgquestion').show();
-                     return false;
+                return false;
             }
 
             if ($('#txtquestionDescription').val() == "") {
                 $('#errormsgquestionDescription').show();
-                 return false;
+                return false;
             }
 
             var subCategoryID = $('#SubCatID').val() + "^" + $('#txtquestion').val() + "^" + $("#txtquestionDescription").val() + "^" + $("#txtquestionseq").val();
@@ -302,6 +283,7 @@
                     }
                     else {
                         $("#popupcontent").dialog('close');
+
                         $(function () {
                             var subCategoryID = $('#SubCatID').val();
                             $.ajax({
@@ -326,23 +308,27 @@
                                                 "visible": false,
                                                 "searchable": false
                                             },
-                                                {
-                                                    "targets": [0, 3, 4],
-                                                    "orderable": false
-                                                }],
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
+                                            {
+                                                "targets": [0, 3, 4],
+                                                "orderable": false
+                                            }],
 
                                             columns: [{ 'data': 'QuestionMappingId' },
-                                                { 'data': 'SequenceNo' },
-                                                { 'data': 'QuestionText' },
+                                            { 'data': 'SequenceNo' },
+                                            { 'data': 'QuestionText' },
                                             {
-                                                  "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                                             },
                                             {
                                                 data: null,
                                                 render: function (data, type, row) {
                                                     return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                                 }
-                                                },
+                                            },
                                             ],
                                             "createdRow": function (row, data, dataIndex) {
                                                 $(row).addClass('neu-table__row--small');
@@ -350,17 +336,17 @@
                                         });
                                 },
                                 failure: function (response) {
-                                   // alert(response.d);
+                                    // alert(response.d);
                                 },
                                 error: function (response) {
-                                   // alert(response.d);
+                                    // alert(response.d);
                                 }
                             });
                         });
                     }
                 },
                 failure: function (response) {
-                   // alert(response.responseText);
+                    // alert(response.responseText);
                 },
                 error: function (response) {
                     //alert(response.responseText);
@@ -379,7 +365,7 @@
                     var options = '';
                     options += '<option value="Select">Select SubCategory</option>';
                     for (var i = 0; i < response.length; i++) {
-                        options += '<option value="' + response[i].SubCatgID + '">' + response[i].SubCatgDescription + '</option>';
+                        options += '<option value="' + response[i].SubCatgId + '">' + response[i].SubCatgDescription + '</option>';
                     }
                     $('#SubCatID').append(options);
                     $("#SubCatID").prop("selectedIndex", 1);
@@ -427,14 +413,18 @@
                                 "visible": false,
                                 "searchable": false
                             },
-                                {
-                                    "targets": [0, 3, 4],
-                                    "orderable": false
-                                }],
+                            {
+                                "targets": [1, 3, 4],
+                                "width": "10%"
+                            },
+                            {
+                                "targets": [0, 3, 4],
+                                "orderable": false
+                            }],
 
                             columns: [{ 'data': 'QuestionMappingId' },
-                                { 'data': 'SequenceNo' },
-                                { 'data': 'QuestionText' },
+                            { 'data': 'SequenceNo' },
+                            { 'data': 'QuestionText' },
                             {
                                 "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
                             },
@@ -443,7 +433,7 @@
                                 render: function (data, type, row) {
                                     return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
                                 }
-                                },
+                            },
                             ],
                             "createdRow": function (row, data, dataIndex) {
                                 $(row).addClass('neu-table__row--small');
@@ -474,8 +464,9 @@
         });
 
         $("#popupcontentdelete").dialog({
-            autoOpen: false, modal: true, width: 'auto' , draggable: false,
-            resizable: false});
+            autoOpen: false, modal: true, width: 'auto', draggable: false,
+            resizable: false
+        });
 
         $("#btncancelpopup").click(function () {
             $("#popupcontentdelete").dialog('close');
@@ -493,6 +484,8 @@
             var newquestId = $("#ddlQuestionsqedit").val();
             var newseqno = $("#ddlQuestionsqedit option:selected").text();
 
+
+
             if (selectedQuestionId == newquestId) {
                 $("#popupcontentedit").dialog('close');
             }
@@ -505,7 +498,7 @@
                     "newsequenceno": newseqno,
                     "cquestionid": selectedQuestionId,
                     "csequenceno": oldseqno
-                    },
+                },
                 success: function (response) {
                     if (response == "2") {
                         $('#errormsgsqedit').show(); $('#errormsgsqedit').text("Invalid Sequence");
@@ -537,28 +530,34 @@
                                                 "visible": false,
                                                 "searchable": false
                                             },
-                                                {
-                                                    "targets": [0, 3, 4],
-                                                    "orderable": false
-                                                }],
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
+                                            {
+                                                "targets": [0, 3, 4],
+                                                "orderable": false
+                                            }],
 
                                             columns: [
                                                 { 'data': 'QuestionMappingId' },
                                                 { 'data': 'SequenceNo' },
                                                 { 'data': 'QuestionText' },
-                                            {
-                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
-                                            },
-                                            {
-                                                data: null,
-                                                render: function (data, type, row) {
-                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
-                                                }
+                                                {
+                                                    "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                                },
+                                                {
+                                                    data: null,
+                                                    render: function (data, type, row) {
+                                                        return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                    }
                                                 },],
                                             "createdRow": function (row, data, dataIndex) {
                                                 $(row).addClass('neu-table__row--small');
                                             }
                                         });
+
+                                    $('#SubCatID').trigger('change');
                                 },
                                 failure: function (response) {
                                     // alert(response.d);
@@ -583,24 +582,101 @@
             $("#popupcontentedit").dialog('close');
         });
 
-        $("#btndeleteQuestion").click(function () {
-            var url = '@Url.Content("~/")' + "Questions/DeleteQuestionMaster";
-            $("#popupcontentdelete").dialog('close');
-            $.post(url, { ID: $("#hdndeletecatid").val() , SubCatId: $('#SubCatID').val() }, function (data) {
-                if (data) {
-                    oTable = $('#example').DataTable();
-                    oTable.draw();
-                } else {
-                    alert("Something Went Wrong!");
+        $('#txtquestion').on('autocompleteselect', function (e, ui) {
+            //alert(ui.item.value);
+            $.ajax({
+                type: "POST",
+                url: "/Questions/GetDesbyQuesText",
+                data: { "questionText": ui.item.value },
+                success: function (response) {
+                    if (response == "nd") {
+                        //$("#txtquestionDescription").val("");
+                    } else {
+                        $("#txtquestionDescription").val(response);
+                    }
                 }
             });
-            location.reload();
+        });
+
+        $("#btndeleteQuestion").click(function () {
+            $("#popupcontentdelete").dialog('close');
+
+            $.ajax({
+                type: "POST",
+                url: "/questions/DeleteQuestionMaster",
+                data: {
+                    id: $("#hdndeletecatid").val()
+                },
+                success: function (response) {
+                    if (response == "2") {
+                    }
+                    else {
+                        var subCategoryID = $('#SubCatID').val();
+                        $.ajax({
+                            type: "Get",
+                            url: "/Questions/BindGrid",
+                            data: { "subCategoryID": subCategoryID },
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response) {
+                                $("#tblquestions").DataTable(
+                                    {
+                                        destroy: true,
+                                        bLengthChange: false,
+                                        lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                                        bFilter: false,
+                                        bSort: true,
+                                        bPaginate: false,
+                                        data: response,
+
+                                        "columnDefs": [{
+                                            "targets": [0],
+                                            "visible": false,
+                                            "searchable": false
+                                        },
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
+                                        {
+                                            "targets": [0, 3, 4],
+                                            "orderable": false
+                                        }],
+
+                                        columns: [
+                                            { 'data': 'QuestionMappingId' },
+                                            { 'data': 'SequenceNo' },
+                                            { 'data': 'QuestionText' },
+                                            {
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                            },
+                                            {
+                                                data: null,
+                                                render: function (data, type, row) {
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                }
+                                            },],
+                                        "createdRow": function (row, data, dataIndex) {
+                                            $(row).addClass('neu-table__row--small');
+                                        }
+                                    });
+                            },
+                            failure: function (response) {
+                                // alert(response.d);
+                            },
+                            error: function (response) {
+                                // alert(response.d);
+                            }
+                        });
+                    }
+                }
+            });
         });
     });
 
     function DeleteData(CatgID) {
         $("#lblcustomtextfor").text("Do you want to Delete this Question Mapping");
-       $("#popupcontentdelete").dialog('open');
+        $("#popupcontentdelete").dialog('open');
         $("#hdndeletecatid").val(CatgID);
     }
 
@@ -618,10 +694,10 @@
         $.ajax({
             type: "POST",
             url: "/questions/GetQuestionSeqByid",
-            data: { "id": CatgID, "subcatid": subcatid, "actionQid": CatgID},
+            data: { "id": CatgID, "subcatid": subcatid, "actionQid": CatgID },
             success: function (response) {
                 if (response != null && response != "") {
-                    $('#ddlQuestionsqedit').html(''); 
+                    $('#ddlQuestionsqedit').html('');
                     var options = ''; var index = 0;
                     for (var i = 0; i < response.length; i++) {
                         options += '<option value="' + response[i].QuestionMappingId + '">' + response[i].SequenceNo + '</option>';

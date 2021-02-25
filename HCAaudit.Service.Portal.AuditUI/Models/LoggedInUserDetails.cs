@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace HCAaudit.Service.Portal.AuditUI.Models
+﻿namespace HCAaudit.Service.Portal.AuditUI.Models
 {
     public class LoggedInUserDetails
     {
@@ -16,6 +11,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         /// LoggedIn User First name
         /// </summary>
         public string LoggedInFname { get; set; }
+
+        public string EmailAddress { get; set; }
 
         /// <summary>
         /// LoggedIn User Last name

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
 using System.Threading.Tasks;
-
-using HCAaudit.Service.Portal.AuditUI.Models;
 
 namespace HCAaudit.Service.Portal.AuditUI.Services
 {
@@ -13,5 +9,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         public Task<bool> CheckAuditorUserGroup();
 
         public Task<LoggedInUserDetails> LoggedInUserInfo();
+
+        public Task<string> GetEmailFrom34ID(string input34id);
     }
 }

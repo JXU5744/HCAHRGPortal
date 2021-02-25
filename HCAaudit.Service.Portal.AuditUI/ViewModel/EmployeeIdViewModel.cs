@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace HCAaudit.Service.Portal.AuditUI.ViewModel
+﻿namespace HCAaudit.Service.Portal.AuditUI.ViewModel
 {
     public class EmployeeIdViewModel
     {

@@ -1,15 +1,15 @@
-﻿using System;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
+using HCAaudit.Service.Portal.AuditUI.Services;
+using HCAaudit.Service.Portal.AuditUI.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using HCAaudit.Service.Portal.AuditUI.Services;
-using HCAaudit.Service.Portal.AuditUI.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text;
-using HCAaudit.Service.Portal.AuditUI.ViewModel;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -20,7 +20,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor;
-        private IErrorLog _log;
+        private readonly IErrorLog _log;
         public IConfiguration _configuration { get; }
 
         public AuditController(ILogger<AuditController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
@@ -48,34 +48,33 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     var ticketId = TicketId;
                     var ticketStatus = TicketStatus;
-                    var ticketSubStatus = TicketSubStatus;
                     var auditTicketDate = TicketDate.Replace("%2F", "/");
                     var recordDate = DateTime.Parse(auditTicketDate);
                     var serviceCategory = ServiceCatId;
                     var subCategory = SubCatId;
                     var environmentType = EnvironmentType;
 
-                    var auditMain = _auditToolContext.AuditMain.Where(x => x.TicketID == TicketId
+                    var auditMain = _auditToolContext.AuditMain.Where(x => x.TicketId == TicketId
                         && x.AuditType == environmentType
                         && x.TicketDate == recordDate
-                        && x.SubcategoryID == subCategory).FirstOrDefault();
+                        && x.SubcategoryId == subCategory).FirstOrDefault();
 
                     if (auditMain != null)
                         return RedirectToAction("Index", "Search");
 
                     var auditViewModel = new AuditViewModel();
 
-                    var subcategory = _auditToolContext.SubCategories.Where(cat => cat.SubCatgID == subCategory &&
-                    cat.CatgID == serviceCategory && cat.IsActive == true).FirstOrDefault();
+                    var subcategory = _auditToolContext.SubCategory.Where(cat => cat.SubCatgId == subCategory &&
+                    cat.CatgId == serviceCategory && cat.IsActive == true).FirstOrDefault();
                     var subCategoryDescription = subcategory != null ? subcategory.SubCatgDescription : String.Empty;
 
-                    var category = _auditToolContext.Categories.Where(cat => cat.CatgID == serviceCategory
+                    var category = _auditToolContext.Category.Where(cat => cat.CatgId == serviceCategory
                         && cat.IsActive == true).FirstOrDefault();
                     var categoryDescription = category != null ? category.CatgDescription : String.Empty;
 
                     if (ticketStatus == "0")
                     {
-                        var ssisTicket = _auditToolContext.SearchTicketDetail.Where(
+                        var ssisTicket = _auditToolContext.TicketsViaSSIS.Where(
                             ssis => ssis.TicketCode == ticketId
                             && ssis.TicketStatus == "0"
                             && ssis.ClosedDate == recordDate
@@ -85,7 +84,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CloseUserId) ? "" : ssisTicket.CloseUserId.Substring(0, 7);
 
-                            var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
+                            var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.Employee34IdLowerCase == auditViewModel.Agent34Id).FirstOrDefault();
                             var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
 
                             auditViewModel.TicketId = ssisTicket.TicketCode;
@@ -93,20 +92,20 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             auditViewModel.EnvironmentType = environmentType;
                             auditViewModel.ServiceCatId = serviceCategory;
                             auditViewModel.SubCatName = subCategoryDescription;
-                            auditViewModel.SupervisorName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
+                            auditViewModel.SupervisorName = hrProff != null ? String.Concat(hrProff.SupervisorLastName, ", ", hrProff.SupervisorFirstName) : String.Empty;
                             auditViewModel.ServiceGroupName = categoryDescription;
                             auditViewModel.SubCatId = subCategory;
                             auditViewModel.AgentName = hrProffName;
                             auditViewModel.TicketDate = (DateTime)ssisTicket.ClosedDate;
 
-                            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive &&
+                            var listOfValues = _auditToolContext.ListOfValue.Where(x => x.IsActive == true &&
                                 x.CodeType.Trim().ToLower() == "audit cancel reason").ToList();
 
                             var cancelReason = new List<SelectListItem>();
                             cancelReason.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
                             foreach (var item in listOfValues)
                             {
-                                cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                                cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
                             }
 
                             auditViewModel.CancellationReason = cancelReason;
@@ -165,7 +164,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     else if (ticketStatus == "1")
                     {
-                        var ssisTicket = _auditToolContext.SearchTicketDetail.Where(
+                        var ssisTicket = _auditToolContext.TicketsViaSSIS.Where(
                             ssis => ssis.TicketCode == ticketId
                             && ssis.TicketStatus == "1"
                             && ssis.CreateDate == recordDate
@@ -175,7 +174,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             auditViewModel.Agent34Id = String.IsNullOrWhiteSpace(ssisTicket.CreatorUserId) ? "" : ssisTicket.CreatorUserId.Substring(0, 7);
 
-                            var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.EmployeethreefourID == auditViewModel.Agent34Id).FirstOrDefault();
+                            var hrProff = _auditToolContext.HROCRoster.Where(hrp => hrp.Employee34IdLowerCase == auditViewModel.Agent34Id).FirstOrDefault();
                             var hrProffName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
 
                             auditViewModel.TicketId = ssisTicket.TicketCode;
@@ -188,14 +187,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             auditViewModel.AgentName = hrProffName;
                             auditViewModel.TicketDate = (DateTime)ssisTicket.CreateDate;
 
-                            var listOfValues = _auditToolContext.ListOfValues.Where(x => x.IsActive &&
+                            var listOfValues = _auditToolContext.ListOfValue.Where(x => x.IsActive == true &&
                                 x.CodeType.Trim().ToLower() == "audit cancel reason").ToList();
 
                             var cancelReason = new List<SelectListItem>();
                             cancelReason.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
                             foreach (var item in listOfValues)
                             {
-                                cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.ID.ToString() });
+                                cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
                             }
 
                             auditViewModel.CancellationReason = cancelReason;
@@ -257,7 +256,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.InnerException.ToString()});
             }
             return RedirectToAction("Index", "Home");
         }
@@ -272,15 +271,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     if (audit != null)
                     {
                         AuditMain main = new AuditMain();
-                        main.TicketID = audit.TicketId;
-                        main.Agent34ID = audit.Agent34Id;
+                        main.TicketId = audit.TicketId;
+                        main.Agent34Id = audit.Agent34Id;
                         main.AgentName = audit.AgentName;
                         main.AuditNotes = audit.AuditNote;
                         main.AuditorName = audit.AuditorName;
                         main.AuditType = audit.EnvironmentType;
-                        main.ServiceGroupID = audit.ServiceCatId;
-                        main.SubcategoryID = audit.SubCatId;
-                        main.SubmitDT = DateTime.Now;
+                        main.ServiceGroupId = audit.ServiceCatId;
+                        main.SubcategoryId = audit.SubCatId;
+                        main.SubmitDt = DateTime.Now;
                         main.TicketDate = audit.TicketDate;
                         main.CreatedDate = DateTime.Now;
                         main.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
@@ -294,15 +293,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             AuditMainResponse obj = new AuditMainResponse();
 
                             obj.QuestionId = item.QuestionId;
-                            obj.AuditMainID = main.ID;
+                            obj.AuditMainId = main.Id;
                             obj.QuestionRank = item.QuestionSequence;
-                            obj.TicketID = main.TicketID;
-                            obj.isCompliant = item.Action.IsCompliance;
-                            obj.isCorrectionRequired = item.CorrectionRequire;
-                            obj.isHighNonComplianceImpact = item.Action.Impact.IsHighImpact;
-                            obj.isLowNonComplianceImpact = item.Action.Impact.IsLowImpact;
-                            obj.isNA = item.Action.IsNotApplicable;
-                            obj.isNonCompliant = item.Action.IsNonCompliance;
+                            obj.TicketId = main.TicketId;
+                            obj.IsCompliant = item.Action.IsCompliance;
+                            obj.IsCorrectionRequired = item.CorrectionRequire;
+                            obj.IsHighNonComplianceImpact = item.Action.Impact.IsHighImpact;
+                            obj.IsLowNonComplianceImpact = item.Action.Impact.IsLowImpact;
+                            obj.IsNa = item.Action.IsNotApplicable;
+                            obj.IsNonCompliant = item.Action.IsNonCompliance;
                             obj.NonComplianceComments = item.Comments;
                             obj.CreatedDate = DateTime.Now;
                             obj.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
@@ -312,7 +311,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             _auditToolContext.AuditMainResponse.Add(obj);
                             _auditToolContext.SaveChanges();
                         }
-                        FormatAndSendEmail(main.ID);
+
+                        FormatAndSendEmail(main.Id);
                     }
                     return RedirectToAction("Index", "Search");
                 }
@@ -320,7 +320,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in SaveAudit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_SaveAudit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_SaveAudit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -340,18 +340,18 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             if (tempreasonid > 0)
                             {
-                                var cancelreason = _auditToolContext.ListOfValues.Where(x => x.ID == Int32.Parse(audit.AuditorQuitReasonId)).FirstOrDefault();
+                                var cancelreason = _auditToolContext.ListOfValue.Where(x => x.Id == Int32.Parse(audit.AuditorQuitReasonId)).FirstOrDefault();
 
                                 AuditMain main = new AuditMain();
 
-                                main.TicketID = audit.TicketId;
-                                main.Agent34ID = audit.Agent34Id;
+                                main.TicketId = audit.TicketId;
+                                main.Agent34Id = audit.Agent34Id;
                                 main.AgentName = audit.AgentName;
                                 main.AuditorName = audit.AuditorName;
                                 main.AuditType = audit.EnvironmentType;
-                                main.ServiceGroupID = audit.ServiceCatId;
-                                main.SubcategoryID = audit.SubCatId;
-                                main.SubmitDT = DateTime.Now;
+                                main.ServiceGroupId = audit.ServiceCatId;
+                                main.SubcategoryId = audit.SubCatId;
+                                main.SubmitDt = DateTime.Now;
                                 main.AuditorQuit = "Quit";
                                 main.AuditorQuitReason = cancelreason.Code;
                                 main.TicketDate = audit.TicketDate;
@@ -382,7 +382,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in CancelAudit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_CancelAudit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_CancelAudit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -396,20 +396,21 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             try
             {
-                var auditMain = _auditToolContext.AuditMain.Where(x => x.ID == mainID).FirstOrDefault();
+                var auditMain = _auditToolContext.AuditMain.Where(x => x.Id == mainID).FirstOrDefault();
                 if (auditMain != null)
                 {
-                    var auditMainResponse = _auditToolContext.AuditMainResponse.Where(X => X.AuditMainID == mainID).ToList();
-                    var category = _auditToolContext.Categories.Where(x => x.CatgID == auditMain.ServiceGroupID).FirstOrDefault();
-                    var subCategory = _auditToolContext.SubCategories.Where(x => x.SubCatgID == auditMain.SubcategoryID).FirstOrDefault();
+                    var auditMainResponse = _auditToolContext.AuditMainResponse.Where(X => X.AuditMainId == mainID).ToList();
+                    var subCategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == auditMain.SubcategoryId).FirstOrDefault();
                     var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
-                    var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketID;
-                    //var sendTo = auditMain.Agent34ID + "@hca.corpad.net";
-                    var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
-                    var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
-                    var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+                    var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketId;
 
-                    var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketID + "</b><br>";
+                    //var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+                    var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
+
+                    var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
+                    var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
+
+                    var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketId + "</b><br>";
 
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.Append("<html><Body>");
@@ -424,13 +425,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             var quesSeq = item.QuestionRank;
                             var quesDescription = questionDesc.QuestionDescription;
-                            var compliance = item.isCompliant == true ? "Yes" : "No";
-                            var nonCompliance = item.isNonCompliant == true ? "Yes" : "No";
-                            var impact = item.isHighNonComplianceImpact == true ? " (High)" : (item.isLowNonComplianceImpact == true ? " (Low)" : string.Empty);
+                            var compliance = item.IsCompliant == true ? "Yes" : "No";
+                            var nonCompliance = item.IsNonCompliant == true ? "Yes" : "No";
+                            var lowNonCompliant = item.IsLowNonComplianceImpact == true ? " (Low)" : string.Empty;
+                            var impact = item.IsHighNonComplianceImpact == true ? " (High)" : lowNonCompliant;
                             nonCompliance += impact;
-                            var correctionRequired = item.isCorrectionRequired == true ? "Yes" : "No";
-                            var notApplicable = item.isNA == true ? "Yes" : "No";
-                            var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
+                            var correctionRequired = item.IsCorrectionRequired == true ? "Yes" : "No";
+                            var notApplicable = item.IsNa == true ? "Yes" : "No";
+                            var comments = item.NonComplianceComments ?? " ";
 
                             stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
                             stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);
@@ -449,7 +451,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         SendFromName = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                         EmailBody = stringBuilder.ToString()
                     };
-                    EmailHelper emailHelper = new EmailHelper(_configuration,_log);
+                    EmailHelper emailHelper = new EmailHelper(_configuration, _log);
                     emailHelper.SendEmailNotification(emailObject);
                 }
             }

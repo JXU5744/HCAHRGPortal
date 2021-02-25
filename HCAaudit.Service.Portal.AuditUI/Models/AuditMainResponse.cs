@@ -5,16 +5,20 @@ using System.Collections.Generic;
 
 namespace HCAaudit.Service.Portal.AuditUI.Models
 {
-    public partial class AuditDispute
+    public partial class AuditMainResponse
     {
         public int Id { get; set; }
         public int AuditMainId { get; set; }
         public string TicketId { get; set; }
         public int QuestionId { get; set; }
         public int? QuestionRank { get; set; }
-        public int? GracePeriodId { get; set; }
-        public int? OverTurnId { get; set; }
-        public string Comments { get; set; }
+        public bool? IsCompliant { get; set; }
+        public bool? IsNonCompliant { get; set; }
+        public bool? IsNa { get; set; }
+        public bool? IsHighNonComplianceImpact { get; set; }
+        public bool? IsLowNonComplianceImpact { get; set; }
+        public bool? IsCorrectionRequired { get; set; }
+        public string NonComplianceComments { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }

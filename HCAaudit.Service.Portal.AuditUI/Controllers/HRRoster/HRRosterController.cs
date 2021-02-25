@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
+﻿using HCAaudit.Service.Portal.AuditUI.Models;
 using HCAaudit.Service.Portal.AuditUI.Services;
-using HCAaudit.Service.Portal.AuditUI.Models;
 using HCAaudit.Service.Portal.AuditUI.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
 {
@@ -14,17 +14,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     public class HRRosterController : Controller
     {
         private readonly ILogger<HRRosterController> _logger;
-        private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
-        private bool isAdmin = false;
-        private IErrorLog _log;
-        
+        private readonly bool isAdmin = false;
+        private readonly IErrorLog _log;
+
         public HRRosterController(ILogger<HRRosterController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
             _log = log;
@@ -38,18 +36,18 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (isAdmin)
                 {
                     var data = (from hroc in _auditToolContext.HROCRoster select hroc).ToList();
-                    var objclstbHROCRoster = data.Where(x => x.EmployeethreefourID.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
+                    var objclstbHROCRoster = data.Where(x => x.Employee34IdLowerCase.ToLower().Equals(employeeIdViewModel.EmployeeId.ToLower()))
                                             .Select(x => new
                                             {
                                                 x.HROCRosterId,
                                                 x.EmployeeFullName,
-                                                x.EmployeeLastName,
-                                                x.EmployeeFirstName,
-                                                x.EmployeethreefourID,
-                                                x.EmployeeNumber,
+                                                x.LastName,
+                                                x.FirstName,
+                                                x.Employee34IdLowerCase,
+                                                x.EmployeeNum,
                                                 x.SupervisorLastName,
                                                 x.SupervisorFirstName,
-                                                x.JobCDDesc,
+                                                x.JobCdDescHomeCurr,
                                                 x.CreatedDate,
                                                 x.CreatedBy,
                                                 x.ModifiedBy,
@@ -61,7 +59,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetDetailsById method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -79,7 +77,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Details method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -90,15 +88,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (isAdmin)
                 {
-                    var categoryList = _auditToolContext.Categories.Where(a => a.IsActive == true).ToList();
-                    _logger.LogInformation($"No of records: {categoryList.Count()}");
+                    var categoryList = _auditToolContext.Category.Where(a => a.IsActive == true).ToList();
+                    _logger.LogInformation($"No of records: {categoryList.Count}");
                     return Json(categoryList);
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetCategory method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetCategory", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetCategory", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -117,14 +115,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             (x => x.HROCRosterId == hROCRosterViewModel.HROCRosterId).FirstOrDefault();
                         if (objHROCRoster != null)
                         {
-                            objHROCRoster.EmployeeNumber = hROCRosterViewModel.EmployeeNumber;
+                            objHROCRoster.EmployeeNum = hROCRosterViewModel.EmployeeNumber;
                             objHROCRoster.EmployeeFullName = hROCRosterViewModel.EmployeeFullName;
-                            objHROCRoster.EmployeeLastName = hROCRosterViewModel.EmployeeLastName;
-                            objHROCRoster.EmployeeFirstName = hROCRosterViewModel.EmployeeFirstName;
+                            objHROCRoster.LastName = hROCRosterViewModel.EmployeeLastName;
+                            objHROCRoster.FirstName = hROCRosterViewModel.EmployeeFirstName;
                             objHROCRoster.SupervisorLastName = hROCRosterViewModel.SupervisorLastName;
                             objHROCRoster.SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName;
-                            objHROCRoster.EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower();
-                            objHROCRoster.JobCDDesc = hROCRosterViewModel.JobCDDesc;
+                            objHROCRoster.Employee34IdLowerCase = hROCRosterViewModel.EmployeethreefourID.ToLower();
+                            objHROCRoster.JobCdDescHomeCurr = hROCRosterViewModel.JobCDDesc;
                             objHROCRoster.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                             objHROCRoster.ModifiedDate = DateTime.Now;
                             _auditToolContext.HROCRoster.Update(objHROCRoster);
@@ -136,7 +134,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in Edit method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.InnerException.ToString() });
                 }
                 return Json(resp);
             }
@@ -159,14 +157,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         HROCRoster objHROCRoster = new HROCRoster
                         {
                             HROCRosterId = 0,
-                            EmployeeNumber = hROCRosterViewModel.EmployeeNumber,
+                            EmployeeNum = hROCRosterViewModel.EmployeeNumber,
                             EmployeeFullName = hROCRosterViewModel.EmployeeFullName,
-                            EmployeeLastName = hROCRosterViewModel.EmployeeLastName,
-                            EmployeeFirstName = hROCRosterViewModel.EmployeeFirstName,
+                            LastName = hROCRosterViewModel.EmployeeLastName,
+                            FirstName = hROCRosterViewModel.EmployeeFirstName,
                             SupervisorLastName = hROCRosterViewModel.SupervisorLastName,
                             SupervisorFirstName = hROCRosterViewModel.SupervisorFirstName,
-                            EmployeethreefourID = hROCRosterViewModel.EmployeethreefourID.ToLower(),
-                            JobCDDesc = hROCRosterViewModel.JobCDDesc,
+                            Employee34IdLowerCase = hROCRosterViewModel.EmployeethreefourID.ToLower(),
+                            JobCdDescHomeCurr = hROCRosterViewModel.JobCDDesc,
                             CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                             CreatedDate = DateTime.Now,
                             ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
@@ -180,7 +178,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in Insert method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.InnerException.ToString() });
                 }
                 return Json(resp);
             }

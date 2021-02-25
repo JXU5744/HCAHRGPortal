@@ -3,7 +3,7 @@
 <link href="~/css/font-awesome.min.css" rel="stylesheet" />
 <link href="~/css/bootstrap-multiselect.css" rel="stylesheet" />
 <link href="~/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="~/css/jquery-ui.css" />
+@*<link rel="stylesheet" href="~/css/jquery-ui.css" />*@
 
 <script src="~/lib/jquery/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -15,6 +15,10 @@
 <script type="text/javascript" src="~/js/moment.min.js"></script>
 <script src="~/js/jquery-ui.min.js"></script>
 
+@*.ui-autocomplete{
+    max-height:250px;
+    overflow: auto;
+}*@
 
 <style type="text/css">
     .ui-autocomplete {
@@ -22,7 +26,7 @@
         /*max-height: 300px;
         min-width: calc(100% - 16px) !important;*/
         /* these make it scroll for anything outside */
-        overflow-x: scroll;
+       /* overflow-x: scroll;
         overflow-y: scroll;
         font-family: inherit;
         font-size: initial;
@@ -30,13 +34,13 @@
         overflow-x: scroll;
         overflow-y: scroll;
         font-family: inherit;
-        font-size: initial;
+        font-size: initial;*/
         /*max-height: 125px;*/
-    }
 
-    .ui-autocomplete-input {
-        width: 30px;
+        max-height: 250px;
+        overflow: auto;
     }
+    
 </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -87,7 +91,7 @@
             <div tabindex="-1" aria-checked="false" style="text-align:left;">
                 <label class="neu-input__label required" for="CatgID" style="text-align:left;width:50%">Service Delivery Group</label>
                 <select name="CatgID" id="CatgID" class="neu-select" title="select"
-                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgID", "CatgDescription"))">
+                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "CatgId", "CatgDescription"))">
                 </select>
             </div>
         </div>
