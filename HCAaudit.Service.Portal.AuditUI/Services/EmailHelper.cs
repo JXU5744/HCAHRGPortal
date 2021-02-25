@@ -28,7 +28,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                 if (!string.IsNullOrEmpty(emailContent.SendTo))
                 {
                     message.To.Add(emailContent.SendTo);
-                    message.To.Add("girish.chavan@hcahealthcare.com");
                 }
                 message.From = new MailAddress(emailContent.SendFrom, emailContent.SendFromName);
                 message.Subject = emailContent.Subject;
@@ -38,7 +37,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "EmailHelper_SendEmailNotification", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "EmailHelper_SendEmailNotification", ErrorDiscription = ex.InnerException.ToString() });
             }
         }
 

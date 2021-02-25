@@ -46,7 +46,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetCategory method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategory", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategory", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -70,7 +70,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetCategoryByid method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategoryByid", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetCategoryByid", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -87,7 +87,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetSubCategoryDetailsByID method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetSubCategoryDetailsByID", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetSubCategoryDetailsByID", ErrorDiscription = ex.InnerException.ToString() });
             }
             return data;
         }
@@ -109,7 +109,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_delete", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_delete", ErrorDiscription = ex.InnerException.ToString() });
             }
             return View("Details", GetDetails());
         }
@@ -157,7 +157,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Edit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Edit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Edit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -196,7 +196,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Insert method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Insert", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Insert", ErrorDiscription = ex.InnerException.ToString() });
             }
             
             return RedirectToAction("Index", "Home");
@@ -270,7 +270,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in Details method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.InnerException.ToString() });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -289,7 +289,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Details method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_Details", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -307,7 +307,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in IsSubcategoryNameExists method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_IsSubcategoryNameExists", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_IsSubcategoryNameExists", ErrorDiscription = ex.InnerException.ToString() });
             }
             return result;
         }
@@ -341,7 +341,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetDetails method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetails", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetails", ErrorDiscription = ex.InnerException.ToString() });
             }
             return new List<CatSubCatJoinMast>();
         }
@@ -375,7 +375,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetDetail method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetail", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_GetDetail", ErrorDiscription = ex.InnerException.ToString() });
             }
             return query;
         }
@@ -402,7 +402,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in HasDeleteAccess method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_HasDeleteAccess", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SubCategoryController_HasDeleteAccess", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }

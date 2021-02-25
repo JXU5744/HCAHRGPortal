@@ -5,7 +5,8 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.DirectoryServices.AccountManagement;
+using System.Collections.Generic;
 
 namespace HCAaudit.Service.Portal.AuditUI.Services
 {
@@ -22,26 +23,36 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
 
         public async Task<bool> CheckAdminUserGroup()
         {
-            return true;
             var token = await GetIdToken();
-            var group = token.Claims.FirstOrDefault(claim => claim.Type == "group") != null ? token.Claims.FirstOrDefault(claim => claim.Type == "group").Value.ToLower() : "";
-            if (group.ToLower().Equals("corp_hr_hraudit_admin"))
+            var isAdmin = false;
+            var groupList = token.Claims.Where(claim => claim.Type == "group").ToList();
+            foreach (System.Security.Claims.Claim item in groupList)
             {
-                return true;
+                if (item.Value.ToLower().Equals("corp_hr_hraudit_admin"))
+                {
+                    isAdmin = true;
+                    break;
+                }
             }
-            return false;
+            
+            return isAdmin;
         }
 
         public async Task<bool> CheckAuditorUserGroup()
         {
-            return true;
             var token = await GetIdToken();
-            var group = token.Claims.FirstOrDefault(claim => claim.Type == "group") != null ? token.Claims.FirstOrDefault(claim => claim.Type == "group").Value.ToLower() : "";
-            if (group.ToLower().Equals("corp_hr_hraudit_user"))
+            var isUser = false;
+            var groupList = token.Claims.Where(claim => claim.Type == "group").ToList();
+            foreach (System.Security.Claims.Claim item in groupList)
             {
-                return true;
+                if (item.Value.ToLower().Equals("corp_hr_hraudit_user"))
+                {
+                    isUser = true;
+                    break;
+                }
             }
-            return false;
+
+            return isUser;
         }
 
         public async Task<LoggedInUserDetails> LoggedInUserInfo()
@@ -50,6 +61,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
             var firstName = token.Claims?.FirstOrDefault(claim => claim.Type == "firstName")?.Value;
             var lastName = token.Claims?.FirstOrDefault(claim => claim.Type == "lastName")?.Value;
             var hcdId = token.Claims?.FirstOrDefault(claim => claim.Type == "subject")?.Value;
+            var emailAddress = token.Claims?.FirstOrDefault(claim => claim.Type == "emailAddress")?.Value;
             return new LoggedInUserDetails()
             {
                 LoggedInFname = firstName,
@@ -57,9 +69,20 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                 LoggedInFullName = firstName + " " + lastName,
                 Initials = GetUserInitials(firstName, lastName),
                 HcaId = hcdId,
+                EmailAddress = emailAddress,
                 LoggedInIp = Convert.ToString(contextAccessor.HttpContext.Connection.RemoteIpAddress)
             };
+        }
 
+        public  async Task<string> GetEmailFrom34ID(string input34id)
+        {
+            string email = string.Empty;
+            using (var principalContext = new PrincipalContext(ContextType.Domain, "hca.corpad.net"))
+            {
+                var userPrincipal = UserPrincipal.FindByIdentity(principalContext, input34id);
+                email= userPrincipal.EmailAddress;
+            }
+            return email;
         }
         #endregion
 

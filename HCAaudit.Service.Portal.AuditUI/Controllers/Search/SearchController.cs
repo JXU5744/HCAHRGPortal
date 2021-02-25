@@ -73,7 +73,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = ex.InnerException.ToString() });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -92,7 +92,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCommaSeperated", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCommaSeperated", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -177,7 +177,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = ex.InnerException.ToString() });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -195,7 +195,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Index", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Index", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -219,7 +219,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Index", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_Index", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -251,7 +251,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_BindSubCategory", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_BindSubCategory", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -266,7 +266,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCategoryDetails", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCategoryDetails", ErrorDiscription = ex.InnerException.ToString() });
             }
             return data;
         }
@@ -296,7 +296,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetHRList", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetHRList", ErrorDiscription = ex.InnerException.ToString() });
             }
             return lstAssignedTo.ToList();
         }
@@ -331,7 +331,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetClosedAuditSearchResult", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetClosedAuditSearchResult", ErrorDiscription = ex.InnerException.ToString() });
             }
             return objgriddata;
         }
@@ -353,7 +353,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCaegoryID", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetCaegoryID", ErrorDiscription = ex.InnerException.ToString() });
             }
             return categoryid;
         }
@@ -382,7 +382,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetAllSubcategory", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetAllSubcategory", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -428,7 +428,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchResult", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchResult", ErrorDiscription = ex.InnerException.ToString() });
             }
             return objgriddata;
         }

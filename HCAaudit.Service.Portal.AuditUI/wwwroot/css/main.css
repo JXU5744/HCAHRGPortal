@@ -139,12 +139,12 @@ body {
     z-index: 1030;
 }
 
-.ui-autocomplete {
+/*.ui-autocomplete {*/
     /* these sets the height and width */
-    max-height: 200px;
-    min-width: calc(100% - 16px) !important;
+    /*max-height: 200px;
+    min-width: calc(100% - 16px) !important;*/
     /* these make it scroll for anything outside */
-    overflow-x: scroll;
+    /*overflow-x: scroll;
     overflow-y: scroll;
     font-family: inherit;
     font-size: initial;
@@ -154,9 +154,33 @@ body {
     font-family: inherit;
     font-size: initial;
     max-height: 125px;
-} 
-/*Position CSS*/
+}*/
 
+.ui-autocomplete {
+     /*these sets the height and width */
+        max-height: 300px;
+        min-width: calc(100% - 16px) !important;
+   /* // these make it scroll for anything outside */
+    overflow-x: scroll;
+    overflow-y: scroll;
+    font-family: inherit;
+    font-size: initial;
+    /*min-width: calc(100% - 16px) !important;*/
+    overflow-x: scroll;
+    overflow-y: scroll;
+    font-family: inherit;
+    font-size: initial;
+    max-height: 125px;
+}
+
+/*.ui-autocomplete-input {
+    width: 30px;
+}*/
+/*.ui-autocomplete{
+    max-height:250px;
+    overflow: auto;
+}*/
+/*Position CSS*/
 .neu-padding--top-90 {
     padding-top: 90px;
 }

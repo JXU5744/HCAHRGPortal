@@ -92,7 +92,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             auditViewModel.EnvironmentType = environmentType;
                             auditViewModel.ServiceCatId = serviceCategory;
                             auditViewModel.SubCatName = subCategoryDescription;
-                            auditViewModel.SupervisorName = hrProff != null ? hrProff.EmployeeFullName : String.Empty;
+                            auditViewModel.SupervisorName = hrProff != null ? String.Concat(hrProff.SupervisorLastName, ", ", hrProff.SupervisorFirstName) : String.Empty;
                             auditViewModel.ServiceGroupName = categoryDescription;
                             auditViewModel.SubCatId = subCategory;
                             auditViewModel.AgentName = hrProffName;
@@ -256,7 +256,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.InnerException.ToString()});
             }
             return RedirectToAction("Index", "Home");
         }
@@ -320,7 +320,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in SaveAudit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_SaveAudit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_SaveAudit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -382,7 +382,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in CancelAudit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_CancelAudit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_CancelAudit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -403,10 +403,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var subCategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == auditMain.SubcategoryId).FirstOrDefault();
                     var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                     var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketId;
-                    
-                    var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
-                    var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
-                    var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+
+                    //var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+                    var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
+
+                    var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
+                    var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
                     var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketId + "</b><br>";
 
@@ -430,7 +432,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             nonCompliance += impact;
                             var correctionRequired = item.IsCorrectionRequired == true ? "Yes" : "No";
                             var notApplicable = item.IsNa == true ? "Yes" : "No";
-                            var comments = item.NonComplianceComments == null ? " " : item.NonComplianceComments;
+                            var comments = item.NonComplianceComments ?? " ";
 
                             stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
                             stringBuilder.Append(cellEndTag + cellStartTag + compliance + cellEndTag + cellStartTag + nonCompliance);

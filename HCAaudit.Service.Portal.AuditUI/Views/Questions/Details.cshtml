@@ -10,24 +10,7 @@
 <script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
 <script src="~/js/jquery-ui.min.js"></script>
 
-<style type="text/css">
-    .ui-autocomplete {
-        /* these sets the height and width */
-        /*max-height: 300px;
-        min-width: calc(100% - 16px) !important;*/
-        /* these make it scroll for anything outside */
-        overflow-x: scroll;
-        overflow-y: scroll;
-        font-family: inherit;
-        font-size: initial;
-        min-width: calc(100% - 16px) !important;
-        overflow-x: scroll;
-        overflow-y: scroll;
-        font-family: inherit;
-        font-size: initial;
-        /*max-height: 125px;*/
-    }
-</style>
+
 
 @model List<HCAaudit.Service.Portal.AuditUI.Models.QuestionBank>
 
@@ -169,7 +152,6 @@
 
         $("#popupcontent").dialog({
             width: 'auto',
-            height: 425,
             autoOpen: false,
             draggable: false,
             resizable: false,
@@ -178,7 +160,6 @@
 
         $("#popupcontentedit").dialog({
             width: 'auto',
-            height: 425,
             autoOpen: false,
             draggable: false,
             resizable: false,
