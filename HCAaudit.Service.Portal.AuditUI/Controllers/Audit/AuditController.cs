@@ -407,6 +407,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     //var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
                     var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
 
+                    //Required for PROD **********
+                    //var sendTo = _authService.GetEmailFrom34ID(sentoEmail).Result.ToString();
+
+
                     var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
                     var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
