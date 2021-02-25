@@ -178,8 +178,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketId;
                 
                 var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
-                var sendFrom = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
-                var replyTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net";
+                var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
+                var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
                 var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is the Case Management Audit Dispute and Resolution for Ticket #<b>" + auditMain.TicketId + "</b><br>";
 
@@ -207,7 +207,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         var responseComments = auditResponseObject != null ? auditResponseObject.NonComplianceComments : String.Empty;
                         var gracePeriodDesc = gracePeriod != null ? gracePeriod.Code : String.Empty;
                         var overTurnDesc = overTurn != null ? overTurn.Code : String.Empty;
-                        var comments = item.Comments == null ? string.Empty : item.Comments;
+                        var comments = item.Comments ?? string.Empty;
 
                         stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
                         stringBuilder.Append(cellEndTag + cellStartTag + correctionRequired + cellEndTag + cellStartTag + responseComments);
@@ -225,6 +225,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     SendTo = sendTo,
                     ReplyTo = replyTo,
                     Subject = subject,
+                    SendFromName = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                     EmailBody = stringBuilder.ToString()
                 };
                 EmailHelper emailHelper = new EmailHelper(config, _log);

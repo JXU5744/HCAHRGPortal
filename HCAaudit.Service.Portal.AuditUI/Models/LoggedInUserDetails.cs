@@ -12,6 +12,8 @@
         /// </summary>
         public string LoggedInFname { get; set; }
 
+        public string EmailAddress { get; set; }
+
         /// <summary>
         /// LoggedIn User Last name
         /// </summary>
