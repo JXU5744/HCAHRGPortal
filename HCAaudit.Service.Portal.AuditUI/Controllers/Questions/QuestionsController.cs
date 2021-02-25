@@ -48,7 +48,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetQuestionByid method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionByid", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionByid", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -96,7 +96,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in EditQuestionSequence method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_EditQuestionSequence", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_EditQuestionSequence", ErrorDiscription = ex.InnerException.ToString() });
                     return Json("Error");
                 }
             }
@@ -129,7 +129,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetDesbyQuesText method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDesbyQuesText", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDesbyQuesText", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -177,7 +177,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetQuestionSeqByid method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionSeqByid", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetQuestionSeqByid", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -194,7 +194,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetSingleQuestionByid method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetSingleQuestionByid", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetSingleQuestionByid", ErrorDiscription = ex.InnerException.ToString() });
             }
             return data;
         }
@@ -250,7 +250,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Edit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -273,7 +273,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in BindSubCategory method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindSubCategory", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindSubCategory", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -333,7 +333,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in SaveQuestionForMaster method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_SaveQuestionForMaster", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_SaveQuestionForMaster", ErrorDiscription = ex.InnerException.ToString() });
                 }
 
                 return Json("");
@@ -353,7 +353,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetDetails method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDetails", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetDetails", ErrorDiscription = ex.InnerException.ToString() });
             }
             return data;
         }
@@ -371,7 +371,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in IsQuestionNameExists method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_IsQuestionNameExists", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_IsQuestionNameExists", ErrorDiscription = ex.InnerException.ToString() });
             }
             return result;
         }
@@ -394,7 +394,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Index", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Index", ErrorDiscription = ex.InnerException.ToString() });
             }
 
             return RedirectToAction("Index", "Home");
@@ -442,7 +442,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in BindGrid method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindGrid", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindGrid", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -472,7 +472,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetCommaSeperated method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetCommaSeperated", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetCommaSeperated", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -504,7 +504,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetIndexCommaSeperated method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetIndexCommaSeperated", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetIndexCommaSeperated", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -573,7 +573,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in Details method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Details", ErrorDiscription = ex.Message });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Details", ErrorDiscription = ex.InnerException.ToString() });
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -599,7 +599,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in DeleteQuestionBank method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionBank", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionBank", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -640,7 +640,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in DeleteQuestionMaster method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionMaster", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionMaster", ErrorDiscription = ex.InnerException.ToString() });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -659,7 +659,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Edit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return View("Index");
         }
@@ -698,7 +698,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Insert method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Insert", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Insert", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -722,7 +722,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in HasDeleteAccessforQB method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_HasDeleteAccessforQB", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_HasDeleteAccessforQB", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }

@@ -37,7 +37,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "EmailHelper_SendEmailNotification", ErrorDiscription = ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "EmailHelper_SendEmailNotification", ErrorDiscription = ex.InnerException.ToString() });
             }
         }
 
