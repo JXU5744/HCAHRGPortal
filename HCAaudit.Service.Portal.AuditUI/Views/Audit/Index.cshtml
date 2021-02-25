@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit" class="form-inline neu-margin--bottom-16">
+<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit"  class="form-inline neu-margin--bottom-16">
     <div class="card">
         <div class="row">
             <div class="col-sm-3">
@@ -111,7 +111,7 @@
                                             @Html.CheckBoxFor(m => m.Question[i].Action.IsNonCompliance, new { id = Model.Question[i].QuestionId + "-noncompliance", @class = "actioncheck", title = Model.Question[i].QuestionId + "-action" })
                                             <div class="row neu-padding--top-10" style="border-top: 1px solid #ddd;display:none" id="@Model.Question[i].QuestionId-tblNonCompliance">
                                                 <div class="col-sm-12">
-                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" }) 
+                                                    @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsHighImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" })
                                                     <span style="width:30px;display:inline-block"></span>
                                                     @Html.CheckBoxFor(m => m.Question[i].Action.Impact.IsLowImpact, new { id = Model.Question[i].QuestionId + "-Impact", @class = "chkimpact", title = Model.Question[i].QuestionId + "-Impact" })
                                                 </div>
@@ -141,6 +141,13 @@
     <div class="form-group">
         <label for="auditnotes" class="text-primary">Audit Notes:</label>
         @Html.TextAreaFor(m => m.AuditNote, new { rows = "4", style = "resize:none;width:100%" })
+
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12 d-flex justify-content-center">
+                <span id="errormsgformandatory" class="neu-button--danger"> </span>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-sm-12 neu-text--align-center">
                 <button id="btnAnswerYes" class="neu-button--primary neu-button neu-button--raised">Save</button>
@@ -268,8 +275,8 @@
         var isActionSelected = false;
         var isimpactChecked = false
 
-        $("table[id$='actionTable']").each(function () {
-            $this = $(this).find("tr");
+        $("div[id$='actionTable']").each(function () {
+            $this = $(this).find("div");
 
             var comp = $this.find("input[type=checkbox][name$='IsCompliance']");
             var nonComp = $this.find("input[type=checkbox][name$='IsNonCompliance']");
@@ -278,9 +285,6 @@
             if (comp.prop("checked") == false && nonComp.prop("checked") == false && notApp.prop("checked") == false) {
                 isActionSelected = true;
             }
-
-            alert(isActionSelected);
-            e.preventDefault();
 
             if (nonComp.prop("checked")) {
                 var high = nonComp.closest("table tr").find("input[type=checkbox][name$='IsHighImpact']");
@@ -293,11 +297,11 @@
         });
 
         if (isActionSelected) {
-            alert("Please select action for all questions.");
+            $("#errormsgformandatory").text("Please select action for all questions.");
             e.preventDefault();
         }
         else if (isimpactChecked) {
-            alert("Please select Impact for selected Non-Compliances.");
+            $("#errormsgformandatory").text("Please select Impact for selected Non-Compliances.");
             e.preventDefault();
         }
     });
