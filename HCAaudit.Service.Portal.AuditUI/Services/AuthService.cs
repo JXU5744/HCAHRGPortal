@@ -5,7 +5,8 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-
+using System.DirectoryServices.AccountManagement;
+using System.Collections.Generic;
 
 namespace HCAaudit.Service.Portal.AuditUI.Services
 {
@@ -71,7 +72,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                 EmailAddress = emailAddress,
                 LoggedInIp = Convert.ToString(contextAccessor.HttpContext.Connection.RemoteIpAddress)
             };
+        }
 
+        public  async Task<string> GetEmailFrom34ID(string input34id)
+        {
+            string email = string.Empty;
+            using (var principalContext = new PrincipalContext(ContextType.Domain, "hca.corpad.net"))
+            {
+                var userPrincipal = UserPrincipal.FindByIdentity(principalContext, input34id);
+                email= userPrincipal.EmailAddress;
+            }
+            return email;
         }
         #endregion
 

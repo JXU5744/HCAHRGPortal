@@ -403,8 +403,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var subCategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == auditMain.SubcategoryId).FirstOrDefault();
                     var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                     var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketId;
-                    
-                    var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+
+                    //var sendTo = _authService.LoggedInUserInfo().Result.HcaId + "@hca.corpad.net"; // To be removed while going into production.
+                    var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
+
                     var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
                     var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 

@@ -28,7 +28,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                 if (!string.IsNullOrEmpty(emailContent.SendTo))
                 {
                     message.To.Add(emailContent.SendTo);
-                    message.To.Add("girish.chavan@hcahealthcare.com");
                 }
                 message.From = new MailAddress(emailContent.SendFrom, emailContent.SendFromName);
                 message.Subject = emailContent.Subject;
