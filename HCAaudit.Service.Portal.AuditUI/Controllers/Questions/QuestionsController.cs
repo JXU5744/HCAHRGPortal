@@ -604,7 +604,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult DeleteQuestionMaster(int id, int SubCatId)
+        [HttpPost]
+        public IActionResult DeleteQuestionMaster(int id)
         {
             try
             {
@@ -633,7 +634,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         _auditToolContext.SaveChanges();
                     }
-                    return View("index", GetDetails());
+                    return Json("Success");
                 }
             }
             catch (Exception ex)
@@ -641,7 +642,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in DeleteQuestionMaster method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_DeleteQuestionMaster", ErrorDiscription = ex.Message });
             }
-            return RedirectToAction("Index", "Home");
+            return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         [HttpGet]
