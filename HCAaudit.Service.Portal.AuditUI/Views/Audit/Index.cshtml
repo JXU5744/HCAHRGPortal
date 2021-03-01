@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit"  class="form-inline neu-margin--bottom-16">
+<form id="AuditDetails" method="post" asp-controller="Audit" asp-action="SaveAudit" class="form-inline neu-margin--bottom-16">
     <div class="card">
         <div class="row">
             <div class="col-sm-3">
@@ -155,6 +155,20 @@
             </div>
         </div>
     </div>
+
+    <div id="PopUpSuccess" title="Audit Successful " hidden="hidden" class="container">
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <label class="neu-input__label" for="SuccessMessage"> Audit Successfully Submitted.</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btnOK" class="neu-button--primary neu-button neu-button--raised">OK</button>
+            </div>
+        </div>
+    </div>
+
     <div id="PopUpCancel" title="Cancel Audit" hidden="hidden" class="container">
         <div class="row neu-margin--bottom-16">
             <div class="col-sm-12">
@@ -179,11 +193,36 @@
       href="~/css/daterangepicker.css" />
 <!-- Script for the date range picker -->
 <script type="text/javascript">
+
+    
+
+
+    $(function () {
+        $("#popupcontent").dialog({
+            width: 800,
+            autoOpen: false,
+            draggable: false,
+            resizable: false,
+        });
+
+        $("#btnopenPopUp").click(function () {
+            $("#popupcontent").dialog({
+                position: 'bottom'
+            });
+        });
+
+        $("#btncancelpopup").click(function () {
+            $("#popupcontent").dialog('close');
+        });
+    })
+
     function OpenCancelPopUp() {
         $("#PopUpCancel").dialog({
-            autoOpen: false,
             width: 500,
             height: 'auto',
+            autoOpen: false,
+            draggable: false,
+            resizable: false,
         });
         $('#errormsg').hide();
         $('.ui-dialog-titlebar-close').hide();
@@ -307,3 +346,25 @@
         }
     });
 </script>
+
+@if (!string.IsNullOrEmpty(ViewBag.Success))
+{
+    <script>
+            $(document).ready(function () {
+                $(function () {
+                    $("#PopUpSuccess").dialog({
+                        width: 'auto',
+                        height: 'auto',
+                        autoOpen: false,
+                        draggable: false,
+                        resizable: false,
+                    });
+                    $("#PopUpSuccess").dialog('open');
+                    $("#btnOK").click(function () {
+                        $("#PopUpSuccess").dialog('close');
+                         window.location.href = "/Search/Index"
+                    });
+                })
+            });
+    </script>
+}
