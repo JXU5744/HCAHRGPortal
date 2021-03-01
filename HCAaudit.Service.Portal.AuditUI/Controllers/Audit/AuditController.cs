@@ -256,7 +256,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.InnerException.ToString()});
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.InnerException.ToString() });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -314,7 +314,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         FormatAndSendEmail(main.Id);
                     }
-                    return RedirectToAction("Index", "Search");
+
+                    ViewBag.Success = "Success";
+
+                    var listOfValues = _auditToolContext.ListOfValue.Where(x => x.IsActive == true &&
+                               x.CodeType.Trim().ToLower() == "audit cancel reason").ToList();
+
+                    var cancelReason = new List<SelectListItem>();
+                    cancelReason.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                    foreach (var item in listOfValues)
+                    {
+                        cancelReason.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
+                    }
+
+                    audit.CancellationReason = cancelReason;
+
+                    return View("Index", audit);
+                    //return RedirectToAction("Index", "Search");
                 }
             }
             catch (Exception ex)
