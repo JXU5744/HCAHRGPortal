@@ -15,17 +15,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     public class SubCategoryController : Controller
     {
         private readonly ILogger<SubCategoryController> _logger;
-        private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAdmin = false;
         private readonly IErrorLog _log;
 
-        public SubCategoryController(ILogger<SubCategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        public SubCategoryController(ILogger<SubCategoryController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
             _log = log;
@@ -93,7 +91,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult delete(int id)
+        public IActionResult Delete(int id)
         {
             try
             {
@@ -177,14 +175,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     else
                     {
-                        SubCategory objCategorys = new SubCategory();
-                        objCategorys.CatgId = Convert.ToInt32(catgID);
-                        objCategorys.SubCatgDescription = subCategoryName;
-                        objCategorys.IsActive = true;
-                        objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        objCategorys.CreatedDate = DateTime.Now;
-                        objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        objCategorys.ModifiedDate = DateTime.Now;
+                        SubCategory objCategorys = new SubCategory
+                        {
+                            CatgId = Convert.ToInt32(catgID),
+                            SubCatgDescription = subCategoryName,
+                            IsActive = true,
+                            CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            CreatedDate = DateTime.Now,
+                            ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            ModifiedDate = DateTime.Now
+                        };
                         _auditToolContext.SubCategory.Add(objCategorys);
                         _auditToolContext.SaveChanges();
                         return RedirectToAction("Details");
@@ -265,7 +265,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     //Paging   
                     var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
-                    return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
+                    return Json(new { draw, recordsFiltered = recordsTotal, recordsTotal, data = jsonData });
                 }
                 catch (Exception ex)
                 {
@@ -325,8 +325,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     {
                         CatgID = categories.CatgId,
                         SubCatID = subCategories.SubCatgId,
-                        CatgDescription = categories.CatgDescription,
-                        SubCatgDescription = subCategories.SubCatgDescription
+                        categories.CatgDescription,
+                        subCategories.SubCatgDescription
                     })
                      .Select(x => new CatSubCatJoinMast
                      {
@@ -360,8 +360,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     {
                         CatgID = categories.CatgId,
                         SubCatID = subCategories.SubCatgId,
-                        CatgDescription = categories.CatgDescription,
-                        SubCatgDescription = subCategories.SubCatgDescription
+                        categories.CatgDescription,
+                        subCategories.SubCatgDescription
                     })
                      .Select(x => new CatSubCatJoinMast
                      {

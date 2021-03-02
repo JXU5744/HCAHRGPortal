@@ -21,9 +21,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
             try
             {
                 //Email Notification
-                var message = new MailMessage();
-                message.IsBodyHtml = true;
-                message.Priority = MailPriority.Normal;
+                var message = new MailMessage
+                {
+                    IsBodyHtml = true,
+                    Priority = MailPriority.Normal
+                };
 
                 if (!string.IsNullOrEmpty(emailContent.SendTo))
                 {

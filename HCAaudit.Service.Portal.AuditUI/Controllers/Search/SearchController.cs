@@ -18,16 +18,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     public class SearchController : Controller
     {
         private readonly ILogger<SearchController> _logger;
-        private readonly IConfiguration config;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor = false;
         private readonly IErrorLog _log;
 
-        public SearchController(ILogger<SearchController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        public SearchController(ILogger<SearchController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
             isAuditor = authService.CheckAuditorUserGroup().Result;
             _log = log;
         }
@@ -68,7 +66,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     //Paging   
                     var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
-                    return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
+                    return Json(new { draw, recordsFiltered = recordsTotal, recordsTotal, data = jsonData });
 
                 }
                 catch (Exception ex)
@@ -124,7 +122,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     else
                     {
-                        string environmentType = searchparameter.EnvironmentType != null ? searchparameter.EnvironmentType : "Production";
+                        string environmentType = searchparameter.EnvironmentType ?? "Production";
                         int categoryId = searchparameter.CategoryID;
 
                         if (searchparameter.CategoryID <= 0 && searchparameter.SubcategoryID > 0)
@@ -133,10 +131,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         }
 
                         int subCategoryId = searchparameter.SubcategoryID;
-                        string resultType = searchparameter.ResultType != null ? searchparameter.ResultType : "Audit";
+                        string resultType = searchparameter.ResultType ?? "Audit";
                         int ticketStatus = searchparameter.TicketStatus;
-                        string fromDate = searchparameter.FromDate == null ? DateTime.Today.AddDays(-1).ToString() : searchparameter.FromDate;
-                        string toDate = searchparameter.EndDate == null ? Convert.ToDateTime(fromDate).AddDays(-7).ToString() : searchparameter.EndDate;
+                        string fromDate = searchparameter.FromDate ?? DateTime.Today.AddDays(-1).ToString();
+                        string toDate = searchparameter.EndDate ?? Convert.ToDateTime(fromDate).AddDays(-7).ToString();
                         string assignedTo = !String.IsNullOrWhiteSpace(searchparameter.AssignedTo) ? searchparameter.AssignedTo : string.Empty;
                         string ticketSubStatus = !String.IsNullOrWhiteSpace(searchparameter.TicketSubStatus) ? searchparameter.TicketSubStatus : string.Empty;
                         string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
@@ -172,7 +170,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         //Paging   
                         var jsonData = objgriddata.Skip(skip).Take(pageSize).ToList();
                         //Returning Json Data  
-                        return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
+                        return Json(new { draw, recordsFiltered = recordsTotal, recordsTotal, data = jsonData });
                     }
                 }
                 catch (Exception ex)
@@ -287,9 +285,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 foreach (var emplist in query)
                 {
-                    AssignedTo tempAssignedto = new AssignedTo();
-                    tempAssignedto.memberID = rowno;
-                    tempAssignedto.membername = emplist.HrThreeFourID;
+                    AssignedTo tempAssignedto = new AssignedTo
+                    {
+                        MemberID = rowno,
+                        MemberName = emplist.HrThreeFourID
+                    };
                     rowno++;
                     lstAssignedTo.Add(tempAssignedto);
                 }
@@ -414,15 +414,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 foreach (var t in ticketdata)
                 {
-                    BindSearchGrid tempItem = new BindSearchGrid();
-                    tempItem.TicketNumber = t.TicketCode;
-                    tempItem.ServiceGroup = t.JobCdDescHomeCurr;
-                    tempItem.Category = t.Category;
-                    tempItem.Subcategory = t.SubCategory;
-                    tempItem.UserThreeFourID = t.CloseUserId;
-                    tempItem.AssignedTo = t.EmployeeFullName;
-                    tempItem.ClosedDateTime = t.ClosedDateTime;
-                    tempItem.Topic = t.Topic;
+                    BindSearchGrid tempItem = new BindSearchGrid
+                    {
+                        TicketNumber = t.TicketCode,
+                        ServiceGroup = t.JobCdDescHomeCurr,
+                        Category = t.Category,
+                        Subcategory = t.SubCategory,
+                        UserThreeFourID = t.CloseUserId,
+                        AssignedTo = t.EmployeeFullName,
+                        ClosedDateTime = t.ClosedDateTime,
+                        Topic = t.Topic
+                    };
                     objgriddata.Add(tempItem);
                 }
             }
