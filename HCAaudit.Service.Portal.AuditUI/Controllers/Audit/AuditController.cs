@@ -436,13 +436,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                     var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketId;
 
-                    var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
 
                     //Required for PROD **********
                     //var sendTo = _authService.GetEmailFrom34ID(sentoEmail).Result.ToString();
 
 
                     var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
+
+                    // Time Being Code. Need to remove this  once email id identify code works
+                   var  sendTo = sendFrom;
+
                     var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
                     var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketId + "</b><br>";
