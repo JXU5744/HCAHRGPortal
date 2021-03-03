@@ -34,9 +34,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                SqlConnection connection = new SqlConnection();
-
-                connection.ConnectionString = Configuration["HRAuditDatabaseConnectionString"];
+                SqlConnection connection = new SqlConnection
+                {
+                    ConnectionString = Configuration["HRAuditDatabaseConnectionString"]
+                };
 
                 optionsBuilder.UseSqlServer(connection);
             }

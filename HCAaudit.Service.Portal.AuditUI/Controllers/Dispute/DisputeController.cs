@@ -46,9 +46,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     if (disp != null)
                         return RedirectToAction("Index", "Search");
 
-                    var model = new DisputeModel();
-                    //need check for isDisputed
-                    model.AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.Id == AuditMainId);
+                    var model = new DisputeModel
+                    {
+                        //need check for isDisputed
+                        AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.Id == AuditMainId)
+                    };
+                    
                     var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == AuditMainId &&
                         x.IsNonCompliant == true).ToList();
                     var subcategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == model.AuditMain.SubcategoryId).FirstOrDefault();
@@ -59,15 +62,19 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     var listOfValues = _auditToolContext.ListOfValue.Where(x => x.IsActive == true).ToList();
 
-                    var gracePeriod = new List<SelectListItem>();
-                    gracePeriod.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                    var gracePeriod = new List<SelectListItem>
+                    {
+                        new SelectListItem() { Text = "--Select--", Value = "0", Selected = true }
+                    };
                     foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Grace Period"))
                     {
                         gracePeriod.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
                     }
 
-                    var overturn = new List<SelectListItem>();
-                    overturn.Add(new SelectListItem() { Text = "--Select--", Value = "0", Selected = true });
+                    var overturn = new List<SelectListItem>
+                    {
+                        new SelectListItem() { Text = "--Select--", Value = "0", Selected = true }
+                    };
                     foreach (var item in listOfValues.Where(x => x.CodeType.Trim() == "Over Turn"))
                     {
                         overturn.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
