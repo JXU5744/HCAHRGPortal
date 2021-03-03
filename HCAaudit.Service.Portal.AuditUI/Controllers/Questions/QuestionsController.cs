@@ -15,16 +15,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     public class QuestionsController : Controller
     {
         private readonly ILogger<QuestionsController> _logger;
-        private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAdmin;
         private readonly IErrorLog _log;
-        public QuestionsController(ILogger<QuestionsController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        public QuestionsController(ILogger<QuestionsController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
             _log = log;
@@ -121,7 +119,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 .FirstOrDefault();
                     if (string.IsNullOrWhiteSpace(responce))
                     {
-                        return Json(responce = "nd");
+                        return Json("nd");
                     }
                     return Json(responce);
                 }
@@ -148,13 +146,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                          questionBank => questionBank.QuestionId,
                          (questionMaster, questionBank) => new
                          {
-                             QuestionId = questionMaster.QuestionId,
+                             questionMaster.QuestionId,
                              SequenceNo = questionMaster.SeqNumber,
                              QuestionText = questionBank.QuestionName,
                              QuestionDes = questionBank.QuestionDescription,
                              SubCatId = questionMaster.SubCatgId,
                              QuestionMasterId = questionMaster.QuestionMappingId,
-                             IsActive = questionMaster.IsActive
+                             questionMaster.IsActive
                          })
                           .Select(x => new QuesBankMasterJoinMast
                           {
@@ -197,62 +195,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_GetSingleQuestionByid", ErrorDiscription = ex.InnerException.ToString() });
             }
             return data;
-        }
-
-        [HttpPost]
-        public ActionResult Edit(string id)
-        {
-            try
-            {
-                if (isAdmin)
-                {
-                    object responce = "";
-                    if (!string.IsNullOrEmpty(id))
-                    {
-                        string[] param = id.Split('$');
-                        if (param.Any() && param.Count() == 3)
-                        {
-                            QuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
-
-                            var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
-                            if (questionlist.Count > 0)
-                            {
-                                if (questionlist[0].QuestionId != objtblQuestionBank.QuestionId)
-                                {
-                                    responce = "1";
-                                }
-                                else
-                                {
-                                    objtblQuestionBank.QuestionName = param[1];
-                                    objtblQuestionBank.QuestionDescription = param[2];
-                                    objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                                    objtblQuestionBank.ModifiedDate = DateTime.Now;
-                                    _auditToolContext.QuestionBank.Update(objtblQuestionBank);
-                                    _auditToolContext.SaveChanges();
-                                    return Json(objtblQuestionBank);
-                                }
-                            }
-                            else
-                            {
-                                objtblQuestionBank.QuestionName = param[1];
-                                objtblQuestionBank.QuestionDescription = param[2];
-                                objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                                objtblQuestionBank.ModifiedDate = DateTime.Now;
-                                _auditToolContext.QuestionBank.Update(objtblQuestionBank);
-                                _auditToolContext.SaveChanges();
-                                return Json(objtblQuestionBank);
-                            }
-                        }
-                    }
-                    return Json(responce);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInformation($"Exception in Edit method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.InnerException.ToString() });
-            }
-            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -414,13 +356,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                      questionBank => questionBank.QuestionId,
                      (questionMaster, questionBank) => new
                      {
-                         QuestionId = questionMaster.QuestionId,
+                         questionMaster.QuestionId,
                          SequenceNo = questionMaster.SeqNumber,
                          QuestionText = questionBank.QuestionName,
                          QuestionDes = questionBank.QuestionDescription,
                          SubCatId = questionMaster.SubCatgId,
                          QuestionMasterId = questionMaster.QuestionMappingId,
-                         IsActive = questionMaster.IsActive
+                         questionMaster.IsActive
                      })
                       .Select(x => new QuesBankMasterJoinMast
                       {
@@ -662,6 +604,62 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.InnerException.ToString() });
             }
             return View("Index");
+        }
+
+        [HttpPost]
+        public ActionResult Edit(string id)
+        {
+            try
+            {
+                if (isAdmin)
+                {
+                    object responce = "";
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        string[] param = id.Split('$');
+                        if (param.Any() && param.Count() == 3)
+                        {
+                            QuestionBank objtblQuestionBank = GetSingleQuestionByid(param[0]);
+
+                            var questionlist = _auditToolContext.QuestionBank.Where(x => x.QuestionName.ToLower() == param[1].ToLower() && x.IsActive == true).ToList();
+                            if (questionlist.Count > 0)
+                            {
+                                if (questionlist[0].QuestionId != objtblQuestionBank.QuestionId)
+                                {
+                                    responce = "1";
+                                }
+                                else
+                                {
+                                    objtblQuestionBank.QuestionName = param[1];
+                                    objtblQuestionBank.QuestionDescription = param[2];
+                                    objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                    objtblQuestionBank.ModifiedDate = DateTime.Now;
+                                    _auditToolContext.QuestionBank.Update(objtblQuestionBank);
+                                    _auditToolContext.SaveChanges();
+                                    return Json(objtblQuestionBank);
+                                }
+                            }
+                            else
+                            {
+                                objtblQuestionBank.QuestionName = param[1];
+                                objtblQuestionBank.QuestionDescription = param[2];
+                                objtblQuestionBank.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                                objtblQuestionBank.ModifiedDate = DateTime.Now;
+                                _auditToolContext.QuestionBank.Update(objtblQuestionBank);
+                                _auditToolContext.SaveChanges();
+                                return Json(objtblQuestionBank);
+                            }
+                        }
+                    }
+                    return Json(responce);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in Edit method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_Edit", ErrorDiscription = ex.InnerException.ToString() });
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

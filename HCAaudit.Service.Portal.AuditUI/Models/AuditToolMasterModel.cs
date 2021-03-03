@@ -60,8 +60,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
     public class AssignedTo
     {
-        public int memberID { get; set; }
-        public string membername { get; set; }
+        public int MemberID { get; set; }
+        public string MemberName { get; set; }
     }
 
     public class Status
@@ -74,7 +74,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
     {
         public string TicketNumber { get; set; }
         public string CreatedDate { get; set; }
-        public string status { get; set; }
+        public string Status { get; set; }
         public string Subject { get; set; }
         public string ServiceGroup { get; set; }
         public string AssignedTo { get; set; }

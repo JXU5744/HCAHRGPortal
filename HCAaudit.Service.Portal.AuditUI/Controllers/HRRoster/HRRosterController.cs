@@ -19,7 +19,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly bool isAdmin = false;
         private readonly IErrorLog _log;
 
-        public HRRosterController(ILogger<HRRosterController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        public HRRosterController(ILogger<HRRosterController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;

@@ -14,12 +14,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         }
         public void WriteErrorLog(LogItem item)
         {
-            HRAuditErrorLog objSysLog = new HRAuditErrorLog();
-            objSysLog.ErrorType = item.ErrorType;
-            objSysLog.SourceLocation = item.ErrorSource;
-            objSysLog.ErrorDescription = item.ErrorDiscription;
-            objSysLog.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-            objSysLog.CreatedDate = System.DateTime.Now;
+            HRAuditErrorLog objSysLog = new HRAuditErrorLog
+            {
+                ErrorType = item.ErrorType,
+                SourceLocation = item.ErrorSource,
+                ErrorDescription = item.ErrorDiscription,
+                CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                CreatedDate = System.DateTime.Now
+            };
             _auditToolContext.HRAuditErrorLog.Add(objSysLog);
             _auditToolContext.SaveChanges();
         }
