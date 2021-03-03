@@ -109,7 +109,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -164,7 +164,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -189,7 +189,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                 //Required for PROD **********
                 //var sendTo = _authService.GetEmailFrom34ID(sentoEmail).Result.ToString();
-
 
                 var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
                 var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
