@@ -15,16 +15,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
     public class CategoryController : Controller
     {
         private readonly ILogger<CategoryController> _logger;
-        private readonly IConfiguration config;
         private readonly IAuthService _authService;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAdmin;
         private readonly IErrorLog _log;
-        public CategoryController(ILogger<CategoryController> logger, IErrorLog log, IConfiguration configuration, AuditToolContext audittoolc, IAuthService authService)
+        public CategoryController(ILogger<CategoryController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
             _auditToolContext = audittoolc;
             _logger = logger;
-            config = configuration;
             _authService = authService;
             isAdmin = _authService.CheckAdminUserGroup().Result;
             _log = log;
@@ -133,13 +131,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     else
                     {
-                        Category objCategorys = new Category();
-                        objCategorys.CatgDescription = CategoryName;
-                        objCategorys.IsActive = true;
-                        objCategorys.CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        objCategorys.CreatedDate = DateTime.Now;
-                        objCategorys.ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName;
-                        objCategorys.ModifiedDate = DateTime.Now;
+                        Category objCategorys = new Category
+                        {
+                            CatgDescription = CategoryName,
+                            IsActive = true,
+                            CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            CreatedDate = DateTime.Now,
+                            ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            ModifiedDate = DateTime.Now
+                        };
                         _auditToolContext.Category.Add(objCategorys);
                         _auditToolContext.SaveChanges();
                         return RedirectToAction("index");
@@ -279,13 +279,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     int recordsTotal = 0;
 
                     var data = _auditToolContext.Category.Where(x => x.IsActive == true).ToList();
-                    objCategoryMast = new CategoryMast();
-                    objCategoryMast.CategoryList = new List<Category>();
+                    objCategoryMast = new CategoryMast
+                    {
+                        CategoryList = new List<Category>()
+                    };
                     foreach (var item in data)
                     {
-                        Category objCategory = new Category();
-                        objCategory.CatgId = item.CatgId; 
-                        objCategory.CatgDescription = item.CatgDescription;
+                        Category objCategory = new Category
+                        {
+                            CatgId = item.CatgId,
+                            CatgDescription = item.CatgDescription
+                        };
                         objCategoryMast.CategoryList.Add(objCategory);
                     }
 
@@ -321,7 +325,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     //Paging   
                     var jsonData = customerData.Skip(skip).Take(pageSize).ToList();
                     //Returning Json Data  
-                    return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = jsonData });
+                    return Json(new { draw, recordsFiltered = recordsTotal, recordsTotal, data = jsonData });
                 }
                 catch (Exception ex)
                 {
