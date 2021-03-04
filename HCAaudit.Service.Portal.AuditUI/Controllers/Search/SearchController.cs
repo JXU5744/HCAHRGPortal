@@ -165,6 +165,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 }
                             }
                         }
+                        else
+                        {
+                            count = objgriddata.Count > 1000 ? 1000 : objgriddata.Count;
+                            objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                        }
                         recordsTotal = objgriddata.Count;
 
                         //Paging   
@@ -235,12 +240,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     }
                     else
                     {
-                        var subCategoryList = _auditToolContext.SubCategory.Where(x => x.IsActive == true && 
+                        var subCategoryList = _auditToolContext.SubCategory.Where(x => x.IsActive == true &&
                         x.CatgId == Convert.ToInt32(categoryID)).Select(x => new CatSubCatJoinMast
                         {
                             SubCatgID = x.SubCatgId,
                             SubCatgDescription = x.SubCatgDescription
-                        }).ToList();
+                        }).OrderBy(a => a.SubCatgDescription).ToList();
 
                         _logger.LogInformation($"No of SubCategoryListrecords: {subCategoryList.Count}");
                         return Json(subCategoryList);
@@ -260,7 +265,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
             try
             {
-                data = (from subCat in _auditToolContext.Category.Where(x => x.IsActive == true) select subCat).ToList();
+                data = (from subCat in _auditToolContext.Category.Where(x => x.IsActive == true) select subCat).OrderBy(a => a.CatgDescription).ToList();
             }
             catch (Exception ex)
             {
@@ -368,13 +373,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 {
                     var query = _auditToolContext.SubCategory
                         .Where(x => x.IsActive == true)
-                        .OrderBy(x=>x.SubCatgDescription)
+                        .OrderBy(x => x.SubCatgDescription)
                         .Include(subCat => subCat.Catg)
                         .Select(x => new CatSubCatJoinMast
                         {
                             SubCatgID = x.SubCatgId,
                             SubCatgDescription = string.Format("{0} ({1})", x.SubCatgDescription, x.Catg.CatgDescription)
-                        }).ToList();
+                        }).OrderBy(a => a.SubCatgDescription).ToList();
 
                     _logger.LogInformation($"No of SubCategoryListrecords: {query.Count}");
                     return Json(query);
