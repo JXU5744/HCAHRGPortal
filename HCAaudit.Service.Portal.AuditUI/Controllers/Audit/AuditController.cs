@@ -157,7 +157,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     QuestionDescription = item.QuestionDescription,
                                     QuestionSequence = item.QuestionSeqNumber,
                                     Action = objAction,
-                                    CorrectionRequire = true
+                                    CorrectionRequire = false
                                 };
                                 lstQuestionList.Add(objQuestion);
                             }

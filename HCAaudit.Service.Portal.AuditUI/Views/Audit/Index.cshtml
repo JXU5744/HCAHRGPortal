@@ -129,7 +129,7 @@
                                 </div>
                             </td>
                             <td>
-                                <input type="checkbox" class="radio-primary" value="correction required" name="optradio" disabled />
+                                @Html.CheckBoxFor(m => m.Question[i].CorrectionRequire, new { id = Model.Question[i].QuestionId + "-correction",  name="optradio", title = Model.Question[i].QuestionId + "-correction" })
                             </td>
                             <td>
                                 @Html.TextAreaFor(m => m.Question[i].Comments, 5, 28, new { style = "resize:none", @disabled = true })

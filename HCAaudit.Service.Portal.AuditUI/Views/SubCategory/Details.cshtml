@@ -193,12 +193,13 @@
 
     $('#txtsubcategory').on('keypress', function (event) {
         $('#errormsgsubcategory').hide();
-        var regex = new RegExp("^[a-zA-Z ]+$");
-        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        if (!regex.test(key)) {
-            event.preventDefault();
-            return false;
-        }
+        //var regex = new RegExp("^[a-zA-Z ]+$");
+       // var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        //if (!regex.test(key)) {
+        //    event.preventDefault();
+        //    return false;
+        return true;
+        
     });
     $('#errormsgsubcategory').hide();
     $('#errormsgcategory').hide();
@@ -329,18 +330,16 @@
         $("#popupcontentedit").dialog('close');
     });
 
-    //$("#popupcontentedit").dialog({
-    //    autoOpen: false, modal: true, width: 'auto', draggable: false,
-    //    resizable: false});
+    
 
     $('#txtsubcategoryedit').on('keypress', function (event) {
         $('#errormsgedit').hide();
-        var regex = new RegExp("^[a-zA-Z ]+$");
-        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-        if (!regex.test(key)) {
-            event.preventDefault();
-            return false;
-        }
+        //var regex = new RegExp("^[a-zA-Z ]+$");
+        //var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        //if (!regex.test(key)) {
+        //    event.preventDefault();
+            return true;
+       // }
     });
 
     $("#btneditCategory").click(function () {
