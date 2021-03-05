@@ -27,12 +27,12 @@
 <div class="card">
     <div class="row">
         <div class="col-sm-3">
-            <label for="AuditMain_TicketId" class="neu-input__label">Ticket ID</label>
+            <label for="AuditMain_TicketId" class="neu-input__label">Case ID</label>
             @Html.TextBoxFor(m => Model.AuditMain.TicketId, new { @disabled = true, @class = "neu-input__field" })
             @Html.HiddenFor(x => Model.AuditMain.TicketId)
         </div>
         <div class="col-sm-3">
-            <label for="AuditMain_Agent34Id" class="neu-input__label">Agent's 3-4 ID</label>
+            <label for="AuditMain_Agent34Id" class="neu-input__label">Agent 3-4 ID</label>
             @Html.TextBoxFor(m => Model.AuditMain.Agent34Id, new { @disabled = true, @class = "neu-input__field" })
         </div>
         <div class="col-sm-3">

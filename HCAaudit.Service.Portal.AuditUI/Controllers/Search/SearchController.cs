@@ -110,12 +110,22 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     // Paging Length 10,20  
                     var length = Request.Form["length"].FirstOrDefault();
 
+                    // Sort Column Name  
+                    var sortColumn = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+
+                    // Sort Column Direction (asc, desc)  
+                    var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+
+                    // Search Value from (Search box)  
+                    var searchValue = Request.Form["search[value]"].FirstOrDefault();
+
                     //Paging Size (10, 20, 50,100)  
                     int pageSize = length != null ? Convert.ToInt32(length) : 0;
 
                     int skip = start != null ? Convert.ToInt32(start) : 0;
 
                     int recordsTotal = 0;
+
                     if (searchparameter == null)
                     {
                         return RedirectToAction("Index");
@@ -140,37 +150,116 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
                         string TicketId = String.IsNullOrWhiteSpace(searchparameter.TicketId) ? string.Empty : searchparameter.TicketId;
 
-                        var objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                        IEnumerable<UspGetHRAuditSearchResult> objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
                                     ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
                         // All
                         // 1-100%
                         // X RecCounts
                         int count = 0;
 
+                        if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                        {
+                            switch (sortColumn)
+                            {
+                                case "CreatedDate":
+                                    if (sortColumnDirection == "desc")
+                                    {
+                                        objgriddata = objgriddata.OrderByDescending(s => s.ClosedDate);
+                                    }
+                                    else
+                                    {
+                                        objgriddata = objgriddata.OrderBy(s => s.ClosedDate);
+                                    }
+                                    break;
+                                case "Subject":
+                                    if (sortColumnDirection == "desc")
+                                    {
+                                        objgriddata = objgriddata.OrderByDescending(s => s.Topic);
+                                    }
+                                    else
+                                    {
+                                        objgriddata = objgriddata.OrderBy(s => s.Topic);
+                                    }
+                                    break;
+                                case "SubCategory":
+                                    if (sortColumnDirection == "desc")
+                                    {
+                                        objgriddata = objgriddata.OrderByDescending(s => s.SubCategory);
+                                    }
+                                    else
+                                    {
+                                        objgriddata = objgriddata.OrderBy(s => s.SubCategory);
+                                    }
+                                    break;
+                                case "ServiceGroup":
+                                    if (sortColumnDirection == "desc")
+                                    {
+                                        objgriddata = objgriddata.OrderByDescending(s => s.ServiceDeliveryGroup);
+                                    }
+                                    else
+                                    {
+                                        objgriddata = objgriddata.OrderBy(s => s.ServiceDeliveryGroup);
+                                    }
+                                    break;
+                                case "AssignedTo":
+                                    if (sortColumnDirection == "desc")
+                                    {
+                                        objgriddata = objgriddata.OrderByDescending(s => s.Agent34ID);
+                                    }
+                                    else
+                                    {
+                                        objgriddata = objgriddata.OrderBy(s => s.Agent34ID);
+                                    }
+                                    break;
+                                default:
+                                    if (sortColumnDirection == "desc")
+                                    {
+                                        objgriddata = objgriddata.OrderByDescending(s => s.TicketCode);
+                                    }
+                                    else
+                                    {
+                                        objgriddata = objgriddata.OrderBy(s => s.TicketCode);
+                                    }
+                                    break;
+                            }
+                        }
+                        
+                        if (!string.IsNullOrEmpty(searchValue))
+                        {
+                            objgriddata = objgriddata.Where(m => m.TicketCode.ToLower().StartsWith(searchValue.ToLower()) ||
+                                m.ServiceDeliveryGroup.ToLower().StartsWith(searchValue.ToLower()) ||
+                                m.Topic.ToLower().StartsWith(searchValue.ToLower()) ||
+                                m.Agent34ID.ToLower().StartsWith(searchValue.ToLower()) ||
+                                m.SubCategory.ToLower().StartsWith(searchValue.ToLower()) 
+                                );
+                        }
+
                         if (!resultCountCriteria.ToLower().Equals("all"))
                         {
                             if (int.TryParse(resultCountCriteria, out count))
                             {
                                 count = count > 1000 ? 1000 : count;
-                                objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                                objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Skip(skip).Take(count).ToList();
                             }
                             else
                             {
                                 resultCountCriteria = resultCountCriteria.Replace("%25", "%");
                                 if (resultCountCriteria.Contains("%") && int.TryParse(resultCountCriteria.Replace("%", ""), out count))
                                 {
+                                    double len = objgriddata.ToList().Count;
                                     count = count > 100 ? 100 : count;
-                                    count = (objgriddata.Count * count) / 100;
-                                    objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                                    count = Convert.ToInt32(Math.Ceiling(len * count / 100));
+                                    objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Skip(skip).Take(count).ToList();
                                 }
                             }
                         }
                         else
                         {
-                            count = objgriddata.Count > 1000 ? 1000 : objgriddata.Count;
+                            var len = objgriddata.ToList().Count;
+                            count = len > 1000 ? 1000 : objgriddata.ToList().Count;
                             objgriddata = objgriddata.Skip(skip).Take(count).ToList();
                         }
-                        recordsTotal = objgriddata.Count;
+                        recordsTotal = objgriddata.ToList().Count;
 
                         //Paging   
                         var jsonData = objgriddata.Skip(skip).Take(pageSize).ToList();
@@ -379,7 +468,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             SubCatgID = x.SubCatgId,
                             SubCatgDescription = string.Format("{0} ({1})", x.SubCatgDescription, x.Catg.CatgDescription)
-                        }).OrderBy(a => a.SubCatgDescription).ToList();
+                        }).ToList();
+
+                    query = query.OrderBy(a => a.SubCatgDescription).ToList();
 
                     _logger.LogInformation($"No of SubCategoryListrecords: {query.Count}");
                     return Json(query);
