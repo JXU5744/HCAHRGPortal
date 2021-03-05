@@ -267,11 +267,7 @@
                 var startdate = $("#startdate").val();
                 var enddate = $("#enddate").val();
 
-                if (screentype == "Audit" && categoryID == "0" && subcategoryID == "0" && assignedTo == "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.");
-                }
-
-                if (screentype == "Dispute" && categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
+               if (categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
                     $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Case Id field.");
                 }
 
@@ -315,16 +311,8 @@
                 $('#TicketSubStatus').prop('disabled', false);
             }
 
-            if ($("#rbtaudit").val() == "Audit") {
-                $('#TicketId').prop('disabled', true);
-            }
-            else {
-                $('#TicketId').prop('disabled', false);
-            }
-
             $("#rbtaudit").change(function () {
                 if ($(this).val() == "Audit") {
-                    $('#TicketId').prop('disabled', true);
                     $('#StatusList').prop('disabled', false);
                     if ($('#StatusList').val() == 0) {
                         $('#TicketSubStatus').prop('disabled', true);
@@ -339,7 +327,6 @@
                 if ($(this).val() != "Audit") {
                     $('#StatusList').prop('disabled', true);
                     $('#TicketSubStatus').prop('disabled', true);
-                    $('#TicketId').prop('disabled', false);
                 }
             });
 
