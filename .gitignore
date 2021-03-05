@@ -3,3 +3,5 @@
 ################################################################################
 
 *.cs
+/HCAaudit.Service.Portal.AuditUI/bin/Debug/netcoreapp3.1
+/HCAaudit.Service.Portal.AuditUI/bin/Release/netcoreapp3.1
