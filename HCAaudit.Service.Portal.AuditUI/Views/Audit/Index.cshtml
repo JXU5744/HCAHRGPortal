@@ -128,7 +128,9 @@
                                     </div>
                                 </div>
                             </td>
-                            <td> <input type="checkbox" class="radio-primary" value="Correction Required" name="optradio" disabled /></td>
+                            <td>
+                                <input type="checkbox" class="radio-primary" value="correction required" name="optradio" disabled />
+                            </td>
                             <td>
                                 @Html.TextAreaFor(m => m.Question[i].Comments, 5, 28, new { style = "resize:none", @disabled = true })
                             </td>
@@ -193,9 +195,6 @@
       href="~/css/daterangepicker.css" />
 <!-- Script for the date range picker -->
 <script type="text/javascript">
-
-    
-
 
     $(function () {
         $("#popupcontent").dialog({
@@ -280,7 +279,9 @@
         var $this = $(this);
         var name = $(this).attr("id");
         var questionId = name.substring(0, name.indexOf("-"));
+
         $('[title=' + questionId + '-action' + ']').not(this).prop('checked', false);
+
         if ($("#" + questionId + "-noncompliance").prop('checked') == true) {
             $("#" + questionId + "-tblNonCompliance").show();
         }
@@ -313,6 +314,7 @@
     $('form').submit(function (e) {
         var isActionSelected = false;
         var isimpactChecked = false
+        var isAuditCommentsEntered = false;
 
         $("div[id$='actionTable']").each(function () {
             $this = $(this).find("div");
@@ -332,9 +334,13 @@
                 if (high.prop("checked") == false && low.prop("checked") == false) {
                     isimpactChecked = true;
                 }
+
+                var tempcomment  = nonComp.closest("tr:not(:has(>td>table))").find("[name$='Comments']").val();
+                if (tempcomment.length <= 0) {
+                    isAuditCommentsEntered = true;
+                }
             }
         });
-
 
         if (isActionSelected) {
             $("#errormsgformandatory").text("Please select action for all questions.");
@@ -344,27 +350,31 @@
             $("#errormsgformandatory").text("Please select Impact for selected Non-Compliances.");
             e.preventDefault();
         }
+        else if (isAuditCommentsEntered) {
+            $("#errormsgformandatory").text("Please enter comments for selected Non-Compliances.");
+            e.preventDefault();
+        }
     });
 </script>
 
 @if (!string.IsNullOrEmpty(ViewBag.Success))
 {
     <script>
-            $(document).ready(function () {
-                $(function () {
-                    $("#PopUpSuccess").dialog({
-                        width: 'auto',
-                        height: 'auto',
-                        autoOpen: false,
-                        draggable: false,
-                        resizable: false,
-                    });
-                    $("#PopUpSuccess").dialog('open');
-                    $("#btnOK").click(function () {
-                        $("#PopUpSuccess").dialog('close');
-                         window.location.href = "/Search/Index"
-                    });
-                })
-            });
+        $(document).ready(function () {
+            $(function () {
+                $("#PopUpSuccess").dialog({
+                    width: 'auto',
+                    height: 'auto',
+                    autoOpen: false,
+                    draggable: false,
+                    resizable: false,
+                });
+                $("#PopUpSuccess").dialog('open');
+                $("#btnOK").click(function () {
+                    $("#PopUpSuccess").dialog('close');
+                    window.location.href = "/Search/Index"
+                });
+            })
+        });
     </script>
 }
