@@ -109,7 +109,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -164,7 +164,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Index method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "DisputeController_Index", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -184,16 +184,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                 var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketId;
 
+                //var sendTo = sentoEmail; // + "@hca.corpad.net"; // To be removed while going into production.
+               // var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
 
                 //Required for PROD **********
                 //var sendTo = _authService.GetEmailFrom34ID(sentoEmail).Result.ToString();
 
-
                 var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
-
-                // Time Being Code. Need to remove this  once email id identify code works
                 var sendTo = sendFrom;
-
                 var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
                 var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is the Case Management Audit Dispute and Resolution for Ticket #<b>" + auditMain.TicketId + "</b><br>";

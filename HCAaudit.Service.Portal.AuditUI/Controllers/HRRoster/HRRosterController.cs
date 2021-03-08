@@ -59,7 +59,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetDetailsById method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetDetailsById", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
@@ -77,7 +77,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in Details method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Details", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -96,7 +96,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in GetCategory method");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetCategory", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_GetCategory", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -134,7 +134,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in Edit method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.InnerException.ToString() });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Edit", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
                 }
                 return Json(resp);
             }
@@ -178,7 +178,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogInformation($"Exception in Insert method");
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.InnerException.ToString() });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "HRRosterController_Insert", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
                 }
                 return Json(resp);
             }
