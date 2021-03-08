@@ -47,7 +47,7 @@
 
 <div class="row neu-margin--bottom-16">
     <div class="col-12">
-        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Tickets For Audit/Dispute</h3>
+        <h3 align="center" class="neu-text--h3 neu-text--bold align-content-xl-center">Search Cases For Audit/Dispute</h3>
     </div>
 </div>
 
@@ -114,7 +114,7 @@
     <div class="row">
         <div class="col-sm-4">
             <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                <label class="neu-input__label" for="StatusList" style="text-align:left;width:30%;">Ticket Status</label>
+                <label class="neu-input__label" for="StatusList" style="text-align:left;width:30%;">Case Status</label>
                 <select name="TicketStatus" id="StatusList" class="neu-select">
                     <option value="0">Closed</option>
                     <option value="1">Pending</option>
@@ -123,7 +123,7 @@
         </div>
         <div class="col-sm-4">
             <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                <label class="neu-input__label" for="TicketSubStatus" style="text-align:left;width:30%;">Ticket Sub Status</label>
+                <label class="neu-input__label" for="TicketSubStatus" style="text-align:left;width:30%;">Case Sub Status</label>
                 <select name="TicketSubStatus" id="TicketSubStatus" class="neu-select">
                     <option>Select Substatus</option>
                     <option value="InProgress">In Progress</option>
@@ -134,7 +134,7 @@
         </div>
         <div class="col-sm-4">
             <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
-                <label class="neu-input__label" for="TicketId" style="text-align:left;width:30%;">Ticket Id</label>
+                <label class="neu-input__label" for="TicketId" style="text-align:left;width:30%;">Case Id</label>
                 <input name="TicketId" id="TicketId" class="neu-input__field" type="text" style="width:100%" />
             </div>
         </div>
@@ -155,6 +155,10 @@
         <div class="col-sm-4">
             <div tabindex="-1" aria-checked="false" style="text-align:left;width:100%;">
                 <label class="neu-input__label" for="ResultCount" style="text-align:left;width:30%;">Result Count</label>
+                <div class="neu-tooltip">
+                    <i class="material-icons" tabindex="0">info</i>
+                    <span class="neu-tooltip--text">Result Count ("All" or number or percentage)</span>
+                </div>
                 <input name="ResultCount" id="ResultCount" maxlength="4" value="All" class="neu-input__field" type="text" style="width:100%" />
             </div>
         </div>
@@ -263,12 +267,8 @@
                 var startdate = $("#startdate").val();
                 var enddate = $("#enddate").val();
 
-                if (screentype == "Audit" && categoryID == "0" && subcategoryID == "0" && assignedTo == "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To field.");
-                }
-
-                if (screentype == "Dispute" && categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
-                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Ticket Id field.");
+               if (categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
+                    $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Case Id field.");
                 }
 
                 if ($("#errormsgforcategory").text() == "") {
@@ -311,16 +311,8 @@
                 $('#TicketSubStatus').prop('disabled', false);
             }
 
-            if ($("#rbtaudit").val() == "Audit") {
-                $('#TicketId').prop('disabled', true);
-            }
-            else {
-                $('#TicketId').prop('disabled', false);
-            }
-
             $("#rbtaudit").change(function () {
                 if ($(this).val() == "Audit") {
-                    $('#TicketId').prop('disabled', true);
                     $('#StatusList').prop('disabled', false);
                     if ($('#StatusList').val() == 0) {
                         $('#TicketSubStatus').prop('disabled', true);
@@ -335,7 +327,6 @@
                 if ($(this).val() != "Audit") {
                     $('#StatusList').prop('disabled', true);
                     $('#TicketSubStatus').prop('disabled', true);
-                    $('#TicketId').prop('disabled', false);
                 }
             });
 

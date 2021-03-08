@@ -49,7 +49,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in getting Category for CategoryID as {id}");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetCategoryByid", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetCategoryByid", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             _logger.LogInformation($"Returning from GetCategoryByid Action to Home Page {id}");
             return RedirectToAction("Index", "Home");
@@ -69,7 +69,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             catch (Exception ex)
             {
                 _logger.LogInformation($"Exception in getting Category in GetSingleCategoryByid method for CategoryID as {id}");
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetSingleCategoryByid", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetSingleCategoryByid", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             _logger.LogInformation($"Exiting GetSingleCategoryByid method with data: {data}");
             return data;
@@ -113,7 +113,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Edit", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Edit", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -148,7 +148,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Insert", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Insert", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -172,7 +172,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Delete", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Delete", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -190,7 +190,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_IsCategoryNameExists", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_IsCategoryNameExists", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return result;
         }
@@ -204,7 +204,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetDetails", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_GetDetails", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return data;
         }
@@ -225,7 +225,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_HasDeleteAccess", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_HasDeleteAccess", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -242,7 +242,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index", ErrorDiscription = ex.InnerException.ToString() });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return RedirectToAction("Index", "Home");
         }
@@ -329,7 +329,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index_objCategoryMast", ErrorDiscription = ex.InnerException.ToString() });
+                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "CategoryController_Index_objCategoryMast", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
                 }
             }
 
