@@ -239,7 +239,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             if (int.TryParse(resultCountCriteria, out count))
                             {
                                 count = count > 1000 ? 1000 : count;
-                                objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Skip(skip).Take(count).ToList();
+                                objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Take(count).ToList();
                             }
                             else
                             {
@@ -249,7 +249,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     double len = objgriddata.ToList().Count;
                                     count = count > 100 ? 100 : count;
                                     count = Convert.ToInt32(Math.Ceiling(len * count / 100));
-                                    objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Skip(skip).Take(count).ToList();
+                                    objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Take(count).ToList();
                                 }
                             }
                         }
@@ -257,7 +257,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             var len = objgriddata.ToList().Count;
                             count = len > 1000 ? 1000 : objgriddata.ToList().Count;
-                            objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                            objgriddata = objgriddata.Take(count).ToList();
                         }
                         recordsTotal = objgriddata.ToList().Count;
 
