@@ -185,13 +185,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 var subject = environment + "Case Management Audit Dispute for Ticket #" + auditMain.TicketId;
 
                 //var sendTo = sentoEmail; // + "@hca.corpad.net"; // To be removed while going into production.
-               // var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
+                var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
 
                 //Required for PROD **********
                 //var sendTo = _authService.GetEmailFrom34ID(sentoEmail).Result.ToString();
 
                 var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
-                var sendTo = sendFrom;
                 var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
                 var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This is the Case Management Audit Dispute and Resolution for Ticket #<b>" + auditMain.TicketId + "</b><br>";
