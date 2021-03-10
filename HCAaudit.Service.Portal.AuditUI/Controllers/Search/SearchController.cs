@@ -21,6 +21,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor = false;
         private readonly IErrorLog _log;
+        private const string SessionKeyName = "SearchParamObject";
+
 
         public SearchController(ILogger<SearchController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
@@ -126,6 +128,24 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     int recordsTotal = 0;
 
+
+                    if (!string.IsNullOrEmpty(searchparameter.EnvironmentType))
+                    {
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, SessionKeyName, searchparameter);
+                    }
+                    else if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName))) && string.IsNullOrEmpty(searchparameter.EnvironmentType))
+                    {
+                        SearchViewModel tempSearchParam = SessionHelper.GetObjectFromJson<SearchViewModel>(HttpContext.Session, SessionKeyName);
+                        if (tempSearchParam == null)
+                        {
+                            _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "Session object corrupted." });
+                        }
+                        searchparameter = tempSearchParam;
+                    }
+
+
+
+
                     if (searchparameter == null)
                     {
                         return RedirectToAction("Index");
@@ -223,14 +243,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     break;
                             }
                         }
-                        
+
                         if (!string.IsNullOrEmpty(searchValue))
                         {
                             objgriddata = objgriddata.Where(m => m.TicketCode.ToLower().StartsWith(searchValue.ToLower()) ||
                                 m.ServiceDeliveryGroup.ToLower().StartsWith(searchValue.ToLower()) ||
                                 m.Topic.ToLower().StartsWith(searchValue.ToLower()) ||
                                 m.Agent34ID.ToLower().StartsWith(searchValue.ToLower()) ||
-                                m.SubCategory.ToLower().StartsWith(searchValue.ToLower()) 
+                                m.SubCategory.ToLower().StartsWith(searchValue.ToLower())
                                 );
                         }
 
@@ -306,6 +326,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     var assignedtoList = GetHRList();
                     ViewBag.ListOfMembers = assignedtoList;
+
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+                    {
+                        HttpContext.Session.Remove(SessionKeyName);
+                    }
+
                     return View();
                 }
             }
