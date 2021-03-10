@@ -37,7 +37,7 @@ namespace HCAaudit.Service.Portal.AuditUI
             });
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(600);
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });

@@ -1,13 +1,15 @@
- 
 
-DROP PROCEDURE if exists [dbo].[usp_GetHRAuditSearchResult]
+DROP PROCEDURE [dbo].[usp_GetHRAuditSearchResult]
 GO
 
+/****** Object:  StoredProcedure [dbo].[usp_GetHRAuditSearchResult]    Script Date: 3/10/2021 4:00:19 AM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
+
+
 
  
 --GO
@@ -77,6 +79,7 @@ BEGIN
                      AND ISNULL(Subcat.SubCatgID,'') = CASE WHEN (ISNULL(@SubCategoryId,'')) = 0 THEN ISNULL(Subcat.SubCatgID,'') ELSE @SubCategoryId END 
                      
                      and TicketStatus = CASE WHEN ISNULL(@TicketStatus,'') = ''  THEN TicketStatus ELSE @TicketStatus END 
+					 and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
 					 and main.TicketID is null
               END
 
@@ -128,6 +131,7 @@ BEGIN
                      and TicketStatus = CASE WHEN ISNULL(@TicketStatus,'') = ''  THEN TicketStatus ELSE @TicketStatus END
 					 
 					 and SubStatus = CASE WHEN ISNULL(@TicketSubStatus,'') = ''  THEN SubStatus ELSE @TicketSubStatus END 
+					 and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
 					 and main.TicketID is null
               END
 	END
@@ -192,4 +196,4 @@ BEGIN
 end
 GO
 
-
+GRANT EXECUTE ON [dbo].[usp_GetHRAuditSearchResult] TO public
