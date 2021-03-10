@@ -21,6 +21,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor = false;
         private readonly IErrorLog _log;
+        private const string SessionKeyName = "SearchParamObject";
+
 
         public SearchController(ILogger<SearchController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
         {
@@ -126,6 +128,24 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     int recordsTotal = 0;
 
+
+                    if (!string.IsNullOrEmpty(searchparameter.EnvironmentType))
+                    {
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, SessionKeyName, searchparameter);
+                    }
+                    else if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName))) && string.IsNullOrEmpty(searchparameter.EnvironmentType))
+                    {
+                        SearchViewModel tempSearchParam = SessionHelper.GetObjectFromJson<SearchViewModel>(HttpContext.Session, SessionKeyName);
+                        if (tempSearchParam == null)
+                        {
+                            _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "Session object corrupted." });
+                        }
+                        searchparameter = tempSearchParam;
+                    }
+
+
+
+
                     if (searchparameter == null)
                     {
                         return RedirectToAction("Index");
@@ -223,14 +243,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     break;
                             }
                         }
-                        
+
                         if (!string.IsNullOrEmpty(searchValue))
                         {
                             objgriddata = objgriddata.Where(m => m.TicketCode.ToLower().StartsWith(searchValue.ToLower()) ||
                                 m.ServiceDeliveryGroup.ToLower().StartsWith(searchValue.ToLower()) ||
                                 m.Topic.ToLower().StartsWith(searchValue.ToLower()) ||
                                 m.Agent34ID.ToLower().StartsWith(searchValue.ToLower()) ||
-                                m.SubCategory.ToLower().StartsWith(searchValue.ToLower()) 
+                                m.SubCategory.ToLower().StartsWith(searchValue.ToLower())
                                 );
                         }
 
@@ -239,7 +259,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             if (int.TryParse(resultCountCriteria, out count))
                             {
                                 count = count > 1000 ? 1000 : count;
-                                objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Skip(skip).Take(count).ToList();
+                                objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Take(count).ToList();
                             }
                             else
                             {
@@ -249,7 +269,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                     double len = objgriddata.ToList().Count;
                                     count = count > 100 ? 100 : count;
                                     count = Convert.ToInt32(Math.Ceiling(len * count / 100));
-                                    objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Skip(skip).Take(count).ToList();
+                                    objgriddata = objgriddata.OrderBy(r => Guid.NewGuid()).Take(count).ToList();
                                 }
                             }
                         }
@@ -257,7 +277,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             var len = objgriddata.ToList().Count;
                             count = len > 1000 ? 1000 : objgriddata.ToList().Count;
-                            objgriddata = objgriddata.Skip(skip).Take(count).ToList();
+                            objgriddata = objgriddata.Take(count).ToList();
                         }
                         recordsTotal = objgriddata.ToList().Count;
 
@@ -306,6 +326,12 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     var assignedtoList = GetHRList();
                     ViewBag.ListOfMembers = assignedtoList;
+
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+                    {
+                        HttpContext.Session.Remove(SessionKeyName);
+                    }
+
                     return View();
                 }
             }
