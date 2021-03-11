@@ -78,7 +78,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             ssis => ssis.TicketCode == ticketId
                             && ssis.TicketStatus == "0"
                             && ssis.ClosedDate == recordDate
-                            && ssis.SubCategory == subCategoryDescription).FirstOrDefault();
+                            && ssis.SubCategory == subCategoryDescription).OrderByDescending(ord => ord.LoadStamp).FirstOrDefault();
 
                         if (ssisTicket != null)
                         {
@@ -174,7 +174,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             ssis => ssis.TicketCode == ticketId
                             && ssis.TicketStatus == "1"
                             && ssis.CreateDate == recordDate
-                            && ssis.SubCategory == subCategoryDescription).FirstOrDefault();
+                            && ssis.SubCategory == subCategoryDescription).OrderByDescending(ord => ord.LoadStamp).FirstOrDefault();
 
                         if (ssisTicket != null)
                         {
@@ -270,6 +270,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 _logger.LogInformation($"Exception in Index method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "AuditController_Index", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
+
             return RedirectToAction("Index", "Home");
         }
 

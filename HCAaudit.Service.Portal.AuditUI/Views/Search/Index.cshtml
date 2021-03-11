@@ -83,6 +83,12 @@
                        tabindex="0"
                        required class="radio-success" />
                 <label class="neu-input__label">Dispute</label>
+                <label>&nbsp;</label>
+                <input type="radio" name="ResultType" id="rbtescalated"
+                       value="Escalated"
+                       tabindex="0"
+                       required class="radio-success" />
+                <label class="neu-input__label">Escalated</label>
             </div>
         </div>
     </div>
@@ -379,16 +385,40 @@
                     else {
                         $('#TicketSubStatus').prop('disabled', false);
                     }
+                    $('#CatgID').prop('disabled', false);
+                    $('#SubCatID').prop('disabled', false);
+                    $('#txtassignedto').prop('disabled', false);
+                    $('#startdate').prop('disabled', false);
+                    $('#enddate').prop('disabled', false);
+                    $('#ResultCount').prop('disabled', false);
                 }
             });
 
             $("#rbtdispute").change(function () {
-                if ($(this).val() != "Audit") {
+                if ($(this).val() != "Audit" && $(this).val() != "Escalated") {
                     $('#StatusList').prop('disabled', true);
                     $('#TicketSubStatus').prop('disabled', true);
+                    $('#CatgID').prop('disabled', false);
+                    $('#SubCatID').prop('disabled', false);
+                    $('#txtassignedto').prop('disabled', false);
+                    $('#startdate').prop('disabled', false);
+                    $('#enddate').prop('disabled', false);
+                    $('#ResultCount').prop('disabled', false);
                 }
             });
 
+            $("#rbtescalated").change(function () {
+                if ($(this).val() == "Escalated") {
+                    $('#CatgID').prop('disabled', true);
+                    $('#SubCatID').prop('disabled', true);
+                    $('#txtassignedto').prop('disabled', true);
+                    $('#StatusList').prop('disabled', true);
+                    $('#TicketSubStatus').prop('disabled', true);
+                    $('#startdate').prop('disabled', true);
+                    $('#enddate').prop('disabled', true);
+                    $('#ResultCount').prop('disabled', true);
+                }
+            });
 
             var catGId = $("#CatgID").val();
             if (catGId == 0) {

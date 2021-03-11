@@ -78,7 +78,7 @@ BEGIN
                      
                      AND ISNULL(Subcat.SubCatgID,'') = CASE WHEN (ISNULL(@SubCategoryId,'')) = 0 THEN ISNULL(Subcat.SubCatgID,'') ELSE @SubCategoryId END 
                      
-                     and TicketStatus = CASE WHEN ISNULL(@TicketStatus,'') = ''  THEN TicketStatus ELSE @TicketStatus END 
+                     and TicketStatus = '0' 
 					 and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
 					 and main.TicketID is null
               END
@@ -128,13 +128,51 @@ BEGIN
                      
                      AND ISNULL(Subcat.SubCatgID,'') = CASE WHEN (ISNULL(@SubCategoryId,'')) = 0 THEN ISNULL(Subcat.SubCatgID,'') ELSE @SubCategoryId END 
                      
-                     and TicketStatus = CASE WHEN ISNULL(@TicketStatus,'') = ''  THEN TicketStatus ELSE @TicketStatus END
+                     and TicketStatus = '1'
 					 
 					 and SubStatus = CASE WHEN ISNULL(@TicketSubStatus,'') = ''  THEN SubStatus ELSE @TicketSubStatus END 
 					 and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
 					 and main.TicketID is null
               END
 	END
+
+    IF (@ResultType = 'Escalated')
+		BEGIN
+				SELECT 
+					ssisTable.TicketCode As TicketCode,
+					cat.CatgDescription as ServiceDeliveryGroup,
+					ssisTable.Category as Category,
+					ssisTable.SubCategory as SubCategory,
+					Subcat.SubCatgID as SubCategoryId,
+					cat.CatgID as CategoryId,
+					ssisTable.TicketStatus as TicketStatus,
+					ssisTable.SubStatus as SubStatus,
+					UPPER(hroc.[Employee 3-4 ID (Lower Case)]) as Agent34ID,
+					CONCAT(hroc.[Supervisor First Name], ' ', hroc.[Supervisor Last Name]) as SupervisorName,
+					hroc.[Employee Full Name] as EmployeeName,
+					convert(varchar, ssisTable.ClosedDate, 101) as ClosedDate,
+					ssisTable.Topic as Topic,
+					CONCAT('/Audit/Index?TicketId=',ssisTable.TicketCode,'&TicketStatus=',
+					ssisTable.TicketStatus,'&TicketDate=',convert(varchar, ssisTable.ClosedDate, 101),'&ServiceCatId=',cat.CatgID,
+					'&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus) as Url
+				FROM dbo.TicketsViaSSIS ssisTable WITH (NOLOCK)
+				JOIN dbo.HROCRoster hroc WITH (NOLOCK)
+				ON hroc.[Employee 3-4 ID (Lower Case)] = Substring(ssisTable.CloseUserID,1,7)
+				JOIN dbo.Category cat WITH (NOLOCK)
+				ON hroc.[Job Cd Desc - Home Curr] = cat.CatgDescription
+				JOIN dbo.SubCategory Subcat WITH (NOLOCK)
+				ON Subcat.SubCatgDescription = ssisTable.SubCategory
+				and Subcat.CatgID = cat.CatgID
+				LEFT JOIN dbo.AuditMain main with (nolock)
+				on main.TicketID = ssisTable.TicketCode
+				and main.AuditType = @EnvironmentType
+				and main.TicketDate = ssisTable.ClosedDate
+				and main.SubcategoryID = Subcat.SubCatgID
+				WHERE 1=1
+				and TicketStatus = '0' 
+				and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
+				and main.TicketID is null
+		END
 
 	IF (@ResultType = 'Dispute')
        BEGIN
