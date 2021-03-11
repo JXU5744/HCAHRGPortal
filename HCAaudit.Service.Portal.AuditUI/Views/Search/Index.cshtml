@@ -180,6 +180,47 @@
             </button>
         </div>
     </div>
+
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12 d-flex justify-content-left">
+            <button type="button" id="btnshowstats" class="neu-button--primary neu-button neu-button--raised">My Recent Audits</button>
+        </div>
+    </div>
+
+    <div id="popupstats" title="Recent Audits by me" hidden="hidden" class="container">
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-6">
+                <label class="neu-input__label" for="txtYTD">Tickets YTD</label>
+                <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtYTD">
+            </div>
+            <div class="col-sm-6">
+                <label class="neu-input__label" for="txtMTD">Ticktes MTD</label>
+                <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtMTD">
+            </div>
+        </div>
+
+        <div class="row neu-margin--bottom-16">
+            <div class="col-sm-12">
+                <table id="statresult" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+                    <thead>
+                        <tr class="neu-table__row--large">
+                            <th>Case Number</th>
+                            <th>HR 3/4 ID</th>
+                            <th>Comp/NonComp</th>
+                            <th>Audit Date</th>
+                            <th>Dispute Status</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 neu-text--align-center">
+                <button id="btncancelstat" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+            </div>
+        </div>
+    </div>
 </form>
 
 <div id="popupcontent" title="Mandate Fields" hidden="hidden" class="container">
@@ -211,6 +252,16 @@
 
             var dateEnd = new Date();
             dateEnd.setDate(dateEnd.getDate());
+
+
+            $("#popupstats").dialog({
+                width: 'auto',
+                height: 'auto',
+                autoOpen: false,
+                draggable: false,
+                resizable: false
+            });
+
 
             $('input[name="startdate"]').daterangepicker({
                 singleDatePicker: true,
@@ -249,6 +300,14 @@
                     return matcher.test(value.label || value.value || value);
                 });
             };
+
+            $("#btnshowstats").click(function () {
+                $("#popupstats").dialog('open');
+            });
+
+            $("#btncancelstat").click(function () {
+                $("#popupstats").dialog('close');
+            });
 
             $("#btncancel").click(function () {
                 $("#popupcontent").dialog('close');
