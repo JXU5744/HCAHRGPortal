@@ -20,7 +20,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly ILogger<SearchController> _logger;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor = false;
-        private readonly IAuthService authService;
+        private readonly IAuthService _authService;
         private readonly IErrorLog _log;
         private const string SessionKeyName = "SearchParamObject";
 
@@ -31,7 +31,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _logger = logger;
             isAuditor = authService.CheckAuditorUserGroup().Result;
             _log = log;
-            authService = authService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -515,7 +515,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 if (isAuditor)
                 {
-                    var userName = authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    var userName = _authService.LoggedInUserInfo().Result.LoggedInFullName;
                     DateTime startDateofYear = new DateTime(DateTime.Now.Year, 1, 1);
                     DateTime todayDate = DateTime.Now;
                     DateTime monthStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
