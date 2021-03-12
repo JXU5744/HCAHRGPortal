@@ -68,7 +68,7 @@
                    required />
             <label class="neu-input__label">Training</label>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-8">
             <div class="cols" tabindex="-1">
                 <label class="neu-input__label">Audit/Dispute</label>
                 <label>&nbsp;&nbsp;</label>
@@ -176,20 +176,13 @@
         </div>
     </div>
 
-    <div cass="row" style="text-align:center;width:100%;">
-        <div class="col-12">
-            <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised">
-                &nbsp;Search
-            </button>
-            <button asp-controller="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">
-                &nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;
-            </button>
-        </div>
-    </div>
-
     <div class="row neu-margin--bottom-16">
-        <div class="col-sm-12 d-flex justify-content-left">
+        <div class="col-sm-4 d-flex justify-content-left">
             <button type="button" id="btnshowstats" class="neu-button--primary neu-button neu-button--raised">My Recent Audits</button>
+        </div>
+        <div class="col-sm-8 d-flex justify-content-left">
+            <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised neu-margin--left-10">Search</button>
+            <button asp-="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Clear</button>
         </div>
     </div>
 
