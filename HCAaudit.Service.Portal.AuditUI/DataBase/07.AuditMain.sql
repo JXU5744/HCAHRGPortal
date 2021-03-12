@@ -25,6 +25,7 @@ CREATE TABLE [dbo].[AuditMain](
 	[AuditorQuitReason] [nvarchar](255) NULL,
 	[AuditType] [nvarchar](255) NULL,
 	[AuditNotes] [nvarchar](max) NULL,
+	IsEscalated [bit] DEFAULT(0),
 	[CreatedDate] [DateTime] NULL DEFAULT (GETDATE()),
 	[CreatedBy] [varchar](100) NULL,
     [ModifiedDate] [DateTime]  NULL DEFAULT (GETDATE()),

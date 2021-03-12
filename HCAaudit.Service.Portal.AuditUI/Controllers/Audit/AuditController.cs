@@ -34,7 +34,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         public IActionResult Index(String TicketId, String TicketStatus, String TicketDate,
-            int ServiceCatId, int SubCatId, String EnvironmentType, String TicketSubStatus)
+            int ServiceCatId, int SubCatId, String EnvironmentType, String TicketSubStatus, string ResultType)
         {
             try
             {
@@ -53,6 +53,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var serviceCategory = ServiceCatId;
                     var subCategory = SubCatId;
                     var environmentType = EnvironmentType;
+                    var resultType = ResultType;
 
                     var auditMain = _auditToolContext.AuditMain.Where(x => x.TicketId == TicketId
                         && x.AuditType == environmentType
@@ -63,6 +64,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         return RedirectToAction("Index", "Search");
 
                     var auditViewModel = new AuditViewModel();
+                    auditViewModel.isEscalated = false;
 
                     var subcategory = _auditToolContext.SubCategory.Where(cat => cat.SubCatgId == subCategory &&
                     cat.CatgId == serviceCategory && cat.IsActive == true).FirstOrDefault();
@@ -71,6 +73,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var category = _auditToolContext.Category.Where(cat => cat.CatgId == serviceCategory
                         && cat.IsActive == true).FirstOrDefault();
                     var categoryDescription = category != null ? category.CatgDescription : String.Empty;
+
+                    
+                    if(resultType == "Escalated")
+                    {
+                        auditViewModel.isEscalated = true;
+                    }
+
 
                     if (ticketStatus == "0")
                     {
@@ -295,6 +304,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             SubcategoryId = audit.SubCatId,
                             SubmitDt = DateTime.Now,
                             TicketDate = audit.TicketDate,
+                            IsEscalated = audit.isEscalated,
                             CreatedDate = DateTime.Now,
                             CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
                             ModifiedDate = DateTime.Now,

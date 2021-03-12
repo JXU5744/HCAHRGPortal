@@ -1,19 +1,14 @@
-
 DROP PROCEDURE [dbo].[usp_GetHRAuditSearchResult]
 GO
 
-/****** Object:  StoredProcedure [dbo].[usp_GetHRAuditSearchResult]    Script Date: 3/10/2021 4:00:19 AM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- EXEC [dbo].[usp_GetHRAuditSearchResult] 'Production',1,6,'Audit',0,'','All','','2020-10-01' ,'2020-10-02'
 
-
- 
---GO
--- EXEC [dbo].[usp_GetHRAuditSearchResult] 'Production',3,28,'Audit',0,'','All','','2020-10-01' ,'2020-10-02'
 CREATE  PROCEDURE [dbo].[usp_GetHRAuditSearchResult]
 
   @EnvironmentType varchar(50) = null,
@@ -51,7 +46,7 @@ BEGIN
                            ssisTable.Topic as Topic,
 						   CONCAT('/Audit/Index?TicketId=',ssisTable.TicketCode,'&TicketStatus=',
 						   @TicketStatus,'&TicketDate=',convert(varchar, ssisTable.ClosedDate, 101),'&ServiceCatId=',cat.CatgID,
-						   '&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus) as Url
+						   '&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus,'&ResultType=Audit') as Url
                      FROM dbo.TicketsViaSSIS ssisTable WITH (NOLOCK)
                      JOIN dbo.HROCRoster hroc WITH (NOLOCK)
                      ON hroc.[Employee 3-4 ID (Lower Case)] = Substring(ssisTable.CloseUserID,1,7)
@@ -79,6 +74,8 @@ BEGIN
                      AND ISNULL(Subcat.SubCatgID,'') = CASE WHEN (ISNULL(@SubCategoryId,'')) = 0 THEN ISNULL(Subcat.SubCatgID,'') ELSE @SubCategoryId END 
                      
                      and TicketStatus = '0' 
+					 
+					 and SubStatus = CASE WHEN ISNULL(@TicketSubStatus,'') = ''  THEN SubStatus ELSE @TicketSubStatus END 
 					 and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
 					 and main.TicketID is null
               END
@@ -101,7 +98,7 @@ BEGIN
                            ssisTable.Topic as Topic,
 						   CONCAT('/Audit/Index?TicketId=',ssisTable.TicketCode,'&TicketStatus=',
 						   @TicketStatus,'&TicketDate=',convert(varchar, ssisTable.CreateDate, 101),'&ServiceCatId=',cat.CatgID,
-						   '&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus) as Url
+						   '&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus,'&ResultType=Audit') as Url
                      FROM dbo.TicketsViaSSIS ssisTable WITH (NOLOCK)
                      JOIN dbo.HROCRoster hroc WITH (NOLOCK)
                      ON hroc.[Employee 3-4 ID (Lower Case)] = Substring(ssisTable.CloseUserID,1,7)
@@ -136,7 +133,7 @@ BEGIN
               END
 	END
 
-    IF (@ResultType = 'Escalated')
+	IF (@ResultType = 'Escalated')
 		BEGIN
 				SELECT 
 					ssisTable.TicketCode As TicketCode,
@@ -154,7 +151,7 @@ BEGIN
 					ssisTable.Topic as Topic,
 					CONCAT('/Audit/Index?TicketId=',ssisTable.TicketCode,'&TicketStatus=',
 					ssisTable.TicketStatus,'&TicketDate=',convert(varchar, ssisTable.ClosedDate, 101),'&ServiceCatId=',cat.CatgID,
-					'&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus) as Url
+					'&SubCatId=',Subcat.SubCatgID,'&EnvironmentType=',@EnvironmentType,'&TicketSubStatus=',ssisTable.SubStatus,'&ResultType=Escalated') as Url
 				FROM dbo.TicketsViaSSIS ssisTable WITH (NOLOCK)
 				JOIN dbo.HROCRoster hroc WITH (NOLOCK)
 				ON hroc.[Employee 3-4 ID (Lower Case)] = Substring(ssisTable.CloseUserID,1,7)
@@ -170,6 +167,7 @@ BEGIN
 				and main.SubcategoryID = Subcat.SubCatgID
 				WHERE 1=1
 				and TicketStatus = '0' 
+				and SubStatus = CASE WHEN ISNULL(@TicketSubStatus,'') = ''  THEN SubStatus ELSE @TicketSubStatus END 
 				and TicketCode = CASE WHEN ISNULL(@TicketId,'') = ''  THEN TicketCode ELSE @TicketId END 
 				and main.TicketID is null
 		END
@@ -218,6 +216,8 @@ BEGIN
 					and auditMain.TicketID = CASE WHEN ISNULL(@TicketId,'') = ''  THEN auditMain.TicketID ELSE @TicketId END 
 
 					and resp.isNonCompliant = 1
+
+					and auditMain.IsEscalated = 0
 			GROUP BY 
 				auditMain.TicketID,
                 cat.CatgDescription,
@@ -231,7 +231,12 @@ BEGIN
                 convert(varchar, auditMain.SubmitDT, 101),
 				CONCAT('/Dispute/Index?AuditMainId=',auditMain.ID)
 		END
+
 end
 GO
 
+
 GRANT EXECUTE ON [dbo].[usp_GetHRAuditSearchResult] TO public
+
+
+
