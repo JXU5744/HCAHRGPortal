@@ -41,10 +41,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 if (isAuditor)
                 {
                     var disp = _auditToolContext.AuditMain.Where(y => y.Id == AuditMainId &&
-                            y.IsDisputed == true).FirstOrDefault();
+                            (y.IsDisputed == true || y.IsEscalated == true)).FirstOrDefault();
 
                     if (disp != null)
-                        return RedirectToAction("Index", "Search");
+                        return RedirectToAction("Details", "Search");
 
                     var model = new DisputeModel
                     {

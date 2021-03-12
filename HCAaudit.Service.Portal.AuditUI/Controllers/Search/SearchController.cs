@@ -20,6 +20,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly ILogger<SearchController> _logger;
         private readonly AuditToolContext _auditToolContext;
         private readonly bool isAuditor = false;
+        private readonly IAuthService _authService;
         private readonly IErrorLog _log;
         private const string SessionKeyName = "SearchParamObject";
 
@@ -30,6 +31,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             _logger = logger;
             isAuditor = authService.CheckAuditorUserGroup().Result;
             _log = log;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -142,9 +144,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         }
                         searchparameter = tempSearchParam;
                     }
-
-
-
 
                     if (searchparameter == null)
                     {
@@ -500,6 +499,67 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     _logger.LogInformation($"No of SubCategoryListrecords: {query.Count}");
                     return Json(query);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetAllSubcategory", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
+            }
+            return Json(new { Success = "False", responseText = "Authorization Error" });
+        }
+
+        [HttpPost]
+        public JsonResult GetStatistics()
+        {
+            try
+            {
+                if (isAuditor)
+                {
+                    var userName = _authService.LoggedInUserInfo().Result.LoggedInFullName;
+                    DateTime startDateofYear = new DateTime(DateTime.Now.Year, 1, 1);
+                    DateTime todayDate = DateTime.Now;
+                    DateTime monthStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                    var yearToDateAuditCount = _auditToolContext.AuditMain.Where(x =>x.AuditorName == userName && x.SubmitDt >= startDateofYear && x.SubmitDt <= todayDate && x.AuditorQuit != "Quit").Count();
+                    var yearToDateDisputeCount = _auditToolContext.AuditDispute.Where(x => x.CreatedBy == userName && x.CreatedDate >= startDateofYear && x.CreatedDate <= todayDate).Count();
+
+                    var monthToDateAuditCount = _auditToolContext.AuditMain.Where(x => x.AuditorName == userName && x.SubmitDt >= monthStartDate && x.SubmitDt <= todayDate && x.AuditorQuit != "Quit").Count();
+                    var monthToDateDisputeCount = _auditToolContext.AuditDispute.Where(x => x.CreatedBy == userName && x.CreatedDate >= monthStartDate && x.CreatedDate <= todayDate).Count();
+
+                    AuditorStatistics stats = new AuditorStatistics
+                    {
+                        YearToDate = string.Format("{0} / {1}", yearToDateAuditCount, yearToDateDisputeCount),
+                        MonthToDate = string.Format("{0} / {1}", monthToDateAuditCount, monthToDateDisputeCount)
+                    };
+
+                    var auditList = _auditToolContext.AuditMain.Where(x => x.AuditorName == userName && x.AuditorQuit != "Quit").OrderByDescending(ord => ord.CreatedDate).Take(10).ToList();
+
+                    foreach(AuditMain item in auditList)
+                    {
+                        RecentTicket recentTicket = new RecentTicket
+                        {
+                            TicketCode = item.TicketId,
+                            Agent34Id = item.Agent34Id,
+                            AuditDate = (DateTime)item.SubmitDt,
+                            Dispute = (bool)item.IsDisputed ? "Yes" : "No"
+                        };
+
+                        var auditCompliantResponse = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == item.Id && x.IsCompliant == true).Any();
+                        var auditNonCompliantResponse = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == item.Id && x.IsNonCompliant == true).Any();
+
+                        if (auditNonCompliantResponse || auditCompliantResponse)
+                        {
+                            recentTicket.CompliantNonCompliant = auditNonCompliantResponse ? "Non Compliant" : "Compliant";
+                        }
+                        else
+                        {
+                            recentTicket.CompliantNonCompliant = "Not Applicable";
+                        }
+
+                        stats.RecentTicketLists.ToList().Add(recentTicket);
+                    }
+
+                    return Json(stats);
                 }
             }
             catch (Exception ex)
