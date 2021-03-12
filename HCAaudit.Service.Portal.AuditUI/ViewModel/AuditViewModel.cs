@@ -35,6 +35,7 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
         public DateTime ModifiedDate { get; set; }
         public DateTime DateOfAuditor { get; set; }
         public List<Question> Question { get; set; }
+        public bool isEscalated { get; set; }
         public IEnumerable<SelectListItem> CancellationReason { get; set; }
     }
 
