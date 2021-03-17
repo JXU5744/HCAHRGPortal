@@ -16,9 +16,9 @@
 <script src="~/js/jquery-ui.min.js"></script>
 
 @*.ui-autocomplete{
-    max-height:250px;
-    overflow: auto;
-}*@
+        max-height:250px;
+        overflow: auto;
+    }*@
 
 <style type="text/css">
     .ui-autocomplete {
@@ -26,7 +26,7 @@
         /*max-height: 300px;
         min-width: calc(100% - 16px) !important;*/
         /* these make it scroll for anything outside */
-       /* overflow-x: scroll;
+        /* overflow-x: scroll;
         overflow-y: scroll;
         font-family: inherit;
         font-size: initial;
@@ -36,11 +36,9 @@
         font-family: inherit;
         font-size: initial;*/
         /*max-height: 125px;*/
-
         max-height: 250px;
         overflow: auto;
     }
-    
 </style>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -177,9 +175,9 @@
     </div>
 
     <div class="row neu-margin--bottom-16">
-        @*<div class="col-sm-4 d-flex justify-content-left">
+        <div class="col-sm-4 d-flex justify-content-left">
             <button type="button" id="btnshowstats" class="neu-button--primary neu-button neu-button--raised">My Recent Audits</button>
-        </div>*@
+        </div>
         <div class="col-sm-12 d-flex justify-content-center">
             <button asp-controller="Search" id="btnsearch" asp-action="Details" class="neu-button--primary neu-button neu-button--raised neu-margin--left-10">Search</button>
             <button asp-="Search" id="btncancel" asp-action="Index" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Clear</button>
@@ -187,33 +185,32 @@
     </div>
 
     <div id="popupstats" title="Recent Audits by me" hidden="hidden" class="container">
-        <div class="row neu-margin--bottom-16">
+        <div class="row neu-margin--bottom-0">
             <div class="col-sm-6">
-                <label class="neu-input__label" for="txtYTD">Tickets YTD</label>
+                <label class="neu-input__label" for="txtYTD">Tickets YTD (Audit/Dispute count)</label>
                 <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtYTD">
             </div>
             <div class="col-sm-6">
-                <label class="neu-input__label" for="txtMTD">Ticktes MTD</label>
+                <label class="neu-input__label" for="txtMTD">Ticktes MTD (Audit/Dispute count)</label>
                 <input class="neu-input__field" aria-disabled="false" disabled="disabled" type="text" id="txtMTD">
             </div>
         </div>
-
         <div class="row neu-margin--bottom-16">
             <div class="col-sm-12">
                 <table id="statresult" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
                     <thead>
-                        <tr class="neu-table__row--large">
-                            <th>Case Number</th>
-                            <th>HR 3/4 ID</th>
-                            <th>Comp/NonComp</th>
-                            <th>Audit Date</th>
-                            <th>Dispute Status</th>
+                        <tr class="neu-table__row--small">
+                            <th width="15%">Case ID</th>
+                            <th width="15%">HR 3/4 ID</th>
+                            <th width="20%">Comp/NonComp</th>
+                            <th width="25%">Audit Date</th>
+                            <th width="10%">Dispute Status</th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
-
         <div class="row">
             <div class="col-sm-12 neu-text--align-center">
                 <button id="btncancelstat" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
@@ -252,13 +249,12 @@
             var dateEnd = new Date();
             dateEnd.setDate(dateEnd.getDate());
 
-
             $("#popupstats").dialog({
                 width: 'auto',
-                height: 'auto',
+                height: 400,
                 autoOpen: false,
                 draggable: false,
-                resizable: false
+                resizable: true
             });
 
 
@@ -301,6 +297,40 @@
             };
 
             $("#btnshowstats").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/search/GetStatistics",
+                    data: null,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+
+                        $("#txtYTD").val(response.YearToDate);
+                        $("#txtMTD").val(response.MonthToDate);
+
+                        $('#statresult tbody').empty();
+
+                        $.each(response.RecentTicketLists, function (i, item) {
+                            var row = "";
+                            var myDatetime = item.AuditDate.toString("MM/dd/yyyy");
+
+                            row += "<tr><td>" + item.TicketCode
+                                + "</td><td>" + item.Agent34Id
+                                + "</td><td>" + item.CompliantNonCompliant
+                                + "</td><td>" + myDatetime
+                                + "</td><td>" + item.Dispute
+                                + "</td></tr>";
+
+                            $('#statresult tbody').append(row);
+                        })
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
                 $("#popupstats").dialog('open');
             });
 
@@ -325,7 +355,7 @@
                 var startdate = $("#startdate").val();
                 var enddate = $("#enddate").val();
 
-               if (categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
+                if (categoryID == "0" && subcategoryID == "0" && assignedTo == "" && ticketId == "") {
                     $("#errormsgforcategory").append("Select Either Service Delivery Group Or Sub Category Or Assigned To Or Case Id field.");
                 }
 

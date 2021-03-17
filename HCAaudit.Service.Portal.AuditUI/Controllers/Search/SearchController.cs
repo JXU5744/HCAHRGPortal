@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -520,7 +519,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     DateTime todayDate = DateTime.Now;
                     DateTime monthStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
 
-                    var yearToDateAuditCount = _auditToolContext.AuditMain.Where(x =>x.AuditorName == userName && x.SubmitDt >= startDateofYear && x.SubmitDt <= todayDate && x.AuditorQuit != "Quit").Count();
+                    var yearToDateAuditCount = _auditToolContext.AuditMain.Where(x => x.AuditorName == userName && x.SubmitDt >= startDateofYear && x.SubmitDt <= todayDate && x.AuditorQuit != "Quit").Count();
                     var yearToDateDisputeCount = _auditToolContext.AuditDispute.Where(x => x.CreatedBy == userName && x.CreatedDate >= startDateofYear && x.CreatedDate <= todayDate).Count();
 
                     var monthToDateAuditCount = _auditToolContext.AuditMain.Where(x => x.AuditorName == userName && x.SubmitDt >= monthStartDate && x.SubmitDt <= todayDate && x.AuditorQuit != "Quit").Count();
@@ -534,14 +533,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     var auditList = _auditToolContext.AuditMain.Where(x => x.AuditorName == userName && x.AuditorQuit != "Quit").OrderByDescending(ord => ord.CreatedDate).Take(10).ToList();
 
-                    foreach(AuditMain item in auditList)
+                    List<RecentTicket> myTicketList = new List<RecentTicket>();
+
+                    foreach (AuditMain item in auditList)
                     {
                         RecentTicket recentTicket = new RecentTicket
                         {
                             TicketCode = item.TicketId,
                             Agent34Id = item.Agent34Id,
-                            AuditDate = (DateTime)item.SubmitDt,
-                            Dispute = (bool)item.IsDisputed ? "Yes" : "No"
+                            AuditDate = item.SubmitDt.Value.ToString("yyyy-MM-dd HH:mm tt"), 
+                            Dispute = (bool)item.IsDisputed.Equals(true) ? "Yes" : "No"
                         };
 
                         var auditCompliantResponse = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == item.Id && x.IsCompliant == true).Any();
@@ -555,24 +556,23 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             recentTicket.CompliantNonCompliant = "Not Applicable";
                         }
-
-                        stats.RecentTicketLists.ToList().Add(recentTicket);
+                        myTicketList.Add(recentTicket);
                     }
+
+                    stats.RecentTicketLists = myTicketList;
 
                     return Json(stats);
                 }
             }
             catch (Exception ex)
             {
-                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetAllSubcategory", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetStatistics", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
 
         public List<BindSearchGrid> GetSearchResult()
         {
-            //isActiveFlag
-
             List<BindSearchGrid> objgriddata = new List<BindSearchGrid>();
 
             try
