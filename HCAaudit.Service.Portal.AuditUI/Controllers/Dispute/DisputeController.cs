@@ -103,6 +103,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     model.GracePeriod = gracePeriod;
                     model.Overturn = overturn;
                     model.AuditNonComplianceModel = auditNonCompList;
+
+                   
+
                     return View(model);
                 }
             }
@@ -157,6 +160,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     _auditToolContext.AuditMainResponse.UpdateRange(auditRes);
                     _auditToolContext.AuditDispute.AddRange(dispute);
                     var result = _auditToolContext.SaveChanges();
+
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, Common.CaseIDSessionKeyName, ticketId);
+
                     FormatAndSendEmail(auditMain.Id);
                     return Json(result);
                 }

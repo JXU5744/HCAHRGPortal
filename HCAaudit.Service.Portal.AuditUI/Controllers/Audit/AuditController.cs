@@ -271,6 +271,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             return RedirectToAction("Index", "Search");
                         }
                     }
+                    SessionHelper.SetObjectAsJson(HttpContext.Session, Common.CaseIDSessionKeyName, ticketId);
                     return View(auditViewModel);
                 }
             }
