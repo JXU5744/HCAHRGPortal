@@ -21,7 +21,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         private readonly bool isAuditor = false;
         private readonly IAuthService _authService;
         private readonly IErrorLog _log;
-        private const string SessionKeyName = "SearchParamObject";
 
 
         public SearchController(ILogger<SearchController> logger, IErrorLog log, AuditToolContext audittoolc, IAuthService authService)
@@ -132,14 +131,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                     if (!string.IsNullOrEmpty(searchparameter.EnvironmentType))
                     {
-                        SessionHelper.SetObjectAsJson(HttpContext.Session, SessionKeyName, searchparameter);
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, Common.SearchParamSessionKeyName, searchparameter);
                     }
-                    else if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName))) && string.IsNullOrEmpty(searchparameter.EnvironmentType))
+
+                    else if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.SearchParamSessionKeyName))) && string.IsNullOrEmpty(searchparameter.EnvironmentType))
                     {
-                        SearchViewModel tempSearchParam = SessionHelper.GetObjectFromJson<SearchViewModel>(HttpContext.Session, SessionKeyName);
+                        SearchViewModel tempSearchParam = SessionHelper.GetObjectFromJson<SearchViewModel>(HttpContext.Session, Common.SearchParamSessionKeyName);
                         if (tempSearchParam == null)
                         {
-                            _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "Session object corrupted." });
+                            _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "Search Parameter Session object corrupted." });
                         }
                         searchparameter = tempSearchParam;
                     }
@@ -168,8 +168,40 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         string resultCountCriteria = String.IsNullOrWhiteSpace(searchparameter.ResultCountCriteria) ? "All" : searchparameter.ResultCountCriteria;
                         string TicketId = String.IsNullOrWhiteSpace(searchparameter.TicketId) ? string.Empty : searchparameter.TicketId;
 
-                        IEnumerable<UspGetHRAuditSearchResult> objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
-                                    ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
+                        IEnumerable<UspGetHRAuditSearchResult> objgriddata = null;
+
+                        if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.SearchResultSessionKeyName))))
+                        {
+                            string tempTicketID = string.Empty;
+                            IEnumerable<UspGetHRAuditSearchResult> tempResultGrid = SessionHelper.GetObjectFromJson<IEnumerable<UspGetHRAuditSearchResult>>(HttpContext.Session, Common.SearchResultSessionKeyName);
+
+                            if (tempResultGrid == null)
+                            {
+                                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "SearchResult Session object corrupted." });
+                            }
+
+                            if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.CaseIDSessionKeyName))))
+                            {
+                                tempTicketID = SessionHelper.GetObjectFromJson<string>(HttpContext.Session, Common.CaseIDSessionKeyName);
+                            }
+
+                            if (!string.IsNullOrEmpty(tempTicketID))
+                            {
+                                objgriddata = tempResultGrid.Where(x => x.TicketCode != tempTicketID).ToList();
+                            }
+                            else
+                            {
+                                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "TicketId Session object corrupted." });
+                            }
+                        }
+
+                        else
+                        {
+                            objgriddata = GetClosedAuditSearchResult(environmentType, categoryId, subCategoryId, resultType,
+                                       ticketStatus, ticketSubStatus, resultCountCriteria, assignedTo, fromDate, toDate, TicketId);
+
+
+                        }
                         // All
                         // 1-100%
                         // X RecCounts
@@ -281,6 +313,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         //Paging   
                         var jsonData = objgriddata.Skip(skip).Take(pageSize).ToList();
+
+
+                        SessionHelper.SetObjectAsJson(HttpContext.Session, Common.SearchResultSessionKeyName, jsonData);
+
                         //Returning Json Data  
                         return Json(new { draw, recordsFiltered = recordsTotal, recordsTotal, data = jsonData });
                     }
@@ -325,9 +361,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var assignedtoList = GetHRList();
                     ViewBag.ListOfMembers = assignedtoList;
 
-                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyName)))
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.SearchParamSessionKeyName)))
                     {
-                        HttpContext.Session.Remove(SessionKeyName);
+                        HttpContext.Session.Remove(Common.SearchParamSessionKeyName);
+                    }
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.SearchResultSessionKeyName)))
+                    {
+                        HttpContext.Session.Remove(Common.SearchResultSessionKeyName);
                     }
 
                     return View();
@@ -541,7 +581,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             TicketCode = item.TicketId,
                             Agent34Id = item.Agent34Id,
-                            AuditDate = item.SubmitDt.Value.ToString("yyyy-MM-dd HH:mm tt"), 
+                            AuditDate = item.SubmitDt.Value.ToString("yyyy-MM-dd HH:mm tt"),
                             Dispute = (bool)item.IsDisputed.Equals(true) ? "Yes" : "No"
                         };
 
