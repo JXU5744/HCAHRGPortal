@@ -74,16 +74,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
             };
         }
 
-        public  async Task<string> GetEmailFrom34ID(string input34id)
-        {
-            string email = string.Empty;
-            using (var principalContext = new PrincipalContext(ContextType.Domain, "hca.corpad.net"))
-            {
-                var userPrincipal = UserPrincipal.FindByIdentity(principalContext, input34id);
-                email= userPrincipal.EmailAddress;
-            }
-            return email;
-        }
+        //public  async Task<string> GetEmailFrom34ID(string input34id)
+        //{
+        //    string email = string.Empty;
+        //    using (var principalContext = new PrincipalContext(ContextType.Domain, "hca.corpad.net"))
+        //    {
+        //        var userPrincipal = UserPrincipal.FindByIdentity(principalContext, input34id);
+        //        email= userPrincipal.EmailAddress;
+        //    }
+        //    return email;
+        //}
         #endregion
 
         #region Private Methods

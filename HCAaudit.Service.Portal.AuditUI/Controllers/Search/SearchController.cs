@@ -183,6 +183,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             if ((!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.CaseIDSessionKeyName))))
                             {
                                 tempTicketID = SessionHelper.GetObjectFromJson<string>(HttpContext.Session, Common.CaseIDSessionKeyName);
+
+                                if (string.IsNullOrEmpty(tempTicketID))
+                                {
+                                    _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "TicketId Session object corrupted." });
+                                }
                             }
 
                             if (!string.IsNullOrEmpty(tempTicketID))
@@ -191,7 +196,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             }
                             else
                             {
-                                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "SearchController_GetSearchDetails", ErrorDiscription = "TicketId Session object corrupted." });
+                                objgriddata = tempResultGrid;
                             }
                         }
 
