@@ -52,8 +52,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         AuditMain = _auditToolContext.AuditMain.FirstOrDefault(x => x.Id == AuditMainId)
                     };
                     
-                    var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == AuditMainId &&
-                        x.IsNonCompliant == true).ToList();
+                    var auditResponses = _auditToolContext.AuditMainResponse.Where(x => x.AuditMainId == AuditMainId && x.IsNonCompliant == true).ToList();
+
                     var subcategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == model.AuditMain.SubcategoryId).FirstOrDefault();
                     var category = _auditToolContext.Category.Where(x => x.CatgId == model.AuditMain.ServiceGroupId).FirstOrDefault();
 
@@ -80,6 +80,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         overturn.Add(new SelectListItem() { Text = item.Code, Value = item.Id.ToString() });
                     }
 
+
                     var auditNonCompList = new List<AuditNonComplianceModel>();
                     foreach (var auditRes in auditResponses)
                     {
@@ -93,6 +94,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 Question = questionText.QuestionDescription, //need to call service to get the question
                                 IsCompliant = (bool)auditRes.IsCompliant,
                                 IsNonCompliant = (bool)auditRes.IsNonCompliant,
+                                IsHighNonCompliant  = (bool)auditRes.IsHighNonComplianceImpact,
+                                DowngradeRequired = false,
                                 IsCorrectionRequired = (bool)auditRes.IsCorrectionRequired,
                                 NonComplianceComments = auditRes.NonComplianceComments,
                                 TicketId = auditRes.TicketId,
@@ -103,8 +106,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     model.GracePeriod = gracePeriod;
                     model.Overturn = overturn;
                     model.AuditNonComplianceModel = auditNonCompList;
-
-                   
 
                     return View(model);
                 }
@@ -118,7 +119,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetData([FromBody] List<AuditNonComplianceModel> model)
+        public IActionResult SaveDispute([FromBody] List<AuditNonComplianceModel> model)
         {
             try
             {
@@ -148,6 +149,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                 OverTurnId = Convert.ToInt32(ques.OverturnId),
                                 QuestionId = Convert.ToInt32(ques.QuestionId),
                                 QuestionRank = Convert.ToInt32(ques.QuestionRank),
+                                IsDowngraded = ques.DowngradeRequired,
                                 Comments = ques.Comment,
                                 CreatedDate = DateTime.Now,
                                 CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
@@ -207,7 +209,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                 stringBuilder.Append(body);
                 stringBuilder.Append("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ticket Sub Category: " + (subCategory != null ? "<b>" + subCategory.SubCatgDescription + "</b>" : String.Empty));
                 stringBuilder.Append("<br><br><table border='1' cellpadding='8'><tr bgcolor='#98C2DB'><th>Question Sequence</th><th>Question Description</th>");
-                stringBuilder.Append("<th>Correction Required</th><th>Audit Comments</th><th>Grace Period</th><th>Over Turn</th><th>Dispute Comments</th></tr>");
+                stringBuilder.Append("<th>Correction Required</th><th>Audit Comments</th><th>Grace Period</th><th>Over Turn</th><th>Downgrade</th><th>Dispute Comments</th></tr>");
                 foreach (var item in auditDispute)
                 {
                     var questionDesc = _auditToolContext.QuestionBank.Where(x => x.QuestionId == item.QuestionId).FirstOrDefault();
@@ -226,11 +228,13 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         var responseComments = auditResponseObject != null ? auditResponseObject.NonComplianceComments : String.Empty;
                         var gracePeriodDesc = gracePeriod != null ? gracePeriod.Code : String.Empty;
                         var overTurnDesc = overTurn != null ? overTurn.Code : String.Empty;
+                        var downgradeRequired =  item.IsDowngraded == true ? "Yes" : "No";
                         var comments = item.Comments ?? string.Empty;
 
                         stringBuilder.Append(rowStartTag + cellStartTag + quesSeq + cellEndTag + cellStartTag + quesDescription);
                         stringBuilder.Append(cellEndTag + cellStartTag + correctionRequired + cellEndTag + cellStartTag + responseComments);
                         stringBuilder.Append(cellEndTag + cellStartTag + gracePeriodDesc + cellEndTag + cellStartTag + overTurnDesc);
+                        stringBuilder.Append(cellEndTag + cellStartTag + downgradeRequired );
                         stringBuilder.Append(cellEndTag + cellStartTag + comments + cellEndTag + rowEndTag);
                     }
                 }

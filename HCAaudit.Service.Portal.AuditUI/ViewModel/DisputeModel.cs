@@ -27,6 +27,8 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
         public string NonComplianceComments { get; set; }
         public string GracePeriodId { get; set; }
         public string OverturnId { get; set; }
+        public bool IsHighNonCompliant { get; set; }
+        public bool DowngradeRequired { get; set; }
         public String Comment { get; set; }
     }
 }
