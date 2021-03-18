@@ -14,6 +14,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public int? QuestionRank { get; set; }
         public int? GracePeriodId { get; set; }
         public int? OverTurnId { get; set; }
+        public bool? IsDowngraded { get; set; }
         public string Comments { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
