@@ -16,6 +16,7 @@ CREATE TABLE [dbo].[AuditDispute](
 	[QuestionRank] [int] NULL,
 	[GracePeriodId] [int] NULL,
 	[OverTurnId] [int] NULL,
+	[isDowngraded] [bit] NULL DEFAULT (0),
 	[Comments] [nvarchar](max) NULL,
 	[CreatedDate] [DateTime]  NULL DEFAULT (GETDATE()),
 	[CreatedBy] [varchar](100) NULL,

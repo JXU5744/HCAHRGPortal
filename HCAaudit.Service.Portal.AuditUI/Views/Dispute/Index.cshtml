@@ -68,17 +68,18 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <table id="disputeDataTable" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
+            <table id="disputeDataTable" border="0" cellpadding="0" class="neu-table neu-margin--vert-16" width="100%" cellspacing="0">
                 <thead class="neu-table__head neu-text--align-center">
-                    <tr class="neu-table__header neu-table__sort-icon" style="text-align:center">
+                    <tr class="neu-table__header neu-table__sort-icon" style="text-align:left">
                         <th style="display:none">Question ID</th>
-                        <th style="width:5%">Rank</th>
-                        <th style="width:20%">Question Name</th>
-                        <th style="width:5%">Correction Required</th>
-                        <th style="width:20%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comments</th>
-                        <th style="width:15%">Grace Period</th>
-                        <th style="width:15%">Overturn</th>
-                        <th style="width:20%">Dispute Comments</th>
+                        <th style="width:5%;padding:10px">Rank</th>
+                        <th style="width:18%;padding:20px">Question Name</th>
+                        <th style="width:5%;padding:0px">Correction Required</th>
+                        <th style="width:18%;padding:20px;text-align:center">Comments</th>
+                        <th style="width:15%;padding:20px;text-align:center">Grace Period</th>
+                        <th style="width:15%;padding:20px;text-align:center">Overturn</th>
+                        <th style="width:5%;padding:0px">Downgrade</th>
+                        <th style="width:17%;padding:20px;text-align:right">Dispute Comments</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,6 +106,16 @@
                             </td>
                             <td>
                                 @Html.DropDownListFor(x => x.AuditNonComplianceModel[i].OverturnId, Model.Overturn, new { @class = "neu-select" })
+                            </td>
+                            <td>
+                                @if (Model.AuditNonComplianceModel[i].IsHighNonCompliant == true)
+                                {
+                                    @Html.CheckBoxFor(x => x.AuditNonComplianceModel[i].DowngradeRequired)
+                                }
+                                else
+                                {
+                                    @Html.CheckBoxFor(x => x.AuditNonComplianceModel[i].DowngradeRequired, new { @disabled = "disabled" })
+                                }
                             </td>
                             <td style="width:20%">
                                 @Html.TextAreaFor(x => x.AuditNonComplianceModel[i].Comment, 2, 3, new { @class = "neu-input__textarea", rows = "5", cols = "50", style = "resize:none" })
@@ -190,6 +201,8 @@
                 window.location.href = "/Search/Details"
             });
 
+
+
             $("#btnSave").click(function (e) {
                 e.preventDefault();
                 var AuditNonComplianceModel = [];
@@ -202,13 +215,16 @@
                     var OverturnId = $(this).find('[id$="OverturnId"]').val();
                     if (GracePeriodId > 0 || OverturnId > 0) { isSelected = true; }
 
+                    var tempDowngradeRequired = $(this).find("input[type=checkbox][name$='DowngradeRequired']")
+
                     AuditNonComplianceModel.push({
                         QuestionId: $(this).find('[id$="QuestionId"]:hidden').val(),
                         QuestionRank: $(this).find('[id$="QuestionRank"]:hidden').val(),
                         TicketId: $('[id$="AuditMain_TicketId"]:hidden').val(),
                         GracePeriodId: $(this).find('[id$="GracePeriodId"]').val(),
                         OverturnId: $(this).find('[id$="OverturnId"]').val(),
-                        Comment: $(this).find('[id$="Comment"]').val()
+                        Comment: $(this).find('[id$="Comment"]').val(),
+                        DowngradeRequired: tempDowngradeRequired.prop("checked")
                     });
                 });
 
@@ -219,7 +235,7 @@
                 }
 
                 $.ajax({
-                    url: '/Dispute/GetData',
+                    url: '/Dispute/SaveDispute',
                     type: "POST",
                     dataType: "json",
                     data: JSON.stringify(AuditNonComplianceModel),
