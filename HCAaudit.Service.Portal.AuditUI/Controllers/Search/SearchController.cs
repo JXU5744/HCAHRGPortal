@@ -369,6 +369,10 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     {
                         HttpContext.Session.Remove(Common.SearchResultSessionKeyName);
                     }
+                    if (!string.IsNullOrEmpty(HttpContext.Session.GetString(Common.CaseIDSessionKeyName)))
+                    {
+                        HttpContext.Session.Remove(Common.CaseIDSessionKeyName);
+                    }
 
                     return View();
                 }
