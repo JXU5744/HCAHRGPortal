@@ -34,6 +34,6 @@ namespace HCAaudit.Service.Portal.AuditUI
             ).UseStartup<Startup>()
              .Build();
 
-        private static string GetKeyVaultEndpoint() => "https://hat-dev-kv.vault.azure.net/";
+        private static string GetKeyVaultEndpoint() => "https://hat-qa-kv.vault.azure.net/";
     }
 }
