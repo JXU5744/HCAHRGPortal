@@ -74,8 +74,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         && cat.IsActive == true).FirstOrDefault();
                     var categoryDescription = category != null ? category.CatgDescription : String.Empty;
 
-                    
-                    if(resultType == "Escalated")
+
+                    if (resultType == "Escalated")
                     {
                         auditViewModel.isEscalated = true;
                     }
@@ -447,16 +447,16 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                     var subCategory = _auditToolContext.SubCategory.Where(x => x.SubCatgId == auditMain.SubcategoryId).FirstOrDefault();
                     var environment = auditMain.AuditType.Equals("Production") ? string.Empty : "[Training] ";
                     var subject = environment + "Case Management Audit Ticket #" + auditMain.TicketId;
-
-                   // var sendTo = _authService.GetEmailFrom34ID(_authService.LoggedInUserInfo().Result.HcaId).Result.ToString();
-
-                    //Required for PROD **********
-                    //var sendTo = _authService.GetEmailFrom34ID(sentoEmail).Result.ToString();
-
+                    var sendTo = _authService.GetEmailFrom34ID(auditMain.Agent34Id).Result.ToString();
                     var sendFrom = _authService.LoggedInUserInfo().Result.EmailAddress;
-                    var sendTo = sendFrom;
-                    var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
 
+                    if (string.IsNullOrEmpty(sendTo))
+                        sendTo = sendFrom;
+
+                    //Remove for PROD
+                    sendTo = sendFrom;
+
+                    var replyTo = _authService.LoggedInUserInfo().Result.EmailAddress;
                     var body = "<b>Hi,</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Attached you will find a Case Management Audit for Ticket #<b>" + auditMain.TicketId + "</b><br>";
 
                     StringBuilder stringBuilder = new StringBuilder();
