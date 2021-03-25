@@ -5,8 +5,9 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using System.DirectoryServices.AccountManagement;
-using System.Collections.Generic;
+using Azure.Identity;
+using System.Net.Http.Headers;
+using Microsoft.Graph;
 
 namespace HCAaudit.Service.Portal.AuditUI.Services
 {
@@ -20,7 +21,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         }
 
         #region
-
         public async Task<bool> CheckAdminUserGroup()
         {
             var token = await GetIdToken();
@@ -34,7 +34,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                     break;
                 }
             }
-            
             return isAdmin;
         }
 
@@ -51,7 +50,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
                     break;
                 }
             }
-
             return isUser;
         }
 
@@ -74,16 +72,35 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
             };
         }
 
-        //public  async Task<string> GetEmailFrom34ID(string input34id)
-        //{
-        //    string email = string.Empty;
-        //    using (var principalContext = new PrincipalContext(ContextType.Domain, "hca.corpad.net"))
-        //    {
-        //        var userPrincipal = UserPrincipal.FindByIdentity(principalContext, input34id);
-        //        email= userPrincipal.EmailAddress;
-        //    }
-        //    return email;
-        //}
+        public async Task<string> GetEmailFrom34ID(string input34id)
+        {
+            string email = string.Empty;
+
+            var credential = new DefaultAzureCredential();
+            var token = credential.GetToken(
+                new Azure.Core.TokenRequestContext(new[] { "https://graph.microsoft.com/.default" }));
+            var accessToken = token.Token;
+            var graphServiceClient = new GraphServiceClient(
+                new DelegateAuthenticationProvider((requestMessage) =>
+                {
+                    requestMessage
+                    .Headers
+                    .Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+                    return Task.CompletedTask;
+                }));
+
+            // Retrieve a user by userPrincipalName
+            var myuser = await graphServiceClient
+                .Users[input34id + "@hca.corpad.net"]
+                .Request()
+                .GetAsync();
+            
+            if (myuser != null)
+            {
+                email = myuser.Mail;
+            }
+            return email;
+        }
         #endregion
 
         #region Private Methods
@@ -119,7 +136,6 @@ namespace HCAaudit.Service.Portal.AuditUI.Services
         private async Task<JwtSecurityToken> GetIdToken()
         {
             var token_string = await contextAccessor.HttpContext.GetTokenAsync("id_token");
-
             return new JwtSecurityTokenHandler().ReadJwtToken(token_string);
         }
         #endregion
