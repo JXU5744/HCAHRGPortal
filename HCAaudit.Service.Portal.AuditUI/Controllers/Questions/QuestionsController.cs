@@ -3,6 +3,7 @@ using HCAaudit.Service.Portal.AuditUI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -216,6 +217,121 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
             {
                 _logger.LogInformation($"Exception in BindSubCategory method");
                 _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindSubCategory", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
+            }
+            return Json(new { Success = "False", responseText = "Authorization Error" });
+        }
+
+        [HttpPost]
+        public JsonResult BindQuestionMappingCategory(string subCategoryId)
+        {
+            _logger.LogInformation($"Request for Category List not having the same description as that of SubCategoryID: {subCategoryId}");
+            try
+            {
+                if (isAdmin)
+                {
+                    var subCat = _auditToolContext.SubCategory.Where(a => a.SubCatgId == Convert.ToInt32(subCategoryId) && a.IsActive == true).FirstOrDefault();
+
+                    if (subCat != null)
+                    {
+                        var catList = _auditToolContext.Category.Where(a => a.CatgId != subCat.CatgId && a.IsActive == true).ToList();
+
+                        List<CategoryMastR> categoryList = new List<CategoryMastR>();
+
+                        foreach (var item in catList)
+                        {
+                            if (_auditToolContext.SubCategory.Any(a => a.CatgId == item.CatgId && a.IsActive == true && a.SubCatgDescription == subCat.SubCatgDescription))
+                                continue;
+
+                            CategoryMastR mastR = new CategoryMastR
+                            {
+                                CatgDescription = item.CatgDescription,
+                                CatgID = item.CatgId.ToString()
+                            };
+
+                            categoryList.Add(mastR);
+                        }
+
+                        _logger.LogInformation($"No of SubCategoryListrecords: {categoryList.Count}");
+                        return Json(categoryList);
+                    }
+                    else
+                    {
+                        return Json(new { Success = "False", responseText = "Subcategory not Found" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in BindQuestionMappingCategory method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_BindQuestionMappingCategory", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
+            }
+            return Json(new { Success = "False", responseText = "Authorization Error" });
+        }
+
+        [HttpPost]
+        public JsonResult CopyQuestionMappingToCategory(string subCategoryId, string categoryId)
+        {
+            _logger.LogInformation($"Request to Insert Subcategory for {subCategoryId} and its Question Mapping to Category: {categoryId}");
+            try
+            {
+                if (isAdmin)
+                {
+                    var subCat = _auditToolContext.SubCategory.Where(a => a.SubCatgId == Convert.ToInt32(subCategoryId) && a.IsActive == true).FirstOrDefault();
+
+                    if (subCat != null && Convert.ToInt32(categoryId) > 0)
+                    {
+                        SubCategory category = new SubCategory
+                        {
+                            CatgId = Convert.ToInt32(categoryId),
+                            CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            CreatedDate = DateTime.Now,
+                            ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                            ModifiedDate = DateTime.Now,
+                            IsActive = true,
+                            SubCatgDescription = subCat.SubCatgDescription
+                        };
+
+                        _auditToolContext.SubCategory.Add(category);
+
+                        var questionMapping = _auditToolContext.QuestionMapping.Where(a => a.SubCatgId == subCat.SubCatgId).ToList();
+
+                        foreach (var item in questionMapping)
+                        {
+                            QuestionMapping question = new QuestionMapping
+                            {
+                                SubCatg = category,
+                                SeqNumber = item.SeqNumber,
+                                QuestionId = item.QuestionId,
+                                IsActive = true,
+                                CreatedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                                CreatedDate = DateTime.Now,
+                                ModifiedBy = _authService.LoggedInUserInfo().Result.LoggedInFullName,
+                                ModifiedDate = DateTime.Now
+                            };
+
+                            _auditToolContext.QuestionMapping.Add(question);
+                        }
+
+                        int insertstatus = _auditToolContext.SaveChanges();
+                        if (insertstatus > 0)
+                        {
+                            _logger.LogInformation($"Inserted Sucessfully.");
+                        }
+                        else
+                        {
+                            _logger.LogInformation($"Inserted failed.");
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { Success = "False", responseText = "Subcategory not Found" });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Exception in CopyQuestionMappingToCategory method");
+                _log.WriteErrorLog(new LogItem { ErrorType = "Error", ErrorSource = "QuestionsController_CopyQuestionMappingToCategory", ErrorDiscription = ex.InnerException != null ? ex.InnerException.ToString() : ex.Message });
             }
             return Json(new { Success = "False", responseText = "Authorization Error" });
         }
