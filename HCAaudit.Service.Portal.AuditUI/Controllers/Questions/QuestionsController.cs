@@ -293,7 +293,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
 
                         _auditToolContext.SubCategory.Add(category);
 
-                        var questionMapping = _auditToolContext.QuestionMapping.Where(a => a.SubCatgId == subCat.SubCatgId).ToList();
+                        var questionMapping = _auditToolContext.QuestionMapping.Where(a => a.SubCatgId == subCat.SubCatgId && a.IsActive == true).ToList();
 
                         foreach (var item in questionMapping)
                         {
@@ -321,6 +321,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                         {
                             _logger.LogInformation($"Inserted failed.");
                         }
+                        return Json("");
                     }
                     else
                     {
