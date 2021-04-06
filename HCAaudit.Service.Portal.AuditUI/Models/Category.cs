@@ -10,6 +10,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public Category()
         {
             AuditMains = new HashSet<AuditMain>();
+            HrocrosterCategories = new HashSet<HrocrosterCategory>();
             SubCategories = new HashSet<SubCategory>();
         }
 
@@ -22,6 +23,7 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string ModifiedBy { get; set; }
 
         public virtual ICollection<AuditMain> AuditMains { get; set; }
+        public virtual ICollection<HrocrosterCategory> HrocrosterCategories { get; set; }
         public virtual ICollection<SubCategory> SubCategories { get; set; }
     }
 }

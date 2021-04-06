@@ -34,6 +34,7 @@
             </div>
             <div class="col-sm-4">
                 <button type="button" id="btnopenPopUp" class="neu-button neu-button--primary neu-button--raised">Map Question</button>
+                <button type="button" id="btnopencopyquestions" class="neu-button neu-button--primary neu-button--raised">Copy Question</button>
             </div>
         </div>
     </form>
@@ -52,6 +53,25 @@
                 </tr>
             </thead>
         </table>
+    </div>
+</div>
+
+<div id="popupcopyquestion" title="Copy Questions to Service Delivery Group" hidden="hidden" class="container">
+    <div class="row neu-margin--bottom-16">
+        <div class="col-sm-12">
+            <label class="neu-input__label" for="ToCategory">Category</label>
+            <select name="ToCategory" id="ToCategory" class="neu-select">
+            </select>
+            <span id="errormsgCopyquestion" class="neu-button--danger">Please Select Category</span>
+        </div>
+        <div class="col-sm-12"><input id="hdncopySubcatid" type="hidden" /></div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12 neu-text--align-center">
+            <button id="btncopyQuestion" class="neu-button--primary neu-button neu-button--raised">Save</button>
+            <button id="btncopycancelpopup" class="neu-button--danger neu-button neu-button--raised neu-margin--left-10">Cancel</button>
+        </div>
     </div>
 </div>
 
@@ -175,6 +195,15 @@
                 resizable: false
             });
 
+            $("#popupcopyquestion").dialog({
+                width: 'auto',
+                height: 'auto',
+                autoOpen: false,
+                draggable: false,
+                resizable: false
+             });
+
+
             $("#btncancelpopup").click(function () {
                 $("#popupcontent").dialog('close');
             });
@@ -184,6 +213,17 @@
                     position: 'bottom',
                 });
             });
+
+            $("#btnopencopyquestions").click(function () {
+                $("#popupcopyquestion").dialog({
+                    position: 'bottom',
+                });
+            });
+
+            $("#btncopycancelpopup").click(function () {
+                $("#popupcopyquestion").dialog('close');
+            });
+
             $("#popupcontentedit").dialog({
                 width: 'auto',
                 height: 'auto',
@@ -195,6 +235,129 @@
                 $("#popupcontentedit").dialog('close');
             });
         });
+
+        $("#btnopencopyquestions").click(function () {
+            var subCategoryID = $("#SubCatID").val();
+            $('#hdncopySubcatid').val(subCategoryID);
+            $('#errormsgCopyquestion').hide();
+            
+            $.ajax({
+                type: "POST",
+                url: "/Questions/BindQuestionMappingCategory",
+                data: { "subCategoryId": subCategoryID },
+                success: function (response) {
+                    $('#ToCategory').html(''); //$("#ShowQuestions").hide();
+                    var options = '';
+                    options += '<option value="0">Select Category</option>';
+                    for (var i = 0; i < response.length; i++) {
+                        options += '<option value="' + response[i].CatgID + '">' + response[i].CatgDescription + '</option>';
+                    }
+                    $('#ToCategory').append(options);
+                    $("#ToCategory").prop("selectedIndex", 0);
+                },
+                failure: function (response) {
+                    //alert(response.responseText);
+                },
+                error: function (response) {
+                    //alert(response.responseText);
+                }
+            });
+            $("#popupcopyquestion").dialog('open');
+        });
+
+        $("#btncopyQuestion").click(function () {
+            var categoryname = $("#ToCategory option:selected").val();
+            var subCategoryID = $("#hdncopySubcatid").val();
+
+            if (categoryname == "0") {
+                $('#errormsgCopyquestion').show();
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Questions/CopyQuestionMappingToCategory",
+                data: {
+                    "subCategoryId": subCategoryID,
+                    "categoryId": categoryname
+                },
+                success: function (response) {
+                    if (response == "2") {
+                        $('#errormsgquestion').show(); $('#errormsgquestion').text("Not a valid Question");
+                    }
+                    else {
+                        $("#popupcopyquestion").dialog('close');
+
+                        $(function () {
+                            var subCategoryID = $('#SubCatID').val();
+                            $.ajax({
+                                type: "Get",
+                                url: "/Questions/BindGrid",
+                                data: { "subCategoryID": subCategoryID },
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (response) {
+                                    $("#tblquestions").DataTable(
+                                        {
+                                            destroy: true,
+                                            bLengthChange: false,
+                                            lengthMenu: [[5, 10, -1], [5, 10, "All"]],
+                                            bFilter: false,
+                                            bSort: false,
+                                            bPaginate: false,
+                                            data: response,
+
+                                            "columnDefs": [{
+                                                "targets": [0],
+                                                "visible": false,
+                                                "searchable": false
+                                            },
+                                            {
+                                                "targets": [1, 3, 4],
+                                                "width": "10%"
+                                            },
+                                            {
+                                                "targets": [0, 3, 4],
+                                                "orderable": false
+                                            }],
+
+                                            columns: [{ 'data': 'QuestionMappingId' },
+                                            { 'data': 'SequenceNo' },
+                                            { 'data': 'QuestionText' },
+                                            {
+                                                "render": function (data, type, full, meta) { return "<a href='#' class='neu-button--primary neu-button neu-button--link'  onclick=OpenEditpopup('" + full.QuestionMappingId + "');>Edit</a>"; }
+                                            },
+                                            {
+                                                data: null,
+                                                render: function (data, type, row) {
+                                                    return "<a href='#' class='neu-button--danger neu-button neu-button--link' onclick=DeleteData('" + row.QuestionMappingId + "'); >Delete</a>";
+                                                }
+                                            },
+                                            ],
+                                            "createdRow": function (row, data, dataIndex) {
+                                                $(row).addClass('neu-table__row--small');
+                                            }
+                                        });
+                                },
+                                failure: function (response) {
+                                    // alert(response.d);
+                                },
+                                error: function (response) {
+                                    // alert(response.d);
+                                }
+                            });
+                        });
+                    }
+                },
+                failure: function (response) {
+                    // alert(response.responseText);
+                },
+                error: function (response) {
+                    //alert(response.responseText);
+                }
+            });
+        });
+
 
         $("#btnopenPopUp").click(function () {
             var subCategoryID = $("#SubCatID").val();

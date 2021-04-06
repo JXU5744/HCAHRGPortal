@@ -29,11 +29,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string AuditorQuitReason { get; set; }
         public string AuditType { get; set; }
         public string AuditNotes { get; set; }
-        public bool IsEscalated { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
+        public bool? IsEscalated { get; set; }
 
         public virtual Category ServiceGroup { get; set; }
         public virtual SubCategory Subcategory { get; set; }
