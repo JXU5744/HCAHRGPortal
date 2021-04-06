@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HCAaudit.Service.Portal.AuditUI.Controllers
@@ -53,6 +54,14 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                                                 x.ModifiedBy,
                                                 x.ModifiedDate
                                             }).ToList();
+                    if (objclstbHROCRoster.Count > 0)
+                    {
+                        List<int> categories = new List<int>();
+                        var cat = _auditToolContext.HrocrosterCategories.Where(x => x.HrocrosterId == objclstbHROCRoster[0].HROCRosterId).ToList();
+                        cat.ForEach(result => categories.Add(result.CatgId));
+                       // objclstbHROCRoster[0].HrocrosterCategories
+                    }
+
                     return Json(objclstbHROCRoster);
                 }
             }

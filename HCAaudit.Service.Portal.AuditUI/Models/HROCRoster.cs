@@ -7,6 +7,11 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 {
     public partial class HROCRoster
     {
+        public HROCRoster()
+        {
+            HrocrosterCategories = new HashSet<HrocrosterCategory>();
+        }
+
         public int HROCRosterId { get; set; }
         public string EmployeeFullName { get; set; }
         public string LastName { get; set; }
@@ -24,5 +29,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
+        public string JobCodeList { get; set; }
+
+        public virtual ICollection<HrocrosterCategory> HrocrosterCategories { get; set; }
     }
 }
