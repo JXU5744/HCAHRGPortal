@@ -24,6 +24,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<HRAuditErrorLog> HRAuditErrorLog { get; set; }
         public virtual DbSet<HROCRoster> HROCRoster { get; set; }
+        public virtual DbSet<HrocrosterCategory> HrocrosterCategories { get; set; }
+
         public virtual DbSet<ListOfValue> ListOfValue { get; set; }
         public virtual DbSet<QuestionBank> QuestionBank { get; set; }
         public virtual DbSet<QuestionMapping> QuestionMapping { get; set; }
@@ -57,13 +59,21 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.IsDowngraded)
+                    .HasColumnName("isDowngraded")
+                    .HasDefaultValueSql("((0))");
+                
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TicketId)
                     .HasMaxLength(255)
@@ -106,7 +116,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DisputeAuditor34Id)
                     .HasMaxLength(255)
@@ -116,11 +128,15 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
 
                 entity.Property(e => e.IsDisputed).HasColumnName("isDisputed");
 
+                entity.Property(e => e.IsEscalated).HasDefaultValueSql("((0))");
+                
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ServiceGroupId).HasColumnName("ServiceGroupID");
 
@@ -162,7 +178,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.IsCompliant).HasColumnName("isCompliant");
 
@@ -180,7 +198,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.TicketId)
                     .HasMaxLength(255)
@@ -217,13 +237,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<HRAuditErrorLog>(entity =>
@@ -236,7 +260,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ErrorDescription)
                     .HasMaxLength(8000)
@@ -261,7 +287,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DateHired)
                     .HasColumnType("datetime")
@@ -301,7 +329,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.PositionDescHomeCurr)
                     .HasMaxLength(255)
@@ -316,6 +346,47 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasColumnName("Supervisor Last Name");
             });
 
+            modelBuilder.Entity<HrocrosterCategory>(entity =>
+            {
+                entity.ToTable("HROCRosterCategory");
+
+                entity.Property(e => e.HrocrosterCategoryId).HasColumnName("HROCRosterCategoryID");
+
+                entity.Property(e => e.CatgId).HasColumnName("CatgID");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.HrocrosterId).HasColumnName("HROCRosterId");
+
+                entity.Property(e => e.IsActive).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Catg)
+                    .WithMany(p => p.HrocrosterCategories)
+                    .HasForeignKey(d => d.CatgId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__HROCRoste__CatgI__5BAD9CC8");
+
+                //entity.HasOne(d => d.Hrocroster)
+                //    .WithMany(p => p.HrocrosterCategories)
+                //    .HasForeignKey(d => d.HrocrosterId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK__HROCRoste__HROCR__5CA1C101");
+            });
+            
             modelBuilder.Entity<ListOfValue>(entity =>
             {
                 entity.ToTable("ListOfValues");
@@ -334,13 +405,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<QuestionBank>(entity =>
@@ -356,13 +431,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.QuestionDescription).IsUnicode(false);
 
@@ -377,13 +456,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.QuestionMappings)
@@ -413,13 +496,17 @@ namespace HCAaudit.Service.Portal.AuditUI.Models
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.ModifiedBy)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
+                entity.Property(e => e.ModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.SubCatgDescription)
                     .IsRequired()
