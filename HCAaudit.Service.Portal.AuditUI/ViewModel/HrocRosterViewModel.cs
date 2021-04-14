@@ -31,6 +31,6 @@ namespace HCAaudit.Service.Portal.AuditUI.ViewModel
         public string? CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string? ModifiedBy { get; set; }
-        public int[]? Categories { get; set; }
+        public string[]? Categories { get; set; }
     }
 }

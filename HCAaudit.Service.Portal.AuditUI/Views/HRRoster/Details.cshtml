@@ -13,6 +13,7 @@
 
 <script src="~/lib/DataTables/DataTables/js/jquery.dataTables.min.js"></script>
 <script src="~/lib/DataTables/DataTables/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/js/bootstrap-multiselect.min.js"></script>
 @*<script type="text/javascript" src="~/js/jquey3.2.1.min.js"></script>*@
 <script type="text/javascript" src="~/js/moment.min.js"></script>
 <script type="text/javascript" src="~/js/numeric.js"></script>
@@ -109,6 +110,13 @@
                             <span id="errorMessageJobCatDesc" class="neu-button--danger"></span>
                         </div>
                     </div>
+                    <div class="col-sm-4" >
+                        <div tabindex="-1" aria-checked="false">
+                            <label for="txtJobCatDescList" class="neu-input__label required">Job Category List</label>
+                            <select name="txtJobCatDescList" id="txtJobCatDescList" class="neu-select" multiple="multiple"></select>
+                            <span id="errorMessageJobCatDescList" class="neu-button--danger"></span>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="divButtonCollection" name="divButtonCollection" class="row neu-margin--bottom-16">
@@ -173,15 +181,17 @@
                 data: null,
                 success: function (response) {
                     $('#txtJobCatDesc').html('');
+                    $('#txtJobCatDescList').html('');
                     var options = '';
                     options += '<option value="0">Select Category</option>';
                     for (var i = 0; i < response.length; i++) {
-                        options += '<option value="' + response[i].CatgDescription + '">' + response[i].CatgDescription + '</option>';
+                        options += '<option value="' + response[i].CatgId + '">' + response[i].CatgDescription + '</option>';
                     }
                     $('#txtJobCatDesc').append(options);
+                    $('#txtJobCatDescList').append(options);
                 },
                 failure: function (response) {
-                    
+
                 },
                 error: function (response) {
 
@@ -296,25 +306,35 @@
                         url: "/HRRoster/GetDetailsById",
                         data: { "EmployeeId": $("#txtSearch34Id").val() },
                         success: function (response) {
-                            if (response.length > 0) {
-                                $("#hiddenHROCRosterId").val(response[0].HROCRosterId);
-                                $("#hiddenCreatedBy").val(response[0].CreatedBy);
-                                $("#hiddenCreatedDate").val(response[0].CreatedDate);
+                            if (response.HROCRosterId > 0) {
+                                $("#hiddenHROCRosterId").val(response.HROCRosterId);
+                                $("#hiddenCreatedBy").val(response.CreatedBy);
+                                $("#hiddenCreatedDate").val(response.CreatedDate);
 
-                                $("#txtEmployeeFullName").val(response[0].EmployeeFullName);
-                                $("#txtEmployeeFirstName").val(response[0].FirstName);
-                                $("#txtEmployeeLastName").val(response[0].LastName);
-                                $("#txtEmployeeNumber").val(response[0].EmployeeNum);
-                                $("#txtSuperVisorFirstName").val(response[0].SupervisorFirstName);
-                                $("#txtSupervisorLastName").val(response[0].SupervisorLastName);
-                                $("#txtJobCatDesc").val(response[0].JobCdDescHomeCurr);
+                                $("#txtEmployeeFullName").val(response.EmployeeFullName);
+                                $("#txtEmployeeFirstName").val(response.EmployeeFirstName);
+                                $("#txtEmployeeLastName").val(response.EmployeeLastName);
+                                $("#txtEmployeeNumber").val(response.EmployeeNumber);
+                                $("#txtSuperVisorFirstName").val(response.SupervisorFirstName);
+                                $("#txtSupervisorLastName").val(response.SupervisorLastName);
+                                $("#txtJobCatDesc option").filter(function () {
+                                    return this.text == response.JobCDDesc;
+                                }).attr('selected', true);
+
+                                var selectedList = response.Categories;
+                                for (var i in selectedList) {
+                                    $("#txtJobCatDescList option").filter(function () {
+                                        return this.value == selectedList[i];
+                                    }).attr('selected', true);
+                                }
+
+                                //$("#txtJobCatDesc").(response.JobCDDesc);
                                 $("#txtSearch34Id").attr("disabled", "disabled")
                                 //$("#txtEmployeeFullName").attr("disabled", "disabled")
                                 $("#employeeForm").show();
                                 $("#btnUpdate").show();
                                 $("#btnSave").hide();
                                 // $("#btnAddEmployee").hide();
-
                             }
                             else {
                                 $("#errorMessage").text("Data not available for 3-4 Id : " + $("#txtSearch34Id").val());
@@ -348,10 +368,25 @@
             });
 
             $("#btnUpdate").click(function () {
+                $('#errorMessage').text('');
+                $('#errorMessageFirstName').text('');
+                $('#errorMessageLastName').text('');
+                $('#errorMessageEmployeeFullName').text('');
+                $('#errorMessageEmployeeNumber').text('');
+                $('#errorMessageSuperVisorFirstName').text('');
+                $('#errorMessageSupervisorLastName').text('');
+                $('#errorMessageJobCatDesc').text('');
+                $('#errorMessageJobCatDescList').text('');
 
                 var isValid = ValidateHROCRosterViewModel();
 
                 if (isValid) {
+                    var categoryList = [];
+                    $.each($("#txtJobCatDescList  option:selected"),
+                        function (index, data) {
+                            categoryList.push($(this).val());
+                        });
+
                     var HROCRosterViewModel =
                     {
                         "HROCRosterId": $("#hiddenHROCRosterId").val(),
@@ -364,7 +399,8 @@
                         "SupervisorLastName": $("#txtSupervisorLastName").val(),
                         "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
                         "EmployeethreefourID": $("#txtSearch34Id").val(),
-                        "JobCDDesc": $("#txtJobCatDesc  option:selected").text()
+                        "JobCDDesc": $("#txtJobCatDesc  option:selected").text(),
+                        "Categories": categoryList
                     };
 
                     $.ajax({
@@ -395,10 +431,25 @@
             });
 
             $("#btnSave").click(function () {
+                $('#errorMessage').text('');
+                $('#errorMessageFirstName').text('');
+                $('#errorMessageLastName').text('');
+                $('#errorMessageEmployeeFullName').text('');
+                $('#errorMessageEmployeeNumber').text('');
+                $('#errorMessageSuperVisorFirstName').text('');
+                $('#errorMessageSupervisorLastName').text('');
+                $('#errorMessageJobCatDesc').text('');
+                $('#errorMessageJobCatDescList').text('');
 
                 var isValid = ValidateHROCRosterViewModel();
 
                 if (isValid) {
+                    var categoryList = [];
+                    $.each($("#txtJobCatDescList  option:selected"),
+                        function (index, data) {
+                            categoryList.push($(this).val());
+                        });
+
                     var HROCRosterViewModel =
                     {
                         "HROCRosterId": $("#hiddenHROCRosterId").val(),
@@ -411,7 +462,8 @@
                         "SupervisorLastName": $("#txtSupervisorLastName").val(),
                         "SupervisorFirstName": $("#txtSuperVisorFirstName").val(),
                         "EmployeethreefourID": $("#txtSearch34Id").val(),
-                        "JobCDDesc": $("#txtJobCatDesc option:selected").text()
+                        "JobCDDesc": $("#txtJobCatDesc option:selected").text(),
+                        "Categories": categoryList
                     };
 
                     $.ajax({
@@ -494,6 +546,16 @@
 
                 if ($("#txtJobCatDesc").val() === null || $("#txtJobCatDesc").val() == "0") {
                     $('#errorMessageJobCatDesc').text('Job Category Description Required');
+                    isValid = false;
+                }
+
+                var categoryList = [];
+                $.each($("#txtJobCatDescList  option:selected"),
+                    function (index, data) {
+                        categoryList.push($(this).val());
+                    });
+                if (categoryList.length == 0) {
+                    $('#errorMessageJobCatDescList').text('Job Category Description Required');
                     isValid = false;
                 }
 
