@@ -238,6 +238,9 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             ModifiedDate = DateTime.Now
                         };
 
+                        _auditToolContext.HROCRoster.Add(objHROCRoster);
+                        _auditToolContext.SaveChanges();
+
                         foreach (var item in hROCRosterViewModel.Categories)
                         {
                             if (Convert.ToInt32(item) > 0)
@@ -257,8 +260,8 @@ namespace HCAaudit.Service.Portal.AuditUI.Controllers
                             }
                         }
 
-                        _auditToolContext.HROCRoster.Add(objHROCRoster);
                         _auditToolContext.SaveChanges();
+
                         resp = "Success";
                     }
                 }
